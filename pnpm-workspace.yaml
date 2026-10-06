@@ -3,3 +3,8 @@ allowBuilds:
   sharp: false
   supabase: true
   unrs-resolver: false
+
+# Pin the resolved version on every `pnpm add` (docs/02-tech-stack.md).
+saveExact: true
+# Run package scripts with a cross-platform shell so `VAR=x cmd` works on Windows too.
+shellEmulator: true
