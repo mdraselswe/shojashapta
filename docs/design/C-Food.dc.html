@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<title>খাবারের পেজ — দই</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@500;600;700&amp;family=Noto+Sans+Bengali:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#4338CA}a:hover{color:#3730A3}
+.hd{font-family:'Anek Bangla',sans-serif}
+.rx{transition:transform .18s cubic-bezier(.2,.8,.2,1),background-color .18s,border-color .18s}
+.rx:active{transform:scale(0.94)}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.bar{transform-origin:left;animation:grow .7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes toastIn{0%{transform:translateY(24px);opacity:0}100%{transform:translateY(0);opacity:1}}
+.toast{animation:toastIn .35s cubic-bezier(.2,.8,.2,1) both}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
+.popped{animation:pop .35s ease-out}
+@media (prefers-reduced-motion:reduce){.bar,.toast,.popped{animation:none}}
+</style>
+</helmet>
+<div style="width:390px;height:1180px;box-sizing:border-box;background:#F6F6F8;color:#16161D;font-family:'Noto Sans Bengali',sans-serif;position:relative;overflow:hidden">
+
+<header style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center">
+<a href="Main.dc.html" aria-label="পেছনে যান" style="width:44px;height:44px;border-radius:22px;background:#FFFFFF;border:1px solid #E8E8EE;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16161D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></a>
+<div style="display:flex;gap:8px">
+<button aria-label="খেতে চাই তালিকায় রাখুন" style="width:44px;height:44px;border-radius:22px;background:#FFFFFF;border:1px solid #E8E8EE;display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#16161D" stroke-width="2" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4z"></path></svg></button>
+<button aria-label="শেয়ার করুন" style="width:44px;height:44px;border-radius:22px;background:#FFFFFF;border:1px solid #E8E8EE;display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#16161D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"></path></svg></button>
+</div>
+</header>
+
+<section style="padding:4px 20px 0;display:flex;gap:16px;align-items:center">
+<span style="flex:0 0 96px;height:96px;border-radius:24px;background:#F3E6CC"></span>
+<div>
+<span style="display:inline-block;background:#EEF0FF;color:#3730A3;border-radius:8px;padding:2px 8px;font-size:13px;font-weight:600">বগুড়ার বিখ্যাত</span>
+<h1 class="hd" style="margin:4px 0 0;font-size:36px;font-weight:700;line-height:1.15">দই</h1>
+<p style="margin:2px 0 0;font-size:14px;color:#5E5E6E">৮টি জায়গায় পাওয়া যায়</p>
+</div>
+</section>
+
+<section style="padding:18px 20px 0">
+<div style="background:#FFFFFF;border:1px solid #E8E8EE;border-radius:24px;padding:18px">
+<div style="display:flex;align-items:baseline;gap:8px"><span class="hd" style="font-size:40px;font-weight:700;line-height:1">৯২%</span><span style="font-size:15px;color:#5E5E6E">পছন্দ করেছেন</span></div>
+<div style="display:flex;gap:3px;height:8px;margin:14px 0 8px"><span class="bar" style="flex:92;background:#12A150;border-radius:4px"></span><span class="bar" style="flex:6;background:#F5A524;border-radius:4px;animation-delay:.1s"></span><span class="bar" style="flex:2;background:#E5484D;border-radius:4px;animation-delay:.15s"></span></div>
+<p style="margin:0;font-size:14px;color:#5E5E6E">১,২৮৪ জন খেয়েছেন · সাধারণ দাম ৳১৬০–৳৩০০</p>
+
+<div style="height:1px;background:#F0F0F4;margin:16px 0"></div>
+<p class="hd" style="margin:0 0 10px;font-size:18px;font-weight:600">আপনি খেয়েছেন? কেমন লাগল?</p>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+<sc-for list="{{reactions}}" as="r" hint-placeholder-count="3">
+<button class="rx" aria-pressed="{{r.pressed}}" onClick="{{r.pick}}" style="{{r.style}}">
+<span class="{{r.iconCls}}" style="display:flex">
+<sc-if value="{{r.isLoved}}" hint-placeholder-val="{{true}}"><svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke="{{r.ink}}" stroke-width="2.2" stroke-linecap="round"><circle cx="16" cy="16" r="13"></circle><path d="M10 18c1.5 3 3.5 4.5 6 4.5s4.5-1.5 6-4.5z" fill="{{r.ink}}"></path><path d="M11 12.5v1M21 12.5v1"></path></svg></sc-if>
+<sc-if value="{{r.isOkay}}" hint-placeholder-val="{{false}}"><svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke="{{r.ink}}" stroke-width="2.2" stroke-linecap="round"><circle cx="16" cy="16" r="13"></circle><path d="M11 20h10M11 12.5v1M21 12.5v1"></path></svg></sc-if>
+<sc-if value="{{r.isBad}}" hint-placeholder-val="{{false}}"><svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke="{{r.ink}}" stroke-width="2.2" stroke-linecap="round"><circle cx="16" cy="16" r="13"></circle><path d="M11 22c1.4-2.2 3-3.2 5-3.2s3.6 1 5 3.2M11 12.5v1M21 12.5v1"></path></svg></sc-if>
+</span>
+<span>{{r.label}}</span>
+</button>
+</sc-for>
+</div>
+</div>
+</section>
+
+<section style="padding:22px 20px 0">
+<h2 class="hd" style="margin:0 0 10px;font-size:21px;font-weight:600">কমিউনিটির প্রিয় জায়গা</h2>
+<div style="background:#FFFFFF;border:1px solid #E8E8EE;border-radius:20px;padding:4px 14px">
+<a href="C-Place.dc.html" style="text-decoration:none;color:#16161D;display:grid;grid-template-columns:32px 1fr auto;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid #F0F0F4"><span class="hd" style="width:32px;height:32px;border-radius:10px;background:#4F46E5;color:#FFFFFF;font-weight:700;display:flex;align-items:center;justify-content:center">১</span><span><span style="display:block;font-size:16px;font-weight:600">নমুনা দই ঘর</span><span style="font-size:13px;color:#5E5E6E">শেরপুর রোড, বগুড়া · ৳১৮০–৳২৫০</span></span><span style="text-align:right"><span style="display:block;background:#E9F8EF;color:#0E7A3D;border-radius:10px;padding:2px 8px;font-size:14px;font-weight:600">৯৬%</span><span style="font-size:12px;color:#5E5E6E">৪১২ জন</span></span></a>
+<a href="#" style="text-decoration:none;color:#16161D;display:grid;grid-template-columns:32px 1fr auto;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid #F0F0F4"><span class="hd" style="width:32px;height:32px;border-radius:10px;background:#EDEDF2;font-weight:700;display:flex;align-items:center;justify-content:center">২</span><span><span style="display:block;font-size:16px;font-weight:600">[দোকানের নাম]</span><span style="font-size:13px;color:#5E5E6E">সাতমাথা, বগুড়া · ৳১৬০–৳২২০</span></span><span style="text-align:right"><span style="display:block;background:#E9F8EF;color:#0E7A3D;border-radius:10px;padding:2px 8px;font-size:14px;font-weight:600">৯২%</span><span style="font-size:12px;color:#5E5E6E">২৮৮ জন</span></span></a>
+<a href="#" style="text-decoration:none;color:#16161D;display:grid;grid-template-columns:32px 1fr auto;gap:10px;align-items:center;padding:12px 0"><span class="hd" style="width:32px;height:32px;border-radius:10px;background:#EDEDF2;font-weight:700;display:flex;align-items:center;justify-content:center">৩</span><span><span style="display:block;font-size:16px;font-weight:600">[দোকানের নাম]</span><span style="font-size:13px;color:#5E5E6E">বনানী, ঢাকা</span></span><span style="font-size:12px;color:#5E5E6E;text-align:right">৩ জন<br>অভিজ্ঞতা কম</span></a>
+</div>
+</section>
+
+<section style="padding:22px 20px 0">
+<h2 class="hd" style="margin:0 0 10px;font-size:21px;font-weight:600">মানুষ যা বলছেন</h2>
+<div style="background:#FFFFFF;border:1px solid #E8E8EE;border-radius:20px;padding:14px">
+<div style="display:flex;align-items:center;gap:10px"><span class="hd" style="width:36px;height:36px;border-radius:18px;background:#EEF0FF;color:#3730A3;font-weight:700;display:flex;align-items:center;justify-content:center">র</span><span style="flex:1"><span style="display:block;font-size:15px;font-weight:600">রাশেদ <span style="font-size:12px;font-weight:600;color:#3730A3;background:#EEF0FF;border-radius:6px;padding:1px 6px">স্থানীয়</span></span><span style="font-size:13px;color:#5E5E6E">৩ দিন আগে · দারুণ লেগেছে</span></span></div>
+<p style="margin:10px 0 0;font-size:16px;line-height:1.7">সকালে গেলে টাটকা পাওয়া যায়। মিষ্টি একটু বেশি, তবে ঘনত্ব দারুণ।</p>
+</div>
+</section>
+
+<sc-if value="{{showToast}}" hint-placeholder-val="{{false}}">
+<div class="toast" role="status" style="position:absolute;left:16px;right:16px;bottom:20px;background:#16161D;color:#FFFFFF;border-radius:20px;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 12px 32px rgba(22,22,29,0.25)">
+<span class="hd" style="flex:0 0 auto;height:40px;padding:0 12px;border-radius:20px;background:#F59E0B;color:#16161D;font-weight:700;font-size:17px;display:flex;align-items:center">+১০</span>
+<span style="flex:1;font-size:15px;line-height:1.5"><b>{{toastTitle}}</b><br><span style="color:#C9C9D4">{{toastBody}}</span></span>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1180}}'>
+class Component extends DCLogic {
+constructor(props) { super(props); this.state = { picked: null }; }
+renderVals() {
+const picked = this.state.picked;
+const defs = [
+{ id: 'loved', label: 'দারুণ', ink: '#0E7A3D', bg: '#E9F8EF', border: '#12A150' },
+{ id: 'okay', label: 'মোটামুটি', ink: '#8A5A00', bg: '#FFF6E0', border: '#F5A524' },
+{ id: 'disliked', label: 'ভালো না', ink: '#B4232A', bg: '#FDECEC', border: '#E5484D' }
+];
+const reactions = defs.map((d) => {
+const on = picked === d.id;
+return {
+label: d.label,
+pressed: on ? 'true' : 'false',
+isLoved: d.id === 'loved', isOkay: d.id === 'okay', isBad: d.id === 'disliked',
+ink: on ? d.ink : '#16161D',
+iconCls: on ? 'popped' : '',
+style: 'height:84px;border-radius:18px;font:inherit;font-size:15px;font-weight:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;' +
+(on ? 'background:' + d.bg + ';border:2px solid ' + d.border + ';color:' + d.ink : 'background:#F6F6F8;border:2px solid transparent;color:#16161D'),
+pick: () => this.setState({ picked: d.id })
+};
+});
+return {
+reactions: reactions,
+showToast: picked !== null,
+toastTitle: picked === 'loved' ? 'দারুণ! বগুড়া আনলক হয়েছে' : 'মতামত যোগ হয়েছে',
+toastBody: picked === 'loved' ? 'আপনার পাসপোর্টে এখন ৮টা জেলা' : 'অন্যরা আপনার অভিজ্ঞতা দেখতে পাবে'
+};
+}
+}
+</script>
+</body>
+</html>

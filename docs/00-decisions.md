@@ -1,0 +1,55 @@
+# 00 — Decision Log
+
+Every product/tech decision made during planning (Oct 2026), with the reason and what was rejected.
+**Do not reverse a decision here without the owner's explicit approval.** New decisions: append a row.
+
+## Product
+| # | Decision | Why | Rejected / deferred |
+|---|---|---|---|
+| P1 | Name **ShojaShapta (সোজাসাপ্টা)**, tagline "খাবার নিয়ে সোজাসাপ্টা কথা" | "সোজাসাপ্টা" = straightforward/honest — matches community-truth idea | — |
+| P2 | Scope = "বাংলাদেশে কোথায় কী খাবেন?", not only famous foods | Famous-only data runs out; local favorites (e.g. মিরপুরের চিকেন চাপ) keep data growing | Famous-food-only directory |
+| P3 | Core loop: search → eat → react → verify/correct → better data | The verification loop is the USP vs Google Maps / Foodpanda reviews | — |
+| P4 | Simplicity first: one search box, max 3 taps per action, buttons over typing | Owner requirement: never complicated | Separate search modes, 8 rating categories |
+| P5 | Data model: Food / Place / **Dish** (ratings live here, backend only) / **RegionalFame** (curated "famous for") | "Rating কাচ্চি" is meaningless; "Place X-এর কাচ্চি" is. Famous ≠ best | Rating foods or whole places |
+| P6 | Reactions 😋/😐/👎 only after "আমি খেয়েছি"; one per user per dish | Prevents voting without eating | Plain like/dislike |
+| P7 | Verification: ✅ ঠিক / ⚠️ আংশিক / ❌ ভুল + reason chips + optional evidence; ✏️ edit suggestions | Owner's original idea, structured | Free-text-only "false" comments |
+| P8 | Claims per type with freshness TTLs (price 30d, hours 30d, availability 60d, status/location 180d) | One "6 months" rule was arbitrary | Single global staleness |
+| P9 | Wording: "কমিউনিটির প্রিয়" not "সেরা"; "কমিউনিটি নিশ্চিত" not "Verified" | Honest and defensible | — |
+| P10 | Ranking: display ❤️ % ; sort by Wilson lower bound (😐 = not positive); low-count items stay visible with "এখনও পর্যাপ্ত অভিজ্ঞতা নেই" | 3/3 must not beat 950/1000; small new places still discoverable | Plain % sort; hiding < 5; recency weighting (MVP) |
+| P11 | Photos optional (encouraged), never mandatory | Lower contribution barrier | Mandatory photo |
+| P12 | Launch data: all 64 districts with curated RegionalFame; 10–15 districts with places | Empty districts kill first impressions; full 64 deep data is too much | 64 × 3–5 places at launch |
+| P13 | Gamification MVP-light: passport, stamps (incl. "আবিষ্কারক"), points. V1.5: levels, streak, weekly challenge, achievements | Owner wants people to come back; MVP-light reuses existing data | All gamification in V2; all of it in MVP |
+| P14 | Viewing/search/share never need login; Google login only when acting | Friction kills growth | Login wall |
+
+## Technology & cost
+| # | Decision | Why | Rejected / deferred |
+|---|---|---|---|
+| T1 | **MVP uses only free tiers and no credit card on any account** | Owner requirement; a quota hit must pause a service, never bill | Any paid service |
+| T2 | Next.js 16 (App Router) + TS strict + Tailwind 4 + shadcn/ui, PWA (installable, no offline in MVP) | Fast, SEO, owner knows Next/TS | Offline mode/Serwist in MVP (→ V1.5) |
+| T3 | Supabase Free: Postgres (+pg_trgm, unaccent, PostGIS) + Google Auth only | Free, SQL, RLS, auth included | Firebase |
+| T4 | **No phone OTP / SMS**, no Facebook login in MVP | SMS costs money; FB auth upkeep. Phone OTP → V2, Facebook → reconsider V1.5 | Twilio/BD SMS gateway |
+| T5 | Images: **Cloudinary Free (no card)**, browser-compressed WebP, 2 sizes (400/1080), originals never stored, max 2 per experience, daily limits | No overage billing without a card | **Cloudflare R2** (needs card; budget alerts don't cap spend), Supabase Storage (5 GB egress) as primary, Vercel image optimizer |
+| T6 | Hosting: Vercel Hobby while non-commercial; no Vercel-only APIs | Hobby forbids commercial use → move before ads/revenue | Building on Vercel KV/Blob/Edge Config |
+| T7 | Every vendor behind a port; SDKs only in `src/infrastructure/` (ESLint-enforced) | Owner wants to swap packages/services anytime | Direct `supabase.from()` in components |
+| T8 | All limits/thresholds in `src/config/app.config.ts` | Tunable without code changes | Hard-coded numbers |
+| T9 | No AI APIs, push, email flows, payments, cron in MVP | Cost + scope | — |
+| T10 | Supabase 7-day idle pause: restore manually during dev; no keep-alive cron for now | Avoid extra moving parts | GitHub Actions ping (add only if it becomes a problem) |
+
+## Design & UX
+| # | Decision | Why | Rejected |
+|---|---|---|---|
+| D1 | Skeleton-first loading on every page, identical layout, CLS = 0 | Owner requirement | Spinners |
+| D2 | Colors: grey ground, white cards, **indigo `#4F46E5` = actions**, **gold `#F59E0B` = rewards**, green/amber/red = status only | Owner approved; each color has one meaning | Green+turmeric "signboard" (A), photo-heavy white (B), black buttons + orange |
+| D3 | Fonts: Anek Bangla (headings/numbers) + Noto Sans Bengali (body) | Modern + most readable Bangla | Inter, Hind Siliguri |
+| D4 | Small rounded thumbnails, grouped list cards, floating bottom nav, bottom sheets | Clean, modern, info-first | Large hero photos |
+| D5 | Motion: CSS-only, subtle, meaningful (press, pop, toast, sheet, progress, stamp thump), reduced-motion respected | Modern feel without heavy libraries | Animation libraries, fade-up everywhere |
+| D6 | Passport stamps look like real round rubber stamps | Owner request | Square badges |
+| D7 | Approved screens live in `docs/design/` and win over prose when they differ | Single visual source of truth | — |
+| D8 | UI work always uses the `frontend-design` skill within this design system | Owner request | — |
+| D9 | Logo = **"কথার সিল"** (concept 6): seal + speech-bubble tail + dashed ring + bowl + gold straight line; assets in `brand/` | Combines honest talk, passport stamp and food; works at 20px | Concepts 1–5 and 7–11 (pin, plain stamp, bowl face, monogram, line bubble, rice bowl, scallop) |
+| D10 | Theming from day one: system/light/dark via `data-theme` + CSS token files + `src/config/themes.ts` registry; custom themes later = one CSS file + one registry entry; contrast auto-checked | Owner requirement; future custom themes without touching components | `dark:` class overrides, `next-themes` dependency, cookie-based SSR theme (would make pages dynamic) |
+| D11 | Logo is theme-aware: in-app always `<LogoMark />`/`<LogoLockup />` using `--logo-*` tokens; dark variant `#8B85FF` + `#FBBF24`; SVG favicon follows OS scheme | Logo must look right in every theme | Static `<img>` logos in the app |
+| T11 | Domain **shojashapta.com** (apex canonical, www → apex). The only paid item (registration) | Owner's choice | — |
+| T12 | CI/CD: GitHub Actions runs tests → migrations → `vercel deploy --prebuilt --prod`; Vercel git auto-deploy off; PR previews on dev DB; two Supabase projects (dev/prod) | Tests and migrations always run before code goes live; host-portable | Vercel automatic git deploys (no test/migration gate) |
+| T13 | Trunk-based git: one task per branch/PR, squash-merge, `phase-N` tags + releases | Small reviewable steps, easy rollback per phase | Long-lived develop branch |
+| T14 | Production live from Phase 0 behind `NEXT_PUBLIC_LAUNCHED=false` (coming-soon, noindex); public launch in Phase 9 | Real deploy pipeline exercised from day one without exposing unfinished app | Deploying only at the end |

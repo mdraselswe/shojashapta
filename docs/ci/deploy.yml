@@ -1,0 +1,41 @@
+# Installed in Phase 0.3 as .github/workflows/deploy.yml
+# Push to main: run the full CI, migrate PROD database, deploy to https://shojashapta.com, smoke test.
+name: Deploy production
+on:
+  push:
+    branches: [main]
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false   # never interrupt a running production deploy
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+  deploy:
+    needs: ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: { name: production, url: https://shojashapta.com }
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: pnpm }
+      - uses: supabase/setup-cli@v1
+      - name: Migrate PROD database (backward-compatible migrations only)
+        run: |
+          supabase link --project-ref "${{ secrets.SUPABASE_PROD_PROJECT_REF }}" -p "${{ secrets.SUPABASE_PROD_DB_PASSWORD }}"
+          supabase db push -p "${{ secrets.SUPABASE_PROD_DB_PASSWORD }}"
+        env: { SUPABASE_ACCESS_TOKEN: "${{ secrets.SUPABASE_ACCESS_TOKEN }}" }
+      - run: pnpm add -g vercel@latest
+      - run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+      - run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+      - run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Smoke test
+        run: |
+          for path in / /food/doi /api/health; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" "https://shojashapta.com$path")
+            echo "$path -> $code"; [ "$code" = "200" ] || exit 1
+          done

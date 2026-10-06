@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<title>সোজাসাপ্টা — হোম</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@500;600;700&amp;family=Noto+Sans+Bengali:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#4338CA}a:hover{color:#3730A3}
+.hd{font-family:'Anek Bangla',sans-serif}
+@keyframes ring{from{stroke-dashoffset:188.5}}
+.ring{animation:ring 1s cubic-bezier(.2,.8,.2,1) both}
+@media (prefers-reduced-motion:reduce){.ring{animation:none}}
+</style>
+</helmet>
+<div style="width:390px;height:1060px;box-sizing:border-box;background:#F6F6F8;color:#16161D;font-family:'Noto Sans Bengali',sans-serif;position:relative;overflow:hidden">
+
+<header style="padding:18px 20px 0;display:flex;justify-content:space-between;align-items:center">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="width:44px;height:44px;border-radius:22px;background:conic-gradient(#F59E0B 0 68%, #E8E8EE 68% 100%);display:flex;align-items:center;justify-content:center"><span class="hd" style="width:38px;height:38px;border-radius:19px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px">রা</span></span>
+<span><span style="display:block;font-size:13px;color:#5E5E6E">শুভ সন্ধ্যা</span><span class="hd" style="display:block;font-size:17px;font-weight:600;line-height:1.2">রাসেল</span></span>
+</div>
+<span style="display:flex;align-items:center;gap:6px;background:#FFFFFF;border:1px solid #E8E8EE;border-radius:20px;height:40px;padding:0 14px"><svg width="18" height="18" viewBox="0 0 24 24" fill="#F59E0B"><path d="M12 2c1 3.5 5 5.5 5 10.5A5 5 0 0 1 7 12.5C7 10 8.5 8.5 9 7c.5 2 1.5 3 2.5 3.5C11 7.5 11.5 4.5 12 2z"></path></svg><span class="hd" style="font-weight:700;font-size:16px">৫</span><span style="font-size:13px;color:#5E5E6E">দিনের ধারা</span></span>
+</header>
+
+<section style="padding:22px 20px 0">
+<h1 class="hd" style="margin:0 0 14px;font-size:30px;font-weight:700;line-height:1.25">আজ কী খাবেন?</h1>
+<label for="q" style="display:flex;align-items:center;gap:10px;background:#FFFFFF;border:1px solid #E8E8EE;border-radius:16px;padding:0 16px;height:56px;box-shadow:0 1px 2px rgba(22,22,29,0.04)">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5E5E6E" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
+<input id="q" placeholder="খাবার, জেলা বা দোকানের নাম" style="border:0;outline:0;flex:1;font:inherit;font-size:16px;color:#16161D;background:transparent">
+</label>
+</section>
+
+<section style="padding:16px 20px 0">
+<a href="C-Passport.dc.html" style="display:block;text-decoration:none;color:#16161D;background:#FFFFFF;border:1px solid #E8E8EE;border-radius:24px;padding:16px">
+<div style="display:flex;align-items:center;gap:14px">
+<span style="position:relative;flex:0 0 72px;height:72px">
+<svg width="72" height="72" viewBox="0 0 72 72"><circle cx="36" cy="36" r="30" fill="none" stroke="#F1F1F5" stroke-width="8"></circle><circle class="ring" cx="36" cy="36" r="30" fill="none" stroke="#F59E0B" stroke-width="8" stroke-linecap="round" stroke-dasharray="188.5" stroke-dashoffset="167.9" transform="rotate(-90 36 36)"></circle></svg>
+<span class="hd" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700">৭<span style="font-size:12px;color:#5E5E6E;font-weight:500">/৬৪</span></span>
+</span>
+<span style="flex:1;min-width:0"><span class="hd" style="display:block;font-size:18px;font-weight:600;line-height:1.3">খাদ্য পাসপোর্ট</span><span style="display:block;font-size:14px;color:#5E5E6E">৭টা জেলার স্ট্যাম্প পেয়েছেন</span></span>
+<span style="display:flex;flex:0 0 auto">
+<sc-for list="{{mini}}" as="m" hint-placeholder-count="3">
+<svg width="40" height="40" viewBox="0 0 40 40" style="{{m.style}}"><circle cx="20" cy="20" r="19" fill="#FFFFFF"></circle><circle cx="20" cy="20" r="17.5" fill="none" stroke="{{m.ink}}" stroke-width="2"></circle><circle cx="20" cy="20" r="14.5" fill="none" stroke="{{m.ink}}" stroke-width="0.8"></circle><text x="20" y="24.5" fill="{{m.ink}}" font-size="12" font-weight="700" text-anchor="middle" font-family="Anek Bangla">{{m.ch}}</text></svg>
+</sc-for>
+</span>
+</div>
+<div style="display:flex;align-items:center;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid #F0F0F4">
+<span style="flex:0 0 auto;width:40px;height:40px;border-radius:20px;border:2px dashed #D9D9E0;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A1A1AE" stroke-width="2.2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></span>
+<span style="flex:1;font-size:14px;line-height:1.5"><span style="display:block;color:#5E5E6E">পরের স্ট্যাম্প</span><b>টাঙ্গাইলের চমচম</b> চেখে খুলুন</span>
+<span style="flex:0 0 auto;height:36px;padding:0 14px;border-radius:18px;background:#4F46E5;color:#FFFFFF;font-size:14px;font-weight:600;display:flex;align-items:center">কোথায় পাবেন</span>
+</div>
+</a>
+</section>
+
+<section style="padding:12px 20px 0">
+<div style="display:flex;align-items:center;gap:12px;background:#FFF7E6;border-radius:18px;padding:12px 14px">
+<span style="flex:0 0 auto;width:40px;height:40px;border-radius:12px;background:#F59E0B;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16161D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"></path><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"></path></svg></span>
+<span style="flex:1"><span style="display:block;font-size:14px;font-weight:600;color:#92400E">এই সপ্তাহের চ্যালেঞ্জ</span><span style="display:block;font-size:14px;color:#4A4458">২টা নতুন খাবার চেখে দেখুন</span>
+<span style="display:flex;height:6px;border-radius:3px;background:#FDE7B8;margin-top:6px;overflow:hidden"><span style="width:50%;background:#F59E0B;border-radius:3px"></span></span></span>
+<span class="hd" style="font-weight:700;color:#92400E">১/২</span>
+</div>
+</section>
+
+<section style="padding:26px 20px 0">
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
+<h2 class="hd" style="margin:0;font-size:21px;font-weight:600">কমিউনিটির প্রিয়</h2>
+<a href="#" style="font-size:14px;font-weight:600;text-decoration:none">সব দেখুন</a>
+</div>
+<div style="background:#FFFFFF;border:1px solid #E8E8EE;border-radius:20px;padding:4px 14px">
+<a href="C-Food.dc.html" style="text-decoration:none;color:#16161D;display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid #F0F0F4"><span style="width:56px;height:56px;border-radius:14px;background:#F3E6CC"></span><span><span style="display:block;font-size:16px;font-weight:600">দই</span><span style="display:block;font-size:13px;color:#5E5E6E">[দোকানের নাম], বগুড়া</span></span><span style="background:#E9F8EF;color:#0E7A3D;border-radius:10px;padding:3px 9px;font-size:14px;font-weight:600">৯২%</span></a>
+<a href="#" style="text-decoration:none;color:#16161D;display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid #F0F0F4"><span style="width:56px;height:56px;border-radius:14px;background:#EAD7C4"></span><span><span style="display:block;font-size:16px;font-weight:600">কাচ্চি</span><span style="display:block;font-size:13px;color:#5E5E6E">[দোকানের নাম], পুরান ঢাকা</span></span><span style="background:#E9F8EF;color:#0E7A3D;border-radius:10px;padding:3px 9px;font-size:14px;font-weight:600">৮৮%</span></a>
+<a href="#" style="text-decoration:none;color:#16161D;display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:center;padding:10px 0"><span style="width:56px;height:56px;border-radius:14px;background:#F6E3E0"></span><span><span style="display:block;font-size:16px;font-weight:600">চমচম</span><span style="display:block;font-size:13px;color:#5E5E6E">[দোকানের নাম], টাঙ্গাইল</span></span><span style="background:#E9F8EF;color:#0E7A3D;border-radius:10px;padding:3px 9px;font-size:14px;font-weight:600">৯০%</span></a>
+</div>
+</section>
+
+<section style="padding:26px 0 0 20px">
+<h2 class="hd" style="margin:0 0 10px;font-size:21px;font-weight:600">জেলা ধরে খুঁজুন</h2>
+<div style="display:flex;gap:8px;overflow:hidden">
+<a href="#" style="flex:0 0 auto;text-decoration:none;color:#16161D;background:#FFFFFF;border:1px solid #E8E8EE;border-radius:14px;padding:8px 14px"><span style="display:block;font-weight:600;font-size:15px">বগুড়া</span><span style="font-size:13px;color:#5E5E6E">দই</span></a>
+<a href="#" style="flex:0 0 auto;text-decoration:none;color:#16161D;background:#FFFFFF;border:1px solid #E8E8EE;border-radius:14px;padding:8px 14px"><span style="display:block;font-weight:600;font-size:15px">কুমিল্লা</span><span style="font-size:13px;color:#5E5E6E">রসমালাই</span></a>
+<a href="#" style="flex:0 0 auto;text-decoration:none;color:#16161D;background:#FFFFFF;border:1px solid #E8E8EE;border-radius:14px;padding:8px 14px"><span style="display:block;font-weight:600;font-size:15px">নাটোর</span><span style="font-size:13px;color:#5E5E6E">কাঁচাগোল্লা</span></a>
+<a href="#" style="flex:0 0 auto;text-decoration:none;color:#16161D;background:#FFFFFF;border:1px solid #E8E8EE;border-radius:14px;padding:8px 14px"><span style="display:block;font-weight:600;font-size:15px">চট্টগ্রাম</span><span style="font-size:13px;color:#5E5E6E">মেজবানি</span></a>
+</div>
+</section>
+
+<nav aria-label="প্রধান মেনু" style="position:absolute;left:16px;right:16px;bottom:16px;height:66px;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px);border:1px solid #E8E8EE;border-radius:24px;box-shadow:0 8px 24px rgba(22,22,29,0.08);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:center;padding:0 6px">
+<a href="#" aria-current="page" style="text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:1px;color:#16161D;font-size:12px;font-weight:600"><svg width="22" height="22" viewBox="0 0 24 24" fill="#16161D"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"></path></svg>হোম</a>
+<a href="#" style="text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:1px;color:#5E5E6E;font-size:12px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>খুঁজুন</a>
+<a href="#" style="text-decoration:none;justify-self:center;display:flex;align-items:center;gap:6px;height:44px;padding:0 14px;border-radius:22px;background:#4F46E5;color:#FFFFFF;font-size:14px;font-weight:600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>যোগ</a>
+<a href="C-Passport.dc.html" style="text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:1px;color:#5E5E6E;font-size:12px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg>আমি</a>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1060}}'>
+class Component extends DCLogic {
+renderVals() {
+const mini = [['ঢা', '#BE185D', 8], ['রা', '#B45309', -6], ['ব', '#4F46E5', 5]].map(([ch, ink, r], i) => ({
+ch: ch, ink: ink,
+style: 'transform:rotate(' + r + 'deg);' + (i ? 'margin-left:-12px' : '')
+}));
+return { mini: mini };
+}
+}
+</script>
+</body>
+</html>

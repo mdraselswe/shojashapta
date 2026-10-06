@@ -1,0 +1,32 @@
+# Installed in Phase 0.3 as .github/workflows/preview.yml
+# Every PR: apply migrations to the DEV database, deploy a Vercel preview, print the URL.
+name: Preview
+on:
+  pull_request:
+concurrency:
+  group: preview-${{ github.head_ref }}
+  cancel-in-progress: true
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: pnpm }
+      - uses: supabase/setup-cli@v1
+      - name: Migrate DEV database
+        run: |
+          supabase link --project-ref "${{ secrets.SUPABASE_DEV_PROJECT_REF }}" -p "${{ secrets.SUPABASE_DEV_DB_PASSWORD }}"
+          supabase db push -p "${{ secrets.SUPABASE_DEV_DB_PASSWORD }}"
+        env: { SUPABASE_ACCESS_TOKEN: "${{ secrets.SUPABASE_ACCESS_TOKEN }}" }
+      - run: pnpm add -g vercel@latest
+      - run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+      - run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+      - id: deploy
+        run: echo "url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})" >> "$GITHUB_OUTPUT"
+      - run: echo "### Preview ready → ${{ steps.deploy.outputs.url }}" >> "$GITHUB_STEP_SUMMARY"

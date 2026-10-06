@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<title>আমার খাদ্য পাসপোর্ট</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@500;600;700&amp;family=Noto+Sans+Bengali:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#4338CA}a:hover{color:#3730A3}
+.hd{font-family:'Anek Bangla',sans-serif}
+@keyframes ring{from{stroke-dashoffset:276.5}}
+.ring{animation:ring 1s cubic-bezier(.2,.8,.2,1) both}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.bar{transform-origin:left;animation:grow .8s cubic-bezier(.2,.8,.2,1) both}
+@keyframes thump{0%{scale:1.5;opacity:0}60%{scale:0.96;opacity:1}100%{scale:1}}
+.stamp{animation:thump .45s cubic-bezier(.3,.7,.3,1) both}
+@media (prefers-reduced-motion:reduce){.ring,.bar,.stamp{animation:none}}
+</style>
+</helmet>
+<div style="width:390px;height:1300px;box-sizing:border-box;background:#F6F6F8;color:#16161D;font-family:'Noto Sans Bengali',sans-serif;position:relative;overflow:hidden">
+
+<header style="padding:18px 20px 0;display:flex;align-items:center;gap:12px">
+<span class="hd" style="width:48px;height:48px;border-radius:24px;background:#EEF0FF;color:#3730A3;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:19px">রা</span>
+<span style="flex:1"><span class="hd" style="display:block;font-size:20px;font-weight:700;line-height:1.2">রাসেল</span><span style="display:block;font-size:14px;color:#5E5E6E">লেভেল ৩ · খাদ্যপ্রেমী</span></span>
+<button aria-label="পাসপোর্ট শেয়ার করুন" style="height:44px;border-radius:22px;background:#4F46E5;border:0;color:#FFFFFF;padding:0 16px;font:inherit;font-size:15px;font-weight:600;display:flex;align-items:center;gap:6px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"></path></svg>শেয়ার</button>
+</header>
+
+<section style="padding:18px 20px 0">
+<div style="background:#FFFFFF;border:1px solid #E8E8EE;border-radius:24px;padding:18px;display:flex;gap:18px;align-items:center">
+<span style="position:relative;flex:0 0 108px;height:108px">
+<svg width="108" height="108" viewBox="0 0 108 108"><circle cx="54" cy="54" r="44" fill="none" stroke="#F1F1F5" stroke-width="12"></circle><circle class="ring" cx="54" cy="54" r="44" fill="none" stroke="#F59E0B" stroke-width="12" stroke-linecap="round" stroke-dasharray="276.5" stroke-dashoffset="246" transform="rotate(-90 54 54)"></circle></svg>
+<span style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><span class="hd" style="font-size:28px;font-weight:700;line-height:1">৭</span><span style="font-size:12px;color:#5E5E6E">৬৪ জেলার</span></span>
+</span>
+<span style="flex:1">
+<span class="hd" style="display:block;font-size:20px;font-weight:700;line-height:1.3">খাদ্য পাসপোর্ট</span>
+<span style="display:block;font-size:14px;color:#5E5E6E;line-height:1.6">৭টা জেলার বিখ্যাত খাবার চেখেছেন। পরের লক্ষ্য: ১০টা জেলা।</span>
+<span style="display:flex;height:6px;border-radius:3px;background:#F1F1F5;margin-top:10px;overflow:hidden"><span class="bar" style="width:70%;background:#F59E0B;border-radius:3px"></span></span>
+</span>
+</div>
+</section>
+
+<section style="padding:10px 20px 0">
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
+<div style="background:#FFFFFF;border:1px solid #E8E8EE;border-radius:18px;padding:12px"><span class="hd" style="display:block;font-size:22px;font-weight:700">৩৪০</span><span style="font-size:13px;color:#5E5E6E">পয়েন্ট</span></div>
+<div style="background:#FFFFFF;border:1px solid #E8E8EE;border-radius:18px;padding:12px"><span class="hd" style="display:block;font-size:22px;font-weight:700">২৩</span><span style="font-size:13px;color:#5E5E6E">খাবার খেয়েছেন</span></div>
+<div style="background:#FFFFFF;border:1px solid #E8E8EE;border-radius:18px;padding:12px"><span class="hd" style="display:block;font-size:22px;font-weight:700">৯</span><span style="font-size:13px;color:#5E5E6E">তথ্য নিশ্চিত</span></div>
+</div>
+</section>
+
+<section style="padding:24px 20px 0">
+<h2 class="hd" style="margin:0 0 10px;font-size:20px;font-weight:600">বিভাগ অনুযায়ী</h2>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+<sc-for list="{{divisions}}" as="dv" hint-placeholder-count="8">
+<div style="background:#FFFFFF;border:1px solid #E8E8EE;border-radius:16px;padding:12px">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:15px;font-weight:600">{{dv.name}}</span><span class="hd" style="font-size:14px;color:#5E5E6E">{{dv.count}}</span></div>
+<span style="display:flex;height:6px;border-radius:3px;background:#F1F1F5;margin-top:8px;overflow:hidden"><span class="bar" style="{{dv.bar}}"></span></span>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="padding:24px 20px 0">
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px"><h2 class="hd" style="margin:0;font-size:20px;font-weight:600">স্ট্যাম্প</h2><a href="#" style="font-size:14px;font-weight:600;text-decoration:none">সব ৬৪টা</a></div>
+<div style="background:#FFFFFF;border:1px solid #E8E8EE;border-radius:24px;padding:14px 8px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));row-gap:6px">
+<sc-for list="{{stamps}}" as="s" hint-placeholder-count="6">
+<div style="display:flex;flex-direction:column;align-items:center">
+<sc-if value="{{s.got}}" hint-placeholder-val="{{true}}">
+<svg class="stamp" width="104" height="104" viewBox="0 0 100 100" style="{{s.svgStyle}}" role="img" aria-label="{{s.aria}}">
+<defs>
+<filter id="{{s.fid}}" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="{{s.seed}}" result="n"></feTurbulence><feDisplacementMap in="SourceGraphic" in2="n" scale="1.8"></feDisplacementMap></filter>
+<path id="{{s.top}}" d="M17,50 A33,33 0 0,1 83,50"></path>
+<path id="{{s.bot}}" d="M11,50 A39,39 0 0,0 89,50"></path>
+</defs>
+<g filter="url(#{{s.fid}})" fill="none" stroke="{{s.ink}}">
+<circle cx="50" cy="50" r="47" stroke-width="3"></circle>
+<circle cx="50" cy="50" r="43" stroke-width="1"></circle>
+<circle cx="50" cy="50" r="25" stroke-width="1.5"></circle>
+<text fill="{{s.ink}}" stroke="none" font-size="9" font-weight="600" font-family="Noto Sans Bengali"><textPath href="#{{s.top}}" startOffset="50%" text-anchor="middle">সোজাসাপ্টা পাসপোর্ট</textPath></text>
+<text fill="{{s.ink}}" stroke="none" font-size="9.5" font-weight="600" font-family="Noto Sans Bengali"><textPath href="#{{s.bot}}" startOffset="50%" text-anchor="middle">{{s.food}}</textPath></text>
+<path d="M14 50l1.6-1.6 1.6 1.6-1.6 1.6zM83 50l1.6-1.6 1.6 1.6-1.6 1.6z" fill="{{s.ink}}" stroke="none"></path>
+<text x="50" y="54" fill="{{s.ink}}" stroke="none" font-size="12.5" font-weight="700" text-anchor="middle" font-family="Anek Bangla">{{s.name}}</text>
+<text x="50" y="66" fill="{{s.ink}}" stroke="none" font-size="7" text-anchor="middle" font-family="Noto Sans Bengali">{{s.date}}</text>
+</g>
+</svg>
+</sc-if>
+<sc-if value="{{s.locked}}" hint-placeholder-val="{{false}}">
+<span style="width:88px;height:88px;margin:8px;border-radius:44px;border:2px dashed #D9D9E0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#5E5E6E"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A1A1AE" stroke-width="2.2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg><span class="hd" style="font-size:14px;font-weight:600">{{s.name}}</span><span style="font-size:11px">{{s.food}}</span></span>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="padding:24px 20px 0">
+<h2 class="hd" style="margin:0 0 10px;font-size:20px;font-weight:600">পরের অর্জন</h2>
+<div style="background:#FFFFFF;border:1px solid #E8E8EE;border-radius:18px;padding:14px;display:flex;gap:12px;align-items:center">
+<span style="flex:0 0 auto;width:44px;height:44px;border-radius:14px;background:#EEF0FF;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4F46E5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z"></path><circle cx="12" cy="9" r="2.5"></circle></svg></span>
+<span style="flex:1"><span style="display:block;font-size:15px;font-weight:600">রাজশাহী বিভাগ জয়</span><span style="display:block;font-size:13px;color:#5E5E6E">এই বিভাগের ৮টা জেলার খাবার খান</span>
+<span style="display:flex;height:6px;border-radius:3px;background:#F1F1F5;margin-top:6px;overflow:hidden"><span class="bar" style="width:25%;background:#4F46E5;border-radius:3px"></span></span></span>
+<span class="hd" style="font-size:14px;color:#5E5E6E">২/৮</span>
+</div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1300}}'>
+class Component extends DCLogic {
+renderVals() {
+const bn = (n) => String(n).replace(/[0-9]/g, (c) => '০১২৩৪৫৬৭৮৯'[Number(c)]);
+const list = [['ঢাকা', 13, 3], ['চট্টগ্রাম', 11, 1], ['রাজশাহী', 8, 2], ['সিলেট', 4, 1], ['খুলনা', 10, 0], ['বরিশাল', 6, 0], ['রংপুর', 8, 0], ['ময়মনসিংহ', 4, 0]];
+const divisions = list.map(([name, total, got]) => ({
+name: name,
+count: bn(got) + '/' + bn(total),
+bar: 'display:block;width:' + Math.round((got / total) * 100) + '%;background:#F59E0B;border-radius:3px'
+}));
+const st = [
+['বগুড়া', 'দই', '১২ সেপ্টেম্বর ২০২৬', '#4F46E5', -8],
+['সিলেট', 'সাতকড়া মাংস', '২ সেপ্টেম্বর ২০২৬', '#0E7A3D', 6],
+['রাজশাহী', 'কালাই রুটি', '২৮ আগস্ট ২০২৬', '#B45309', -4],
+['ঢাকা', 'কাচ্চি', '১৫ আগস্ট ২০২৬', '#BE185D', 9],
+['টাঙ্গাইল', 'চমচম', '', '', 0],
+['কুমিল্লা', 'রসমালাই', '', '', 0]
+];
+const stamps = st.map(([name, food, date, ink, rot], i) => ({
+name: name, food: food, date: date, ink: ink,
+got: !!ink, locked: !ink,
+fid: 'rough' + i, top: 'top' + i, bot: 'bot' + i, seed: String(i + 3),
+aria: name + ' — ' + food + ' স্ট্যাম্প',
+svgStyle: 'transform:rotate(' + rot + 'deg);opacity:0.92;animation-delay:' + (i * 90) + 'ms'
+}));
+return { divisions: divisions, stamps: stamps };
+}
+}
+</script>
+</body>
+</html>
