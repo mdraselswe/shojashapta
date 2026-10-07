@@ -1,0 +1,93 @@
+/* Dark theme. The media block repeats the same values for visitors who follow the OS (no data-theme);
+   pnpm test:themes checks the two blocks stay identical. */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #0f0f14;
+  --card: #1a1a22;
+  --foreground: #f2f2f7;
+  --muted-foreground: #a1a1ae;
+  --border: #2a2a35;
+  --divider: #22222b;
+  --muted: #24242e;
+  --primary: #4f46e5;
+  --primary-foreground: #ffffff;
+  --primary-text: #a5a0ff;
+  --primary-soft: rgb(79 70 229 / 0.18);
+  --primary-soft-fg: #c7c4ff;
+  --reward: #fbbf24;
+  --reward-foreground: #16161d;
+  --reward-soft: rgb(245 158 11 / 0.14);
+  --reward-soft-fg: #fcd34d;
+  --success: #22c55e;
+  --success-soft: rgb(34 197 94 / 0.14);
+  --success-fg: #4ade80;
+  --warning: #f5a524;
+  --warning-soft: rgb(245 165 36 / 0.14);
+  --warning-fg: #fbbf24;
+  --danger: #f05252;
+  --danger-soft: rgb(240 82 82 / 0.14);
+  --danger-fg: #ff8a8a;
+  --stale: #24242e;
+  --stale-fg: #c9c9d4;
+  --toast: #2e2e3a;
+  --toast-fg: #ffffff;
+  --scrim: rgb(0 0 0 / 0.6);
+  --skeleton: #24242e;
+  --skeleton-highlight: rgb(255 255 255 / 0.06);
+  --shadow-float: 0 8px 24px rgb(0 0 0 / 0.45);
+  --logo-mark: #8b85ff;
+  --logo-accent: #fbbf24;
+  --logo-text: #f2f2f7;
+  --logo-subtext: #a1a1ae;
+  --stamp-1: #8b85ff;
+  --stamp-2: #4ade80;
+  --stamp-3: #f59e0b;
+  --stamp-4: #f472b6;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --background: #0f0f14;
+    --card: #1a1a22;
+    --foreground: #f2f2f7;
+    --muted-foreground: #a1a1ae;
+    --border: #2a2a35;
+    --divider: #22222b;
+    --muted: #24242e;
+    --primary: #4f46e5;
+    --primary-foreground: #ffffff;
+    --primary-text: #a5a0ff;
+    --primary-soft: rgb(79 70 229 / 0.18);
+    --primary-soft-fg: #c7c4ff;
+    --reward: #fbbf24;
+    --reward-foreground: #16161d;
+    --reward-soft: rgb(245 158 11 / 0.14);
+    --reward-soft-fg: #fcd34d;
+    --success: #22c55e;
+    --success-soft: rgb(34 197 94 / 0.14);
+    --success-fg: #4ade80;
+    --warning: #f5a524;
+    --warning-soft: rgb(245 165 36 / 0.14);
+    --warning-fg: #fbbf24;
+    --danger: #f05252;
+    --danger-soft: rgb(240 82 82 / 0.14);
+    --danger-fg: #ff8a8a;
+    --stale: #24242e;
+    --stale-fg: #c9c9d4;
+    --toast: #2e2e3a;
+    --toast-fg: #ffffff;
+    --scrim: rgb(0 0 0 / 0.6);
+    --skeleton: #24242e;
+    --skeleton-highlight: rgb(255 255 255 / 0.06);
+    --shadow-float: 0 8px 24px rgb(0 0 0 / 0.45);
+    --logo-mark: #8b85ff;
+    --logo-accent: #fbbf24;
+    --logo-text: #f2f2f7;
+    --logo-subtext: #a1a1ae;
+    --stamp-1: #8b85ff;
+    --stamp-2: #4ade80;
+    --stamp-3: #f59e0b;
+    --stamp-4: #f472b6;
+  }
+}
