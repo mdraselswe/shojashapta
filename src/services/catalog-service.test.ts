@@ -114,3 +114,36 @@ describe("catalogService place page", () => {
     ]);
   });
 });
+
+describe("catalogService district pages", () => {
+  it("returns null for an unknown district", async () => {
+    expect(await service().districtHeader("nowhere")).toBeNull();
+    expect(await service().districtFood("nowhere", "doi")).toBeNull();
+    expect(await service().districtFood("bogura", "nothing")).toBeNull();
+  });
+
+  it("builds the header with the curated famous foods", async () => {
+    const header = await service().districtHeader("bogura");
+    expect(header?.divisionBn).toBe("রাজশাহী");
+    expect(header?.famous.map((entry) => entry.food.slug)).toEqual(["doi"]);
+  });
+
+  it("lists the district's places", async () => {
+    const header = await service().districtHeader("bogura");
+    const { items } = await service().districtPlaces(header?.id ?? 0);
+    expect(items.map((place) => place.slug).sort()).toEqual([
+      "sample-place",
+      "second-sample-place",
+    ]);
+  });
+
+  it("shows only dishes of that food inside that district", async () => {
+    const page = await service().districtFood("bogura", "doi");
+    expect(page?.dishes.items.map((dish) => dish.place.slug)).toEqual([
+      "sample-place",
+      "second-sample-place",
+    ]);
+    const elsewhere = await service().districtFood("dhaka", "doi");
+    expect(elsewhere?.dishes.items).toEqual([]);
+  });
+});

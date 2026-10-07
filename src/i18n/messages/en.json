@@ -23,6 +23,11 @@
     "search": "Search",
     "home": "Go home"
   },
+  "errorPage": {
+    "title": "Something went wrong",
+    "body": "The page could not be shown. Try again, or go back home.",
+    "code": "Error code: {digest}"
+  },
   "errors": {
     "validation": "Some details aren't right. Check them and submit again.",
     "auth_required": "Sign in with Google to continue.",
@@ -109,6 +114,15 @@
     "map": "See on map",
     "moreIn": "More places in {district}",
     "newTab": "Opens in a new tab"
+  },
+  "district": {
+    "famous": "Famous for",
+    "places": "Places here",
+    "noPlaces": "No places have been added in this district yet.",
+    "titleFood": "{food} in {district}",
+    "allCountry": "See {food} across the country",
+    "noDishes": "Nobody has said yet where to find good {food} in {district}.",
+    "placeCount": "{count} places"
   },
   "claim": {
     "types": {

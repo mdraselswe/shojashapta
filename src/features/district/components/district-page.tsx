@@ -1,0 +1,36 @@
+import { Suspense } from "react";
+
+import { PageShell } from "@/components/layout/page-shell";
+import { SubPageBar } from "@/components/layout/sub-page-bar";
+import { LoadingRegion } from "@/components/ui/skeleton";
+import { routes } from "@/config/routes";
+import { getT } from "@/i18n/server";
+import type { DistrictHeader } from "@/services/catalog-service";
+
+import { DistrictFamousSection } from "./district-famous-section";
+import { DistrictHero, DistrictHeroSkeleton } from "./district-hero";
+import { DistrictPlacesSection, DistrictPlacesSectionSkeleton } from "./district-places-section";
+
+export function DistrictPage({ district }: { district: DistrictHeader }) {
+  return (
+    <PageShell header={<SubPageBar backHref={routes.home()} />}>
+      <DistrictHero district={district} />
+      <DistrictFamousSection district={district} />
+      <Suspense fallback={<DistrictPlacesSectionSkeleton />}>
+        <DistrictPlacesSection districtId={district.id} />
+      </Suspense>
+    </PageShell>
+  );
+}
+
+export function DistrictPageSkeleton() {
+  const t = getT();
+  return (
+    <LoadingRegion label={t("common.loading")}>
+      <PageShell header={<SubPageBar backHref={routes.home()} />}>
+        <DistrictHeroSkeleton />
+        <DistrictPlacesSectionSkeleton />
+      </PageShell>
+    </LoadingRegion>
+  );
+}

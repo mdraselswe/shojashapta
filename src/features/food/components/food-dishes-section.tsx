@@ -4,7 +4,7 @@ import { routes } from "@/config/routes";
 import { DishRow, DishRowSkeleton } from "@/features/dish/components/dish-row";
 import { getT } from "@/i18n/server";
 import { formatPriceRange } from "@/lib/format/number";
-import type { DishRow as DishRowData } from "@/services/catalog-service";
+import type { DishRow as DishRowData, FoodDishes } from "@/services/catalog-service";
 
 import { getFoodDishes } from "../queries";
 
@@ -14,18 +14,24 @@ function placeContext(place: { areaNameBn: string | null; districtNameBn: string
   return [place.areaNameBn, place.districtNameBn].filter(Boolean).join(", ");
 }
 
-export async function FoodDishesSection({ foodId }: { foodId: string }) {
+/** Ranked places first, then the ones with too few experiences to rank. */
+export function DishGroups({
+  items,
+  priceRange,
+  emptyText,
+}: {
+  items: DishRowData[];
+  priceRange: FoodDishes["priceRange"];
+  emptyText: string;
+}) {
   const t = getT();
-  const { items, priceRange } = await getFoodDishes(foodId);
-
   if (items.length === 0) {
     return (
       <Section title={t("food.dishesAll")}>
-        <p className="text-meta text-muted-foreground">{t("food.noDishes")}</p>
+        <p className="text-meta text-muted-foreground">{emptyText}</p>
       </Section>
     );
   }
-
   const ranked = items.filter((dish) => dish.display.rankable);
   const unranked = items.filter((dish) => !dish.display.rankable);
   const range = formatPriceRange(priceRange.min, priceRange.max);
@@ -61,6 +67,12 @@ export async function FoodDishesSection({ foodId }: { foodId: string }) {
       ) : null}
     </>
   );
+}
+
+export async function FoodDishesSection({ foodId }: { foodId: string }) {
+  const t = getT();
+  const { items, priceRange } = await getFoodDishes(foodId);
+  return <DishGroups items={items} priceRange={priceRange} emptyText={t("food.noDishes")} />;
 }
 
 export function FoodDishesSectionSkeleton() {
