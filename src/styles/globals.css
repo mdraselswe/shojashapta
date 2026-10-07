@@ -2,6 +2,8 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@import "./fonts.css";
+
 /* Themes: each file sets every token (docs/06-design-system.md §2–2b). Register new ones in src/config/themes.ts. */
 @import "./themes/light.css";
 @import "./themes/dark.css";
@@ -69,9 +71,9 @@
   --color-input: var(--border);
   --color-ring: var(--primary);
 
-  /* Fonts come only from src/config/fonts.ts (next/font variables). */
-  --font-sans: var(--font-noto), system-ui, sans-serif;
-  --font-display: var(--font-anek), var(--font-noto), system-ui, sans-serif;
+  /* Faces: src/styles/fonts.css (self-hosted, see src/config/fonts.ts). */
+  --font-sans: "SS Noto Sans Bengali", "Noto Sans Bengali", "Nirmala UI", system-ui, sans-serif;
+  --font-display: "SS Anek Bangla", "SS Noto Sans Bengali", system-ui, sans-serif;
   --font-heading: var(--font-display);
 
   /* Shape (§5): chips are rounded-full; the rest use these. */

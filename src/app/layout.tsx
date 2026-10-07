@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
+import { preload } from "react-dom";
 
 import { ThemeScript } from "@/components/theme/theme-script";
 import { LazyToaster } from "@/components/ui/lazy-toaster";
-import { fontBody, fontDisplay } from "@/config/fonts";
+import { FONT_PRELOADS } from "@/config/fonts";
 import { siteConfig } from "@/config/site";
 import { themes } from "@/config/themes";
-import { cn } from "@/lib/cn";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
@@ -30,13 +30,13 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
+  for (const href of FONT_PRELOADS) {
+    preload(href, { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
+  }
+
   return (
     // data-theme is set before paint by <ThemeScript />, so the server markup legitimately differs.
-    <html
-      lang="bn"
-      suppressHydrationWarning
-      className={cn(fontDisplay.variable, fontBody.variable)}
-    >
+    <html lang="bn" suppressHydrationWarning>
       <head>
         <ThemeScript />
       </head>
