@@ -98,6 +98,13 @@ export const appConfig = {
     minPlacesToIndexDistrict: 1,
   },
 
+  ui: {
+    /** Show a loading skeleton only if loading takes longer than this (avoids flicker; docs/05 §6). */
+    skeletonDelayMs: 150,
+    /** Widths below this are "mobile" for useIsMobile() — matches Tailwind `md`. */
+    mobileBreakpointPx: 768,
+  },
+
   launch: {
     /** How long a founding contributor's `/?preview=<secret>` access lasts before they need the link again. */
     previewCookieMaxAgeDays: 30,

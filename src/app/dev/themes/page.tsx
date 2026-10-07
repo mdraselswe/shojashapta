@@ -5,6 +5,9 @@ import { notFound } from "next/navigation";
 import { LogoLockup, LogoMark } from "@/components/brand/logo";
 import { ThemePreferenceControl } from "@/components/theme/theme-preference-control";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { EmptyState } from "@/components/layout/empty-state";
+import { ErrorState } from "@/components/layout/error-state";
+import { Section } from "@/components/layout/section";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { serverEnv } from "@/config/env";
+import { routes } from "@/config/routes";
 import { THEME_IDS, themes } from "@/config/themes";
 
 import { InteractiveSamples } from "./interactive-samples";
@@ -189,6 +193,32 @@ export default function ThemesPage() {
                 </div>
               ))}
             </div>
+
+            <Section
+              title="বগুড়ায় আরও যা জনপ্রিয়"
+              action={
+                <Button variant="link" size="sm">
+                  সব দেখুন
+                </Button>
+              }
+              className="px-0 pt-0"
+            >
+              <EmptyState
+                message="কোথায় ভালো পাওয়া যায়, এখনও কেউ জানায়নি।"
+                action={{ label: "প্রথম জানান", href: routes.add() }}
+                rewardPoints={20}
+              />
+            </Section>
+
+            <ErrorState
+              title="তথ্য আনা যায়নি।"
+              description="ইন্টারনেট সংযোগ দেখে আবার চেষ্টা করুন।"
+              action={
+                <Button variant="outline" size="sm">
+                  আবার চেষ্টা করুন
+                </Button>
+              }
+            />
 
             <div className="flex flex-col gap-2" aria-busy>
               <div className="h-5 w-2/3 skeleton-shimmer rounded-lg" />

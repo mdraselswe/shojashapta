@@ -164,3 +164,8 @@ export function serverEnv(): ServerEnv {
   cachedServerEnv ??= parseServerEnv(process.env);
   return cachedServerEnv;
 }
+
+/** True on the server (and in Node scripts/tests). */
+export const isServer = typeof window === "undefined";
+/** `next dev` (not `next start`, not tests in CI builds). */
+export const isDev = process.env.NODE_ENV === "development";

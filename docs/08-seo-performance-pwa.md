@@ -45,17 +45,22 @@ Bangla, ❤️ %, district, ShojaShapta logo. Load the Bangla font file explicit
 ## 2. Performance budgets (fail CI if exceeded)
 | Metric (mobile, Slow 4G profile) | Budget |
 |---|---|
-| LCP | < 2.5 s (aim < 1.8 s) |
+| LCP | ≤ 3.5 s in CI (aim < 2.5 s) — decision T15 |
 | INP | < 200 ms |
 | CLS | < 0.1 (aim 0) |
 | First-load JS per route | < 100 KB gzip (home, food, place, district) |
-| Lighthouse Performance / SEO / Accessibility / Best Practices | ≥ 95 |
+| Lighthouse Performance | ≥ 85 in CI (aim ≥ 95) — decision T15 |
+| Lighthouse SEO / Accessibility / Best Practices | ≥ 95 |
 | Thumbnail weight | ≤ 30 KB; large ≤ 150 KB |
+
+Why LCP/Performance are looser (T15, Oct 2026): on Lighthouse's simulated Slow 4G the Next.js app shell
+alone scores LCP ≈ 2.45 s with **no** web fonts; the designed Bangla fonts (Anek + Noto, 44–57 KB per weight)
+add ~1 s. We keep the design and treat 2.5 s / 95 as targets; Phase 8.5 tries to tighten the CI budget again.
 
 ### How we hit them
 - Server Components + streaming; client components only at leaves.
 - Cached data reads (`'use cache'` + tags); pre-render 64 districts and popular foods at build.
-- `next/font` self-hosted, `display: swap`, only needed subsets.
+- Self-hosted static font files (decision D12), `display: swap`, `unicode-range` per subset, only 2 preloads.
 - Images: pre-compressed WebP, correct `sizes`, lazy except LCP, dominant-color placeholder.
 - No map/animation/chart libraries in MVP. Icons tree-shaken.
 - Prefetch: Next `<Link>` default prefetch for visible links; disable for long lists (`prefetch={false}`).
