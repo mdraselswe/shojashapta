@@ -3,10 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint .",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:themes": "vitest run scripts/check-themes.ts --passWithNoTests",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:start": "supabase start",
+    "db:migrate": "supabase migration up",
+    "db:types": "supabase gen types typescript --local > src/infrastructure/supabase/database.types.ts",
+    "db:seed": "tsx scripts/seed.ts",
+    "analyze": "ANALYZE=true next build --webpack",
+    "prepare": "husky"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.7",
@@ -49,5 +61,12 @@
     "typescript": "5.9.3",
     "vitest": "5.0.3"
   },
-  "packageManager": "pnpm@11.18.0"
+  "packageManager": "pnpm@11.18.0",
+  "lint-staged": {
+    "*.{ts,tsx,mts,mjs,js}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,css,md,yml,yaml}": "prettier --write"
+  }
 }
