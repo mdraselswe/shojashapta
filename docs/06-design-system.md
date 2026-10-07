@@ -114,28 +114,21 @@ reward-foreground/reward, *-soft-fg/*-soft, logo-mark/background (≥ 3:1).
 
 ## 3. Fonts — perfect Bangla + English
 
-```ts
-// src/config/fonts.ts — the ONLY place fonts are defined (swap here)
-import { Anek_Bangla, Noto_Sans_Bengali } from 'next/font/google';
+Self-hosted **static per-weight files** (decision D12), not `next/font/google`:
+- `public/fonts/<font>-<weight>-<bengali|latin>.woff2` (SIL OFL 1.1, licenses alongside).
+- `src/styles/fonts.css` — one `@font-face` per weight × subset with `unicode-range`, `font-display: swap`,
+  families `"SS Anek Bangla"` / `"SS Noto Sans Bengali"`.
+- `src/styles/globals.css` — `--font-sans` (Noto stack) and `--font-display` (Anek stack) in `@theme`.
+- `src/config/fonts.ts` — `FONT_PRELOADS`: only Noto 400 + Anek 700 (Bengali) are preloaded by the root layout.
 
-export const fontDisplay = Anek_Bangla({          // headings, numbers, badges
-  subsets: ['bengali', 'latin'], weight: ['500', '600', '700'],
-  display: 'swap', variable: '--font-display',
-});
-export const fontBody = Noto_Sans_Bengali({       // body text, UI labels, inputs
-  subsets: ['bengali', 'latin'], weight: ['400', '500', '600'],
-  display: 'swap', variable: '--font-body',
-});
-```
-```css
-@theme {
-  --font-sans: var(--font-body), system-ui, sans-serif;
-  --font-display: var(--font-display), var(--font-body), sans-serif;
-}
-```
+Why: with several weights `next/font/google` serves one variable file per family (Anek 156 KB, Noto 108 KB)
+and preloads whole families — ~260 KB on the critical path, mobile LCP over the 2.5 s budget. Static files
+are 44–57 KB each and a page downloads only the weights it uses. Changing a font file? Give it a new name
+(`/fonts/*` is cached immutably).
+
 - Anek Bangla: modern geometric Bangla, great for headings and large Bangla digits (৯২%, ৭/৬৪).
 - Noto Sans Bengali: most complete conjunct (যুক্তাক্ষর) coverage, very readable at 14–16px.
-- Only weights listed above are loaded. Self-hosted by `next/font` (no runtime Google request, no CLS).
+- Only the weights above exist (Anek 500/600/700, Noto 400/500/600). No runtime Google request.
 - No letter-spacing on Bangla. Never weight < 400. Body line-height 1.7, headings 1.15–1.3.
 - Bangla digits in UI via `formatNumber()` (`Intl.NumberFormat('bn-BD')`); currency `৳২৫০–৳৩৮০`.
 

@@ -44,6 +44,29 @@ const eslintConfig = defineConfig([
     },
   },
   {
+    // Design tokens only (AGENTS.md §5): colors follow the theme, so no `dark:` classes and no raw colors.
+    files: ["src/**/*.tsx"],
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        ...["Literal", "TemplateElement"].flatMap((node) => {
+          const value = node === "Literal" ? "value" : "value.raw";
+          return [
+            {
+              selector: `${node}[${value}=/(^|[\\s:])dark:/]`,
+              message: "No `dark:` classes: use token utilities (bg-card, text-primary-text…).",
+            },
+            {
+              selector: `${node}[${value}=/(#[0-9a-fA-F]{3,8}\\b|\\b(rgb|rgba|hsl|hsla|oklch)\\()/]`,
+              message:
+                "No raw colors in components: use design tokens (docs/06-design-system.md §2).",
+            },
+          ];
+        }),
+      ],
+    },
+  },
+  {
     // Repeats the patterns above: a later block replaces the whole rule for matching files.
     files: ["src/services/**", "src/core/**", "src/lib/**"],
     rules: {
