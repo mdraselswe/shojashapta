@@ -110,10 +110,17 @@ export const appConfig = {
   seo: {
     /** District pages with fewer places are noindex (thin content). */
     minPlacesToIndexDistrict: 1,
-    /** Food pages prerendered at build (most experienced first); the rest render on first visit. */
-    staticFoodCount: 50,
-    /** Place pages prerendered at build; the rest render on first visit. */
-    staticPlaceCount: 50,
+    // Every prerendered page is several files that Vercel uploads on each deploy (the free plan
+    // allows 5000 uploads a day), so only a small head start is built; the rest renders on the
+    // first visit and is cached.
+    /** Food pages prerendered at build (most experienced first). */
+    staticFoodCount: 10,
+    /** Place pages prerendered at build. */
+    staticPlaceCount: 10,
+    /** District pages prerendered at build (districts with a curated famous food come first). */
+    staticDistrictCount: 12,
+    /** District × food pages prerendered at build (the first curated pairs). */
+    staticDistrictFoodCount: 12,
   },
 
   ui: {
