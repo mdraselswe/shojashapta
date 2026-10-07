@@ -191,6 +191,7 @@ export type Database = {
           experience_count: number | null;
           food_id: string;
           id: string;
+          is_seed: boolean;
           last_experience_at: string | null;
           loved_count: number;
           okay_count: number;
@@ -208,6 +209,7 @@ export type Database = {
           experience_count?: never;
           food_id: string;
           id?: string;
+          is_seed?: boolean;
           last_experience_at?: string | null;
           loved_count?: number;
           okay_count?: number;
@@ -225,6 +227,7 @@ export type Database = {
           experience_count?: never;
           food_id?: string;
           id?: string;
+          is_seed?: boolean;
           last_experience_at?: string | null;
           loved_count?: number;
           okay_count?: number;
@@ -434,6 +437,7 @@ export type Database = {
           created_by: string | null;
           experience_count: number;
           id: string;
+          is_seed: boolean;
           loved_count: number;
           name_bn: string;
           name_en: string | null;
@@ -449,6 +453,7 @@ export type Database = {
           created_by?: string | null;
           experience_count?: number;
           id?: string;
+          is_seed?: boolean;
           loved_count?: number;
           name_bn: string;
           name_en?: string | null;
@@ -464,6 +469,7 @@ export type Database = {
           created_by?: string | null;
           experience_count?: number;
           id?: string;
+          is_seed?: boolean;
           loved_count?: number;
           name_bn?: string;
           name_en?: string | null;
@@ -554,6 +560,7 @@ export type Database = {
           created_by: string | null;
           district_id: number;
           id: string;
+          is_seed: boolean;
           location: unknown;
           merged_into: string | null;
           name_bn: string;
@@ -575,6 +582,7 @@ export type Database = {
           created_by?: string | null;
           district_id: number;
           id?: string;
+          is_seed?: boolean;
           location?: unknown;
           merged_into?: string | null;
           name_bn: string;
@@ -596,6 +604,7 @@ export type Database = {
           created_by?: string | null;
           district_id?: number;
           id?: string;
+          is_seed?: boolean;
           location?: unknown;
           merged_into?: string | null;
           name_bn?: string;
@@ -713,6 +722,7 @@ export type Database = {
           district_id: number;
           food_id: string;
           id: number;
+          is_seed: boolean;
           note_bn: string | null;
           sort_order: number;
           source_url: string | null;
@@ -722,6 +732,7 @@ export type Database = {
           district_id: number;
           food_id: string;
           id?: number;
+          is_seed?: boolean;
           note_bn?: string | null;
           sort_order?: number;
           source_url?: string | null;
@@ -731,6 +742,7 @@ export type Database = {
           district_id?: number;
           food_id?: string;
           id?: number;
+          is_seed?: boolean;
           note_bn?: string | null;
           sort_order?: number;
           source_url?: string | null;
@@ -895,6 +907,7 @@ export type Database = {
       };
       is_active_user: { Args: Record<PropertyKey, never>; Returns: boolean };
       is_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
+      purge_seed_data: { Args: { p_keep_used?: boolean }; Returns: Json };
       refresh_dish_stats: { Args: { p_dish: string }; Returns: undefined };
       search_all: {
         Args: { lim?: number; q_key: string; q_text: string };
