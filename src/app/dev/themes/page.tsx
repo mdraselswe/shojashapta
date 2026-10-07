@@ -221,8 +221,8 @@ export default function ThemesPage() {
             />
 
             <div className="flex flex-col gap-2" aria-busy>
-              <div className="h-5 w-2/3 skeleton-shimmer rounded-lg" />
-              <div className="h-14 skeleton-shimmer rounded-card" />
+              <div className="skeleton-shimmer h-5 w-2/3 rounded-lg" />
+              <div className="skeleton-shimmer h-14 rounded-card" />
             </div>
           </section>
         ))}
