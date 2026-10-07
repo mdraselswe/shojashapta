@@ -1,4 +1,4 @@
-import { ChevronRightIcon } from "lucide-react";
+import { ChevronRightIcon, ExternalLinkIcon } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -63,37 +63,56 @@ type ListRowProps = {
   leading: ReactNode;
   title: ReactNode;
   meta: ReactNode;
-  /** Right side; defaults to a chevron. */
+  /** Right side; defaults to a chevron (an external-link icon when `external`). */
   trailing?: ReactNode;
+  /** Opens another site in a new tab. */
+  external?: boolean;
 };
 
-export function ListRow({ href, leading, title, meta, trailing }: ListRowProps) {
+export function ListRow({ href, leading, title, meta, trailing, external }: ListRowProps) {
+  const Icon = external ? ExternalLinkIcon : ChevronRightIcon;
+  const className = cn(ROW_CLASS, "press hover:bg-muted/50");
+  const body = (
+    <ListRowBody
+      leading={leading}
+      title={title}
+      meta={meta}
+      trailing={trailing ?? <Icon className="size-5 shrink-0 text-muted-foreground" aria-hidden />}
+    />
+  );
   return (
     <li>
-      <Link href={href} className={cn(ROW_CLASS, "press hover:bg-muted/50")}>
-        <ListRowBody
-          leading={leading}
-          title={title}
-          meta={meta}
-          trailing={
-            trailing ?? (
-              <ChevronRightIcon className="size-5 shrink-0 text-muted-foreground" aria-hidden />
-            )
-          }
-        />
-      </Link>
+      {external ? (
+        <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
+          {body}
+        </a>
+      ) : (
+        <Link href={href} className={className}>
+          {body}
+        </Link>
+      )}
     </li>
   );
 }
 
-export function ListRowSkeleton({ hasTrailing = true }: { hasTrailing?: boolean }) {
+export function ListRowSkeleton({
+  hasTrailing = true,
+  trailing,
+}: {
+  hasTrailing?: boolean;
+  /** Custom right-hand placeholder (e.g. a pill); replaces the default chevron-sized dot. */
+  trailing?: ReactNode;
+}) {
   return (
     <li className={ROW_CLASS}>
       <ListRowBody
         leading={<Skeleton className="size-11 shrink-0 rounded-thumb" />}
         title={<SkeletonText className="w-2/3" />}
         meta={<SkeletonText className="w-1/2" />}
-        trailing={hasTrailing ? <Skeleton className="size-5 shrink-0 rounded-full" /> : undefined}
+        trailing={
+          trailing ??
+          (hasTrailing ? <Skeleton className="size-5 shrink-0 rounded-full" /> : undefined)
+        }
       />
     </li>
   );

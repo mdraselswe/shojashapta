@@ -3,7 +3,8 @@
     "loading": "Loading…",
     "close": "Close",
     "retry": "Try again",
-    "seeAll": "See all"
+    "seeAll": "See all",
+    "back": "Go back"
   },
   "nav": {
     "label": "Main menu",
@@ -15,6 +16,12 @@
   "comingSoon": {
     "title": "Coming soon",
     "body": "Where to eat what in Bangladesh, told by real community experience. Coming soon."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "The link may be wrong, or the page was removed. Try searching.",
+    "search": "Search",
+    "home": "Go home"
   },
   "errors": {
     "validation": "Some details aren't right. Check them and submit again.",
@@ -35,7 +42,6 @@
     "divisionOf": "{name} division"
   },
   "search": {
-    "back": "Go back",
     "clear": "Clear",
     "label": "Search",
     "prompt": "Type a food, district or shop name",
@@ -76,5 +82,51 @@
     "bakery": "Bakery",
     "home_kitchen": "Home kitchen",
     "other": "Other"
+  },
+  "food": {
+    "dishesRanked": "Community favorite places",
+    "dishesAll": "Where to find it",
+    "typicalPrice": "Usual price {range}",
+    "experienceCount": "{count} people ate it",
+    "liked": "{percent} liked it",
+    "noExperiences": "Nobody has shared an experience yet",
+    "famousIn": "Famous in {district}",
+    "newGroup": "Not enough experiences yet",
+    "noDishes": "Nobody has said where to find this yet.",
+    "voices": "What people say"
+  },
+  "dish": {
+    "new": "New",
+    "favorite": "Community favorite",
+    "people": "{count} people",
+    "likedLabel": "{percent} liked it"
+  },
+  "place": {
+    "firstTime": "First time? Order these",
+    "noDishes": "Nobody has said what to get here yet.",
+    "info": "Details",
+    "address": "Address",
+    "map": "See on map",
+    "moreIn": "More places in {district}",
+    "newTab": "Opens in a new tab"
+  },
+  "claim": {
+    "types": {
+      "availability": "Food available",
+      "price": "Price",
+      "place_status": "Open",
+      "location": "Address",
+      "opening_hours": "Opening hours"
+    },
+    "confirmed": "Confirmed by the community",
+    "stale": "Last confirmed {days} days ago",
+    "mixed": "Opinions differ",
+    "disputed": "Reported wrong",
+    "unverified": "Not verified yet"
+  },
+  "reaction": {
+    "loved": "Loved it",
+    "okay": "It was okay",
+    "disliked": "Didn't like it"
   }
 }

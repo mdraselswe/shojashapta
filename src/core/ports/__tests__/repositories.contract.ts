@@ -65,6 +65,13 @@ export function repositoryContract(
       expect(fame.map((f) => f.food.slug)).toContain("doi");
     });
 
+    it("lists slugs for static generation, capped by the limit", async () => {
+      const repos = await make();
+      expect(await repos.foods.slugs(100)).toContain("doi");
+      expect(await repos.places.slugs(100)).toContain("sample-place");
+      expect(await repos.foods.slugs(1)).toHaveLength(1);
+    });
+
     it("lists every district's famous foods in one call", async () => {
       const repos = await make();
       const all = await repos.districts.allFame();

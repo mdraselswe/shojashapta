@@ -128,6 +128,13 @@ export function createMockRepositories(): Repositories {
     },
 
     foods: {
+      slugs: async (limit) =>
+        db.foods
+          .filter((f) => f.status === "active")
+          .map(foodWithStats)
+          .sort((a, b) => b.experienceCount - a.experienceCount || a.slug.localeCompare(b.slug))
+          .slice(0, limit)
+          .map((f) => f.slug),
       bySlug: async (slug) => {
         const food = db.foods.find((f) => f.slug === slug && f.status === "active");
         return food ? foodWithStats(food) : null;
@@ -164,6 +171,11 @@ export function createMockRepositories(): Repositories {
     },
 
     places: {
+      slugs: async (limit) =>
+        active(db.places)
+          .map((p) => p.slug)
+          .sort()
+          .slice(0, limit),
       bySlug: async (slug) => clone(db.places.find((p) => p.slug === slug) ?? null),
       byId: async (id) => clone(db.places.find((p) => p.id === id) ?? null),
       inDistrict: async (districtId, opts) =>
