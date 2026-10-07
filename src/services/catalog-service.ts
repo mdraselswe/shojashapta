@@ -141,15 +141,25 @@ export function createCatalogService({ repos }: Deps) {
         repos.districts.allFame(),
       ]);
       const slugById = new Map(districts.map((district) => [district.id, district.slug]));
+      const withFame = new Set(fame.map((entry) => entry.districtId));
+      // Districts with a curated famous food first: they are the ones people land on.
+      const ordered = [
+        ...districts.filter((district) => withFame.has(district.id)),
+        ...districts.filter((district) => !withFame.has(district.id)),
+      ];
       return {
         foods,
         places,
-        districts: districts.map((district) => district.slug),
+        districts: ordered
+          .slice(0, appConfig.seo.staticDistrictCount)
+          .map((district) => district.slug),
         /** The curated "famous for" pairs: the district×food pages worth prerendering. */
-        districtFoods: fame.flatMap((entry) => {
-          const district = slugById.get(entry.districtId);
-          return district ? [{ district, food: entry.food.slug }] : [];
-        }),
+        districtFoods: fame
+          .flatMap((entry) => {
+            const district = slugById.get(entry.districtId);
+            return district ? [{ district, food: entry.food.slug }] : [];
+          })
+          .slice(0, appConfig.seo.staticDistrictFoodCount),
       };
     },
 

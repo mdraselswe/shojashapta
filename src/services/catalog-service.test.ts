@@ -40,6 +40,14 @@ describe("catalogService.staticSlugs", () => {
     expect(slugs.places).toContain("sample-place");
     expect(slugs.districts).toContain("bogura");
   });
+
+  it("keeps the prerendered set small (deploy uploads are limited)", async () => {
+    const slugs = await service().staticSlugs();
+    expect(slugs.districts.length).toBeLessThanOrEqual(12);
+    expect(slugs.districtFoods.length).toBeLessThanOrEqual(12);
+    // districts with a curated famous food come before those without
+    expect(slugs.districts.indexOf("dhaka")).toBeGreaterThan(slugs.districts.indexOf("bogura"));
+  });
 });
 
 describe("catalogService food page", () => {
