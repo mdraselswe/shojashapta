@@ -36,6 +36,8 @@ export type NewFood = { nameBn: string; nameEn?: string | null };
 export interface FoodRepository {
   bySlug(slug: string): Promise<Food | null>;
   byId(id: string): Promise<Food | null>;
+  /** Slugs of the `limit` most experienced active foods (static generation, sitemap). */
+  slugs(limit: number): Promise<string[]>;
   /** Dishes of this food ranked by Wilson score (decision P10). */
   topDishes(
     foodId: string,
@@ -57,6 +59,8 @@ export type NewPlace = {
 export interface PlaceRepository {
   bySlug(slug: string): Promise<Place | null>;
   byId(id: string): Promise<Place | null>;
+  /** Slugs of up to `limit` active places (static generation, sitemap). */
+  slugs(limit: number): Promise<string[]>;
   inDistrict(districtId: number, opts?: PageOpts): Promise<Page<Place>>;
   /** All dishes of a place, best first ("প্রথমবার? এগুলো অর্ডার করুন"). */
   dishes(placeId: string): Promise<DishWithFood[]>;

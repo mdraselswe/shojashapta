@@ -7,6 +7,9 @@ import { GroupedList, ListRowSkeleton } from "@/components/ui/grouped-list";
 import { Skeleton, SkeletonAvatar, SkeletonImage, SkeletonText } from "@/components/ui/skeleton";
 import { FoodHitRow } from "@/features/search/components/search-hit-rows";
 import { serverEnv } from "@/config/env";
+import { DishRow, DishRowSkeleton } from "@/features/dish/components/dish-row";
+import { FoodHero, FoodHeroSkeleton } from "@/features/food/components/food-hero";
+import { PlaceHero, PlaceHeroSkeleton } from "@/features/place/components/place-hero";
 import { DistrictChip, DistrictChipSkeleton } from "@/features/home/components/district-chip";
 import {
   FamousFoodCard,
@@ -65,6 +68,64 @@ const PAIRS: readonly SkeletonPair[] = [
       />
     ),
     skeleton: <DistrictChipSkeleton />,
+  },
+  {
+    name: "Dish row (ranked)",
+    real: (
+      <GroupedList>
+        <DishRow
+          href="/place/sample-place"
+          title="নমুনা দই ঘর"
+          context="সাতমাথা, বগুড়া"
+          price={{ min: 120, max: 180 }}
+          experienceCount={26}
+          display={{ percent: 92, rankable: true, favorite: true }}
+          rank={1}
+        />
+      </GroupedList>
+    ),
+    skeleton: (
+      <GroupedList>
+        <DishRowSkeleton />
+      </GroupedList>
+    ),
+  },
+  {
+    name: "Food hero",
+    real: (
+      <FoodHero
+        food={{
+          id: "f",
+          slug: "doi",
+          nameBn: "দই",
+          nameEn: null,
+          aboutBn: null,
+          experienceCount: 26,
+          percent: 92,
+          famousIn: [],
+        }}
+      />
+    ),
+    skeleton: <FoodHeroSkeleton />,
+  },
+  {
+    name: "Place hero",
+    real: (
+      <PlaceHero
+        place={{
+          id: "p",
+          slug: "sample-place",
+          nameBn: "নমুনা দই ঘর",
+          nameEn: null,
+          type: "shop",
+          district: { slug: "bogura", nameBn: "বগুড়া" },
+          areaNameBn: "সাতমাথা",
+          address: null,
+          mapQuery: "",
+        }}
+      />
+    ),
+    skeleton: <PlaceHeroSkeleton />,
   },
   {
     name: "Section + paragraph",

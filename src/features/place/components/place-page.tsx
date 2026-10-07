@@ -1,0 +1,42 @@
+import { Suspense } from "react";
+
+import { PageShell } from "@/components/layout/page-shell";
+import { SubPageBar } from "@/components/layout/sub-page-bar";
+import { LoadingRegion } from "@/components/ui/skeleton";
+import { routes } from "@/config/routes";
+import { getT } from "@/i18n/server";
+import type { PlaceHeader } from "@/services/catalog-service";
+
+import { PlaceClaimsSection, PlaceClaimsSectionSkeleton } from "./place-claims-section";
+import { PlaceDishesSection, PlaceDishesSectionSkeleton } from "./place-dishes-section";
+import { PlaceHero, PlaceHeroSkeleton } from "./place-hero";
+import { PlaceInfoSection } from "./place-info-section";
+
+/** Place page: hero and info are ready with the header; claims and dishes stream in. */
+export function PlacePage({ place }: { place: PlaceHeader }) {
+  return (
+    <PageShell header={<SubPageBar backHref={routes.district(place.district.slug)} />}>
+      <PlaceHero place={place} />
+      <Suspense fallback={<PlaceClaimsSectionSkeleton />}>
+        <PlaceClaimsSection placeId={place.id} />
+      </Suspense>
+      <Suspense fallback={<PlaceDishesSectionSkeleton />}>
+        <PlaceDishesSection placeId={place.id} />
+      </Suspense>
+      <PlaceInfoSection place={place} />
+    </PageShell>
+  );
+}
+
+export function PlacePageSkeleton() {
+  const t = getT();
+  return (
+    <LoadingRegion label={t("common.loading")}>
+      <PageShell header={<SubPageBar backHref={routes.home()} />}>
+        <PlaceHeroSkeleton />
+        <PlaceClaimsSectionSkeleton />
+        <PlaceDishesSectionSkeleton />
+      </PageShell>
+    </LoadingRegion>
+  );
+}

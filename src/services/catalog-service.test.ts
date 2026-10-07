@@ -32,3 +32,85 @@ describe("catalogService.home", () => {
     expect(famousDistricts.every((district) => district.famous !== null)).toBe(true);
   });
 });
+
+describe("catalogService.staticSlugs", () => {
+  it("lists foods, places and districts to prerender", async () => {
+    const slugs = await service().staticSlugs();
+    expect(slugs.foods).toContain("doi");
+    expect(slugs.places).toContain("sample-place");
+    expect(slugs.districts).toContain("bogura");
+  });
+});
+
+describe("catalogService food page", () => {
+  it("returns null for an unknown food", async () => {
+    expect(await service().foodHeader("no-such-food")).toBeNull();
+  });
+
+  it("builds the header with the overall percent and where the food is famous", async () => {
+    const header = await service().foodHeader("doi");
+    expect(header).toMatchObject({ slug: "doi", nameBn: "দই", experienceCount: 28 });
+    expect(header?.percent).toBe(93); // 26 loved of 28
+    expect(header?.famousIn).toEqual([{ slug: "bogura", nameBn: "বগুড়া" }]);
+  });
+
+  it("ranks dishes by Wilson score and keeps small samples unranked", async () => {
+    const svc = service();
+    const header = await svc.foodHeader("doi");
+    const { items, hasMore, priceRange } = await svc.foodDishes(header?.id ?? "");
+    expect(items.map((row) => row.place.slug)).toEqual(["sample-place", "second-sample-place"]);
+    expect(items[0]?.display).toEqual({ percent: 92, rankable: true, favorite: true });
+    // 3 of 3 loved is 100% but only 3 experiences: no percent, no rank (decision P10).
+    expect(items[1]?.display).toEqual({ percent: null, rankable: false, favorite: false });
+    expect(hasMore).toBe(false);
+    expect(priceRange).toEqual({ min: 120, max: 180 });
+  });
+
+  it("shows only experiences that have a comment, with the author's name", async () => {
+    const svc = service();
+    const header = await svc.foodHeader("doi");
+    const rows = await svc.foodExperiences(header?.id ?? "");
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({
+      reaction: "loved",
+      comment: expect.stringContaining("হাঁড়ির"),
+    });
+  });
+});
+
+describe("catalogService place page", () => {
+  it("returns null for an unknown place", async () => {
+    expect(await service().placeHeader("no-such-place")).toBeNull();
+  });
+
+  it("builds the header and a map search text from what is known", async () => {
+    const header = await service().placeHeader("sample-place");
+    expect(header).toMatchObject({
+      nameBn: "নমুনা দই ঘর",
+      type: "shop",
+      district: { slug: "bogura", nameBn: "বগুড়া" },
+      areaNameBn: "সাতমাথা",
+    });
+    expect(header?.mapQuery).toBe("নমুনা দই ঘর সাতমাথা বগুড়া বাংলাদেশ");
+  });
+
+  it("lists the dishes to order, with the same display rules", async () => {
+    const svc = service();
+    const header = await svc.placeHeader("sample-place");
+    const dishes = await svc.placeDishes(header?.id ?? "");
+    expect(dishes).toHaveLength(1);
+    expect(dishes[0]).toMatchObject({
+      food: { slug: "doi", nameBn: "দই" },
+      price: { min: 120, max: 180 },
+      display: { percent: 92, rankable: true },
+    });
+  });
+
+  it("returns the place's claims for the status badges", async () => {
+    const svc = service();
+    const header = await svc.placeHeader("sample-place");
+    expect(await svc.placeClaims(header?.id ?? "")).toEqual([
+      { type: "availability", status: "unverified", lastConfirmedAt: null, expiresAt: null },
+    ]);
+  });
+});

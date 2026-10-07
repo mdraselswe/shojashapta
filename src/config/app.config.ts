@@ -38,6 +38,8 @@ export const appConfig = {
     minExperiencesToRank: 5,
     /** Experiences needed before a dish can be labelled "কমিউনিটির প্রিয়". */
     favoriteMinExperiences: 10,
+    /** …and at least this % of them must be 😋 for the "কমিউনিটির প্রিয়" label. */
+    favoriteMinPercent: 80,
     /** z-score for the Wilson lower bound (1.96 = 95% confidence). */
     wilsonZ: 1.96,
   },
@@ -108,6 +110,10 @@ export const appConfig = {
   seo: {
     /** District pages with fewer places are noindex (thin content). */
     minPlacesToIndexDistrict: 1,
+    /** Food pages prerendered at build (most experienced first); the rest render on first visit. */
+    staticFoodCount: 50,
+    /** Place pages prerendered at build; the rest render on first visit. */
+    staticPlaceCount: 50,
   },
 
   ui: {

@@ -129,6 +129,19 @@ export function createSupabaseRepositoriesFrom(clients: SupabaseClients): Reposi
     },
 
     foods: {
+      async slugs(limit) {
+        const rows = check(
+          await db
+            .from("foods")
+            .select("slug")
+            .eq("status", "active")
+            .order("experience_count", { ascending: false })
+            .order("slug")
+            .limit(limit),
+          "food slugs",
+        );
+        return rows.map((row) => row.slug);
+      },
       bySlug: (slug) => foodBy("slug", slug),
       byId: (id) => foodBy("id", id),
       async topDishes(foodId, opts = {}) {
@@ -150,6 +163,13 @@ export function createSupabaseRepositoriesFrom(clients: SupabaseClients): Reposi
     },
 
     places: {
+      async slugs(limit) {
+        const rows = check(
+          await db.from("places").select("slug").eq("status", "active").order("slug").limit(limit),
+          "place slugs",
+        );
+        return rows.map((row) => row.slug);
+      },
       bySlug: (slug) => placeBy("slug", slug),
       byId: (id) => placeBy("id", id),
       async inDistrict(districtId, opts) {
