@@ -10,7 +10,7 @@ describe("slugify (Bangla)", () => {
     ["বগুড়া", "bogura"],
     ["ঢাকা", "dhaka"],
     ["চট্টগ্রাম", "chottogram"],
-    ["মেজবানি", "mejobani"],
+    ["মেজবানি", "mejbani"],
     ["কাঁচাগোল্লা", "kachagolla"],
     ["নাটোর", "nator"],
     ["রং", "rong"],
