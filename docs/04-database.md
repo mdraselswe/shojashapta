@@ -412,6 +412,16 @@ create policy "own delete"   on experiences for delete using (user_id = auth.uid
 - Aggregate columns (`*_count`, `wilson_score`, claim status) are updated only by `security definer`
   functions called from the service with the server client; regular users cannot update them.
 
+As implemented (`supabase/migrations/0001–0004`, tests in `supabase/tests/database.test.sql`, run on the DEV
+project by the Preview workflow):
+- Extensions live in the `extensions` schema (`extensions.geography`, `extensions.gin_trgm_ops`).
+- `is_active_user()` = signed in and not banned; every user insert policy requires it.
+- Inserts must start "empty": a new dish has zero counts, a new claim is `unverified` with zero votes.
+- `protect_profile_privileges` trigger: only admins (or the service role) change `role` / `is_banned`.
+- `refresh_dish_stats` and `check_rate_limit` are executable by `service_role` only.
+- `search_misses` has RLS with no policies (server only); `rate_limit_events` is owner-read only.
+- Gamification tables (`point_events`, `district_stamps`, `profiles.points_total`) come in Phase 6b.1.
+
 ## 8. Seed data
 - `supabase/seed/districts.sql`: all 64 districts with bn/en names, division, center point, aliases
   (e.g. Bogura: `bogra`, `bogura`, `বগুড়া`; Chattogram: `chittagong`, `ctg`; Cumilla: `comilla`; Barishal: `barisal`; Jashore: `jessore`).
