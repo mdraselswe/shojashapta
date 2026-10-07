@@ -53,6 +53,21 @@ const eslintConfig = defineConfig([
       ],
     },
   },
+  {
+    // All env access goes through the zod-validated src/config/env.ts (docs/02-tech-stack.md §7).
+    files: ["src/**/*.{ts,tsx}"],
+    ignores: ["src/config/env.ts"],
+    rules: {
+      "no-restricted-properties": [
+        "error",
+        {
+          object: "process",
+          property: "env",
+          message: "Use clientEnv / serverEnv() from @/config/env.",
+        },
+      ],
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
