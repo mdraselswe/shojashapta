@@ -8,7 +8,7 @@ export function PlaceHero({ place }: { place: PlaceHeader }) {
     .filter(Boolean)
     .join(" · ");
   return (
-    <section className="px-5 pt-1">
+    <section className="page-x pt-1 lg:pt-5">
       <h1 className="text-title-1">{place.nameBn}</h1>
       {place.nameEn ? <p className="text-meta text-muted-foreground">{place.nameEn}</p> : null}
       <p className="mt-1 text-meta text-muted-foreground">{where}</p>
@@ -18,7 +18,7 @@ export function PlaceHero({ place }: { place: PlaceHeader }) {
 
 export function PlaceHeroSkeleton() {
   return (
-    <section className="px-5 pt-1">
+    <section className="page-x pt-1 lg:pt-5">
       <div className="text-title-1">
         <SkeletonText className="w-2/3" />
       </div>

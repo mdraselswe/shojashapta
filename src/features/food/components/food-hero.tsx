@@ -14,11 +14,11 @@ export function FoodHero({ food }: { food: FoodHeader }) {
       ? `${t("food.liked", { percent: formatPercent(food.percent) })} · ${t("food.experienceCount", { count: formatNumber(food.experienceCount) })}`
       : t("food.noExperiences");
   return (
-    <section className="px-5 pt-1">
+    <section className="page-x pt-1 lg:pt-5">
       <h1 className="text-title-1">{food.nameBn}</h1>
       {food.nameEn ? <p className="text-meta text-muted-foreground">{food.nameEn}</p> : null}
       {food.aboutBn ? <p className="mt-2 text-body">{food.aboutBn}</p> : null}
-      <p className="mt-2 text-meta text-muted-foreground">{summary}</p>
+      <p className="mt-2 text-meta text-muted-foreground lg:hidden">{summary}</p>
       {food.famousIn.length > 0 ? (
         <ul className="mt-3 flex flex-wrap gap-2">
           {food.famousIn.map((district) => (
@@ -38,7 +38,7 @@ export function FoodHero({ food }: { food: FoodHeader }) {
 
 export function FoodHeroSkeleton() {
   return (
-    <section className="px-5 pt-1">
+    <section className="page-x pt-1 lg:pt-5">
       <div className="text-title-1">
         <SkeletonText className="w-1/2" />
       </div>

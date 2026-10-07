@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<title>সোজাসাপ্টা — ডেস্কটপ দোকান পেজ</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@600;700&amp;family=Noto+Sans+Bengali:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#4338CA}a:hover{color:#3730A3}
+.hd{font-family:'Anek Bangla',sans-serif}
+a:focus-visible,input:focus-visible,button:focus-visible{outline:3px solid #4F46E5;outline-offset:2px}
+</style>
+</helmet>
+<div style="min-height:1560px;background:#F6F6F8;color:#16161D;font-family:'Noto Sans Bengali',sans-serif;font-size:16px;line-height:1.7">
+
+<header style="background:#FFFFFF;border-bottom:1px solid #E8E8EE">
+<div style="max-width:1200px;margin:0 auto;padding:0 32px;height:72px;display:flex;align-items:center;gap:24px">
+<a href="Main.dc.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:#16161D">
+<svg width="40" height="40" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 4a28 28 0 1 1-16.4 50.7L5 59l3.6-10.7A28 28 0 0 1 32 4zM19 31h26a13 13 0 0 1-26 0z" fill="#4F46E5" fill-rule="evenodd"></path><rect x="23" y="22" width="18" height="3.6" rx="1.8" fill="#F59E0B"></rect></svg>
+<span class="hd" style="font-size:22px;font-weight:700">সোজাসাপ্টা</span>
+</a>
+<label for="hq" style="flex:1;max-width:440px;display:flex;align-items:center;gap:10px;background:#F6F6F8;border:1px solid #E8E8EE;border-radius:14px;height:46px;padding:0 16px">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5E5E6E" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
+<input id="hq" placeholder="খাবার, জেলা বা দোকানের নাম" style="border:0;outline:0;flex:1;font:inherit;font-size:15px;color:#16161D;background:transparent">
+</label>
+<nav aria-label="প্রধান মেনু" style="display:flex;align-items:center;gap:4px">
+<a href="Main.dc.html" style="height:44px;padding:0 16px;display:flex;align-items:center;border-radius:12px;color:#5E5E6E;text-decoration:none">হোম</a>
+<a href="Search.dc.html" style="height:44px;padding:0 16px;display:flex;align-items:center;border-radius:12px;color:#5E5E6E;text-decoration:none">খুঁজুন</a>
+<a href="Passport.dc.html" style="height:44px;padding:0 16px;display:flex;align-items:center;border-radius:12px;color:#5E5E6E;text-decoration:none">আমি</a>
+</nav>
+<div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+<span style="display:flex;align-items:center;gap:6px;height:38px;padding:0 12px;border-radius:19px;background:#FFFFFF;border:1px solid #E8E8EE;font-size:14px;font-weight:600"><svg width="16" height="16" viewBox="0 0 24 24" fill="#F5A524" aria-hidden="true"><path d="M12 2c1 4 5 5.500 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z"></path></svg>৫ দিন</span>
+<span style="display:flex;align-items:center;gap:6px;height:38px;padding:0 12px;border-radius:19px;background:#FFF7E6;color:#92400E;font-size:14px;font-weight:600"><svg width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" aria-hidden="true"><path d="M12 3l2.700 5.600 6.100.9-4.400 4.300 1 6.100L12 17l-5.400 2.900 1-6.100L3.200 9.500l6.100-.9z"></path></svg>{{points}}</span>
+<a href="Add.dc.html" style="height:44px;padding:0 20px;display:flex;align-items:center;gap:6px;border-radius:22px;background:#4F46E5;color:#FFFFFF;text-decoration:none;font-weight:600"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.600" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>যোগ</a>
+<a href="Passport.dc.html" aria-label="প্রোফাইল" class="hd" style="width:44px;height:44px;border-radius:22px;background:#EEF0FF;color:#3730A3;display:flex;align-items:center;justify-content:center;font-weight:700;text-decoration:none">রা</a>
+</div>
+</div>
+</header>
+
+<main style="max-width:1200px;margin:0 auto;padding:28px 32px 100px">
+<nav aria-label="পথ" style="font-size:14px;color:#5E5E6E;display:flex;gap:8px;align-items:center">
+<a href="Main.dc.html" style="color:#4338CA">হোম</a><span aria-hidden="true">/</span><a href="District.dc.html" style="color:#4338CA">বগুড়া</a><span aria-hidden="true">/</span><span style="color:#16161D">নমুনা দই ঘর</span>
+</nav>
+
+<section style="margin-top:20px;display:flex;align-items:flex-start;justify-content:space-between;gap:24px">
+<div>
+<span style="font-size:14px;color:#5E5E6E">দোকান · শেরপুর রোড, বগুড়া</span>
+<h1 class="hd" style="margin:2px 0 0;font-size:44px;font-weight:700;line-height:1.2">নমুনা দই ঘর</h1>
+<div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+<span style="display:inline-flex;align-items:center;gap:6px;background:#E9F8EF;color:#0E7A3D;border-radius:10px;padding:5px 10px;font-size:14px;font-weight:600"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>চালু আছে · কমিউনিটি নিশ্চিত</span>
+<span style="display:inline-flex;align-items:center;gap:6px;background:#EDEDF2;color:#3F3F4C;border-radius:10px;padding:5px 10px;font-size:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.400" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v4l3 2"></path></svg>দাম ৩৪ দিন আগে নিশ্চিত</span>
+</div>
+</div>
+<div style="display:flex;gap:10px">
+<button style="height:44px;padding:0 18px;border-radius:22px;background:#FFFFFF;border:1px solid #E8E8EE;font:inherit;font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px;color:#16161D;cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"></path></svg>সংরক্ষণ</button>
+<button style="height:44px;padding:0 18px;border-radius:22px;background:#FFFFFF;border:1px solid #E8E8EE;font:inherit;font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px;color:#16161D;cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"></path></svg>শেয়ার</button>
+</div>
+</section>
+
+<div style="margin-top:32px;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:32px;align-items:start">
+
+<div style="grid-column:span 7;display:flex;flex-direction:column;gap:36px">
+<section aria-labelledby="h-first">
+<h2 id="h-first" class="hd" style="margin:0 0 10px;font-size:24px;font-weight:600;line-height:1.3">প্রথমবার? এগুলো অর্ডার করুন</h2>
+<div style="background:#FFFFFF;border:1px solid #E8E8EE;border-radius:20px;padding:4px 20px">
+<a href="Food.dc.html" style="text-decoration:none;color:#16161D;display:grid;grid-template-columns:52px 1fr auto;gap:16px;align-items:center;padding:12px 0;border-bottom:1px solid #F0F0F4"><span style="width:52px;height:52px;border-radius:14px;background:#F3E6CC"></span><span><span style="display:block;font-weight:600">সরার দই</span><span style="font-size:13px;color:#5E5E6E">৳১৮০–৳২৫০</span></span><span style="background:#E9F8EF;color:#0E7A3D;border-radius:10px;padding:2px 10px;font-size:14px;font-weight:600">৯৬%</span></a>
+<a href="Food.dc.html" style="text-decoration:none;color:#16161D;display:grid;grid-template-columns:52px 1fr auto;gap:16px;align-items:center;padding:12px 0"><span style="width:52px;height:52px;border-radius:14px;background:#F6EEDD"></span><span><span style="display:block;font-weight:600">টক দই</span><span style="font-size:13px;color:#5E5E6E">৳১২০–৳১৬০</span></span><span style="background:#E9F8EF;color:#0E7A3D;border-radius:10px;padding:2px 10px;font-size:14px;font-weight:600">৮৯%</span></a>
+</div>
+</section>
+
+<section aria-labelledby="h-info">
+<h2 id="h-info" class="hd" style="margin:0 0 10px;font-size:24px;font-weight:600;line-height:1.3">তথ্য</h2>
+<div style="background:#FFFFFF;border:1px solid #E8E8EE;border-radius:20px;padding:20px;display:flex;align-items:center;gap:16px">
+<span style="flex:0 0 44px;height:44px;border-radius:14px;background:#EDEDF2;color:#5E5E6E;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"></path><circle cx="12" cy="10" r="2.500"></circle></svg></span>
+<span style="flex:1"><span style="display:block;font-weight:600">শেরপুর রোড, বগুড়া</span><span style="display:block;font-size:13px;color:#5E5E6E">ম্যাপ এমবেড হয় না, বাইরের ম্যাপে খোলে</span></span>
+<a href="Place.dc.html" style="height:44px;padding:0 18px;display:flex;align-items:center;gap:8px;border-radius:22px;background:#FFFFFF;border:1px solid #E8E8EE;color:#16161D;text-decoration:none;font-weight:600">ম্যাপে দেখুন<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"></path></svg></a>
+</div>
+<a href="District.dc.html" style="margin-top:12px;display:flex;align-items:center;justify-content:space-between;background:#FFFFFF;border:1px solid #E8E8EE;border-radius:20px;padding:16px 20px;text-decoration:none;color:#16161D;font-weight:600">বগুড়া-এর আরও জায়গা<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5E5E6E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></a>
+</section>
+</div>
+
+<aside style="grid-column:span 5;position:sticky;top:24px">
+<section aria-labelledby="h-verify" style="background:#FFFFFF;border:1px solid #E8E8EE;border-radius:24px;padding:24px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+<h2 id="h-verify" class="hd" style="margin:0;font-size:24px;font-weight:700;line-height:1.3">তথ্য ঠিক আছে?</h2>
+<span style="display:inline-flex;align-items:center;background:#FFF7E6;color:#92400E;border-radius:10px;padding:3px 9px;font-size:13px;font-weight:600;white-space:nowrap">যাচাই করলে +৫</span>
+</div>
+<p style="margin:4px 0 16px;color:#5E5E6E">সরার দইয়ের দাম <b style="color:#16161D">৳১৮০–৳২৫০</b></p>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;background:#F6F6F8;border-radius:16px;padding:4px">
+<sc-for list="{{votes}}" as="v" hint-placeholder-count="3">
+<button aria-pressed="{{v.pressed}}" onClick="{{v.pick}}" style="{{v.style}}">{{v.label}}</button>
+</sc-for>
+</div>
+
+<sc-if value="{{isWrong}}" hint-placeholder-val="{{false}}">
+<p style="margin:18px 0 8px;font-size:15px;font-weight:600">কোনটা ভুল?</p>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<sc-for list="{{reasons}}" as="r" hint-placeholder-count="5">
+<button aria-pressed="{{r.pressed}}" onClick="{{r.pick}}" style="{{r.style}}">{{r.label}}</button>
+</sc-for>
+</div>
+<label for="fix" style="display:block;margin:18px 0 6px;font-size:15px;font-weight:600">এখনকার দাম কত? <span style="font-weight:400;color:#5E5E6E">(ঐচ্ছিক)</span></label>
+<input id="fix" value="৳২২০–৳২৮০" style="width:100%;box-sizing:border-box;height:52px;border:1px solid #E8E8EE;background:#F6F6F8;border-radius:14px;padding:0 14px;font:inherit;font-size:16px;color:#16161D">
+<button style="margin-top:10px;display:flex;align-items:center;gap:8px;border:0;background:none;padding:6px 0;font:inherit;font-size:14px;font-weight:600;color:#16161D;cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="3"></rect><circle cx="12" cy="13" r="3.500"></circle></svg>প্রমাণ হিসেবে ছবি বা লিংক দিন</button>
+</sc-if>
+
+<button onClick="{{submit}}" style="margin-top:16px;width:100%;height:56px;border:0;border-radius:18px;background:#4F46E5;color:#FFFFFF;font:inherit;font-size:17px;font-weight:600;cursor:pointer">জমা দিন</button>
+<sc-if value="{{done}}" hint-placeholder-val="{{false}}">
+<p role="status" style="margin:12px 0 0;padding:10px 14px;border-radius:14px;background:#FFF7E6;color:#92400E;font-weight:600;display:flex;align-items:center;gap:8px"><span class="hd" style="background:#F59E0B;color:#16161D;border-radius:10px;padding:0 8px">+৫</span>ধন্যবাদ, তথ্য যাচাই হয়েছে</p>
+</sc-if>
+</section>
+</aside>
+</div>
+<p style="margin:48px 0 0;font-size:13px;color:#5E5E6E">নমুনা ডিজাইন: মোবাইলে এটি নিচ থেকে ওঠা শিট, ডেস্কটপে পাশের প্যানেল।</p>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1560}}'>
+class Component extends DCLogic {
+constructor(props) { super(props); this.state = { vote: 'wrong', reason: 'price', done: false }; }
+renderVals() {
+const s = this.state;
+const defs = [
+{ id: 'ok', label: 'ঠিক', ink: '#0E7A3D' },
+{ id: 'partial', label: 'আংশিক', ink: '#8A5A00' },
+{ id: 'wrong', label: 'ভুল', ink: '#B4232A' }
+];
+const votes = defs.map((d) => {
+const on = s.vote === d.id;
+return {
+label: d.label, pressed: on ? 'true' : 'false',
+style: 'height:48px;border:0;border-radius:12px;font:inherit;font-size:15px;cursor:pointer;' + (on ? 'background:#FFFFFF;box-shadow:0 1px 3px rgba(22,22,29,0.12);font-weight:700;color:' + d.ink : 'background:transparent;font-weight:600;color:#16161D'),
+pick: () => this.setState({ vote: d.id, done: false })
+};
+});
+const rdefs = [['none','খাবার পাওয়া যায় না'],['price','দাম ভুল'],['address','ঠিকানা ভুল'],['closed','জায়গা বন্ধ'],['other','অন্য কিছু']];
+const reasons = rdefs.map(([id, label]) => {
+const on = s.reason === id;
+return {
+label, pressed: on ? 'true' : 'false',
+style: 'height:40px;border-radius:20px;padding:0 14px;font:inherit;font-size:14px;cursor:pointer;' + (on ? 'border:0;background:#4F46E5;color:#FFFFFF' : 'border:1px solid #E8E8EE;background:#FFFFFF;color:#16161D'),
+pick: () => this.setState({ reason: id })
+};
+});
+return {
+points: s.done ? '৩৪৫' : '৩৪০',
+votes, reasons,
+isWrong: s.vote === 'wrong',
+done: s.done,
+submit: () => this.setState({ done: true })
+};
+}
+}
+</script>
+</body>
+</html>

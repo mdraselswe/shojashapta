@@ -45,7 +45,7 @@ These rules are non-negotiable. If a request conflicts with them, stop and ask.
   classes in components** — only token utilities (`bg-card`, `text-primary-text`…). Every component must work in
   every theme registered in `src/config/themes.ts` (see `docs/06-design-system.md` §2b).
 - The logo is only rendered via `<LogoMark />` / `<LogoLockup />` (theme-aware). Never `<img src="…logo…">` inside the app.
-- Mobile-first. Every screen must work at 360px width, one-handed.
+- Mobile-first. Every screen must work at 360px width, one-handed. Tablet (768px) and desktop (1024px) layouts follow `docs/design/desktop/`.
 - Images only through `<AppImage>` (custom loader, never the Vercel optimizer).
 - Wording: never "সেরা" for rankings — use "কমিউনিটির প্রিয়". Never "Verified" — use "কমিউনিটি নিশ্চিত".
 

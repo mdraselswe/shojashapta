@@ -59,6 +59,8 @@ Install Docker Desktop if you want a local Supabase (`pnpm db:start`); otherwise
 2.5 District page + district×food page + empty states + skeletons.  2.6 `not-found`, `error`, `global-error`.
 2.7 Caching with tags; `generateStaticParams` for districts and top foods.
 
+2.8 Tablet and desktop layouts for the read pages (approved designs in `docs/design/desktop/`): top bar, breadcrumb, two-column food/place/search, responsive grids.
+
 **Done when:** all read pages work on 360px, every theme, Slow 4G shows skeleton → content with no layout shift; Lighthouse CI budgets (`08-seo-performance-pwa.md` §2) pass on food/place/district.
 
 ---

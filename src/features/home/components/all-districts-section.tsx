@@ -11,7 +11,7 @@ import { getHomeData } from "../queries";
 // A native <details>: all 64 districts stay in the HTML (crawlable, no JavaScript) but take one
 // row of space until opened. The skeleton is that closed row.
 const ROW_CLASS = "flex min-h-14 items-center justify-between gap-3 px-4 text-card-title";
-const CARD_CLASS = "mx-5 mt-6 rounded-card border border-border bg-card";
+const CARD_CLASS = "mx-5 mt-6 rounded-card border border-border bg-card md:mx-7 lg:mx-8 lg:mt-10";
 
 export async function AllDistrictsSection() {
   const t = getT();
@@ -28,7 +28,7 @@ export async function AllDistrictsSection() {
           aria-hidden
         />
       </summary>
-      <div className="flex flex-col gap-4 border-t border-divider p-4">
+      <div className="flex flex-col gap-4 border-t border-divider p-4 lg:grid lg:grid-cols-4 lg:items-start lg:gap-6 lg:p-6">
         {divisions.map((division) => (
           <div key={division.nameBn}>
             <h3 className="mb-2 text-caption text-muted-foreground">

@@ -8,11 +8,24 @@ import { cn } from "@/lib/cn";
 // Grouped list card (docs/06-design-system.md §6): one white card, rows separated by --divider,
 // instead of many separate cards.
 
-export function GroupedList({ children, className }: { children: ReactNode; className?: string }) {
+// `split`: one card on phones and tablets, a two-column grid of separate cards on desktop.
+const SPLIT_CLASS =
+  "lg:grid lg:grid-cols-2 lg:gap-4 lg:divide-y-0 lg:overflow-visible lg:rounded-none lg:border-0 lg:bg-transparent lg:[&>li]:overflow-hidden lg:[&>li]:rounded-card lg:[&>li]:border lg:[&>li]:border-border lg:[&>li]:bg-card";
+
+export function GroupedList({
+  children,
+  className,
+  split,
+}: {
+  children: ReactNode;
+  className?: string;
+  split?: boolean;
+}) {
   return (
     <ul
       className={cn(
         "divide-y divide-divider overflow-hidden rounded-card border border-border bg-card",
+        split && SPLIT_CLASS,
         className,
       )}
     >

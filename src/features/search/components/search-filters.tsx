@@ -8,7 +8,8 @@ import { getT } from "@/i18n/server";
 import { PLACE_TYPES, type ParsedSearchParams } from "../search-params";
 
 // Filter chips are links: the filter lives in the URL, so results are shareable and need no JS.
-const ROW_CLASS = "-mx-4 flex gap-2 overflow-x-auto px-4 pb-0.5 [scrollbar-width:none]";
+const ROW_CLASS =
+  "-mx-4 flex gap-2 overflow-x-auto px-4 pb-0.5 [scrollbar-width:none] lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0";
 
 function Chip({
   href,

@@ -13,6 +13,10 @@
     "add": "যোগ",
     "me": "আমি"
   },
+  "breadcrumb": {
+    "label": "পথ",
+    "foods": "খাবার"
+  },
   "comingSoon": {
     "title": "শিগগিরই আসছে",
     "body": "বাংলাদেশে কোথায় কী খাবেন, তা জানাবে কমিউনিটির সত্যিকারের অভিজ্ঞতা। শিগগিরই আসছে।"
@@ -94,6 +98,7 @@
     "typicalPrice": "সাধারণ দাম {range}",
     "experienceCount": "{count} জন খেয়েছেন",
     "liked": "{percent} পছন্দ করেছেন",
+    "likedSuffix": "পছন্দ করেছেন",
     "noExperiences": "এখনও কেউ অভিজ্ঞতা জানায়নি",
     "famousIn": "{district}-এর বিখ্যাত",
     "newGroup": "এখনও পর্যাপ্ত অভিজ্ঞতা নেই",

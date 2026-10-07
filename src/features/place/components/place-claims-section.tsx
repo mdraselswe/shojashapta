@@ -10,7 +10,7 @@ export async function PlaceClaimsSection({ placeId }: { placeId: string }) {
   const { items: claims, asOf } = await getPlaceClaims(placeId);
   if (claims.length === 0) return null;
   return (
-    <ul className="flex flex-wrap gap-2 px-5 pt-3">
+    <ul className="flex flex-wrap gap-2 page-x pt-3">
       {claims.map((claim) => (
         <li key={claim.type}>
           <ClaimStatusBadge claim={claim} now={asOf} />
@@ -22,9 +22,9 @@ export async function PlaceClaimsSection({ placeId }: { placeId: string }) {
 
 export function PlaceClaimsSectionSkeleton() {
   return (
-    <div className="flex flex-wrap gap-2 px-5 pt-3" aria-hidden>
+    <div className="flex flex-wrap gap-2 page-x pt-3" aria-hidden>
       {Array.from({ length: SKELETON_BADGES }, (_, index) => (
-        <Skeleton key={index} className="h-7 w-28 rounded-full" />
+        <Skeleton key={index} className="h-7 w-28 rounded-[10px]" />
       ))}
     </div>
   );

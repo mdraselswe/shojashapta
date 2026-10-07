@@ -13,9 +13,9 @@ import { FamousFoodsSection, FamousFoodsSectionSkeleton } from "./famous-foods-s
 function HomeHero() {
   const t = getT();
   return (
-    <section className="px-5 pt-3">
+    <section className="page-x pt-3 lg:pt-12">
       <h1 className="text-title-1">{t("home.title")}</h1>
-      <SearchEntry className="mt-3.5" />
+      <SearchEntry className="mt-3.5 lg:mt-5 lg:h-16 lg:max-w-[760px] lg:text-lg" />
     </section>
   );
 }

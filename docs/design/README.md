@@ -17,3 +17,18 @@ Tailwind tokens and i18n as described in `docs/06-design-system.md`.
 | `C-Skeleton.dc.html` | Food page skeleton | Exact layout match for the loading state |
 
 Placeholders like `[দোকানের নাম]` and sample numbers are not real data.
+
+## Desktop and tablet (approved 2026-10-08)
+
+`docs/design/desktop/` holds the approved wide layouts: Home, Food, Place (with the verify panel), District,
+Search, Add, Me/Passport at 1440px, and Home and Food at 834px (tablet). Same tokens, fonts and components as the
+mobile screens; the differences are layout only:
+
+- Below 768px: the mobile screens above, unchanged.
+- 768 to 1023px (tablet): same floating bottom nav, 28px gutter, two-column grids.
+- 1024px and up (desktop): top bar (logo, search, links, primary "যোগ") replaces the bottom nav and mobile header;
+  1200px content, 32px gutter; breadcrumb instead of the back button; Food and Place use a 8/4 and 7/5 column split;
+  Search keeps filters beside the results; the verify sheet becomes a side panel.
+
+The first built version (task 2.8) covers the read pages that exist today. Streak, points, avatar, passport card,
+reaction picker, verify panel and the add flow arrive with Phases 3-5 and follow these files.

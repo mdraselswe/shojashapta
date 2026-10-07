@@ -19,7 +19,7 @@ export async function FoodVoicesSection({ foodId }: { foodId: string }) {
   if (experiences.length === 0) return null;
   return (
     <Section title={t("food.voices")}>
-      <GroupedList>
+      <GroupedList split>
         {experiences.map((experience) => (
           <li key={experience.id} className={ITEM_CLASS}>
             <span aria-hidden className="text-2xl leading-none">

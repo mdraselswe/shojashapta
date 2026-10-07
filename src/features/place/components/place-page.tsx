@@ -15,15 +15,31 @@ import { PlaceInfoSection } from "./place-info-section";
 /** Place page: hero and info are ready with the header; claims and dishes stream in. */
 export function PlacePage({ place }: { place: PlaceHeader }) {
   return (
-    <PageShell header={<SubPageBar backHref={routes.district(place.district.slug)} />}>
+    <PageShell
+      header={
+        <SubPageBar
+          backHref={routes.district(place.district.slug)}
+          crumbs={[
+            { label: place.district.nameBn, href: routes.district(place.district.slug) },
+            { label: place.nameBn },
+          ]}
+        />
+      }
+    >
       <PlaceHero place={place} />
       <Suspense fallback={<PlaceClaimsSectionSkeleton />}>
         <PlaceClaimsSection placeId={place.id} />
       </Suspense>
-      <Suspense fallback={<PlaceDishesSectionSkeleton />}>
-        <PlaceDishesSection placeId={place.id} />
-      </Suspense>
-      <PlaceInfoSection place={place} />
+      <div className="lg:grid lg:grid-cols-12">
+        <div className="lg:col-span-7">
+          <Suspense fallback={<PlaceDishesSectionSkeleton />}>
+            <PlaceDishesSection placeId={place.id} />
+          </Suspense>
+        </div>
+        <div className="lg:col-span-5">
+          <PlaceInfoSection place={place} />
+        </div>
+      </div>
     </PageShell>
   );
 }

@@ -13,6 +13,10 @@
     "add": "Add",
     "me": "Me"
   },
+  "breadcrumb": {
+    "label": "Breadcrumb",
+    "foods": "Foods"
+  },
   "comingSoon": {
     "title": "Coming soon",
     "body": "Where to eat what in Bangladesh, told by real community experience. Coming soon."
@@ -94,6 +98,7 @@
     "typicalPrice": "Usual price {range}",
     "experienceCount": "{count} people ate it",
     "liked": "{percent} liked it",
+    "likedSuffix": "liked it",
     "noExperiences": "Nobody has shared an experience yet",
     "famousIn": "Famous in {district}",
     "newGroup": "Not enough experiences yet",

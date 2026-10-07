@@ -8,7 +8,7 @@ import type { HomeFamous } from "@/services/catalog-service";
 // Card in the "famous for" row. Link and skeleton share one class string and one body, so the
 // skeleton has exactly the real card's size (docs/05-loading-skeletons.md §3).
 export const FAMOUS_CARD_CLASS =
-  "block w-40 shrink-0 snap-start rounded-card border border-border bg-card p-3.5";
+  "block w-40 shrink-0 snap-start rounded-card md:w-auto border border-border bg-card p-3.5";
 
 function FamousFoodCardBody({ title, subtitle }: { title: ReactNode; subtitle: ReactNode }) {
   return (

@@ -18,7 +18,7 @@ export default function SiteError({
   const t = useT();
   return (
     <PageShell>
-      <section className="px-5 pt-10" role="alert">
+      <section className="page-x pt-10" role="alert">
         <h1 className="text-title-1">{t("errorPage.title")}</h1>
         <p className="mt-2 text-body text-muted-foreground">{t("errorPage.body")}</p>
         {error.digest ? (
