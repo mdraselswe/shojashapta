@@ -159,12 +159,12 @@ set local role authenticated;
 select set_config('request.jwt.claims',
   '{"sub":"00000000-0000-4000-8000-0000000000a1","role":"authenticated"}', true);
 select throws_ok(
-  $ insert into foods (slug, name_bn, created_by, is_seed)
-     values ('rls-user-seed-food', 'x', '00000000-0000-4000-8000-0000000000a1', true) $,
+  $$ insert into foods (slug, name_bn, created_by, is_seed)
+     values ('rls-user-seed-food', 'x', '00000000-0000-4000-8000-0000000000a1', true) $$,
   'P0001', null, 'users cannot flag their own rows as seed content'
 );
 select throws_ok(
-  $ select purge_seed_data() $,
+  $$ select purge_seed_data() $$,
   '42501', null, 'users cannot run purge_seed_data'
 );
 reset role;
@@ -176,7 +176,7 @@ from dishes d join places p on p.id = d.place_id
 where p.slug = 'haji-biryani-dhaka';
 
 set local role service_role;
-select lives_ok($ select purge_seed_data() $, 'service role purges seed content');
+select lives_ok($$ select purge_seed_data() $$, 'service role purges seed content');
 select ok(
   not exists (select 1 from places where slug = 'fakruddin-biryani-dhaka')
   and not exists (select 1 from regional_fame where is_seed),
@@ -192,7 +192,7 @@ select ok(
   and (select count(*)::int from districts where id < 900) = 64,
   'user-made rows and districts are never purged'
 );
-select lives_ok($ select purge_seed_data(false) $, 'purge_seed_data(false) removes everything flagged');
+select lives_ok($$ select purge_seed_data(false) $$, 'purge_seed_data(false) removes everything flagged');
 select ok(
   not exists (select 1 from foods where is_seed)
   and not exists (select 1 from places where is_seed)
