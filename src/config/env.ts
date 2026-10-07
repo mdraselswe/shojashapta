@@ -1,0 +1,155 @@
+import { z } from "zod";
+
+/**
+ * The only place that reads `process.env` (docs/02-tech-stack.md §7, docs/03-architecture.md §9).
+ * Vendor keys are required only when that vendor is selected, so CI and local work run on mocks.
+ * `next.config.ts` imports this file, so an invalid environment fails the build.
+ */
+
+const dbProviders = ["supabase", "mock"] as const;
+const authProviders = ["supabase", "mock"] as const;
+const storageProviders = ["cloudinary", "imagekit", "supabase", "mock"] as const;
+const analyticsProviders = ["noop", "vercel"] as const;
+
+const optionalString = z.string().trim().min(1).optional();
+
+const clientSchema = z.object({
+  NEXT_PUBLIC_SITE_URL: z.url(),
+  NEXT_PUBLIC_LAUNCHED: z.stringbool().default(false),
+  NEXT_PUBLIC_DEFAULT_LOCALE: z.enum(["bn", "en"]).default("bn"),
+  NEXT_PUBLIC_STORAGE_PROVIDER: z.enum(storageProviders).default("mock"),
+  NEXT_PUBLIC_SUPABASE_URL: z.url().optional(),
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: optionalString,
+  NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: optionalString,
+});
+
+const serverSchema = z.object({
+  AUTH_PROVIDER: z.enum(authProviders).default("mock"),
+  DB_PROVIDER: z.enum(dbProviders).default("mock"),
+  ANALYTICS_PROVIDER: z.enum(analyticsProviders).default("noop"),
+  PREVIEW_ACCESS_SECRET: optionalString,
+  SUPABASE_SERVICE_ROLE_KEY: optionalString,
+  CLOUDINARY_API_KEY: optionalString,
+  CLOUDINARY_API_SECRET: optionalString,
+  CLOUDINARY_UPLOAD_FOLDER: z.string().trim().min(1).default("shojashapta"),
+  ADMIN_EMAILS: z
+    .string()
+    .default("")
+    .transform((value) =>
+      value
+        .split(",")
+        .map((email) => email.trim().toLowerCase())
+        .filter(Boolean),
+    )
+    .pipe(z.array(z.email())),
+  /** Set by Vercel / GitHub Actions; reported by /api/health. */
+  VERCEL_ENV: z.enum(["production", "preview", "development"]).optional(),
+  VERCEL_GIT_COMMIT_SHA: optionalString,
+  GITHUB_SHA: optionalString,
+});
+
+export type ClientEnv = z.infer<typeof clientSchema>;
+export type ServerEnv = z.infer<typeof serverSchema> & ClientEnv;
+
+type Source = Record<string, string | undefined>;
+
+function requireKeys(
+  ctx: z.RefinementCtx,
+  source: Record<string, unknown>,
+  keys: readonly string[],
+  reason: string,
+) {
+  for (const key of keys) {
+    if (source[key] === undefined) {
+      ctx.addIssue({ code: "custom", path: [key], message: `Required when ${reason}` });
+    }
+  }
+}
+
+/** Preview deployments have no fixed URL; fall back to the branch URL Vercel exposes. */
+function withSiteUrlFallback(source: Source): Source {
+  if (source.NEXT_PUBLIC_SITE_URL) return source;
+  const branchUrl = source.NEXT_PUBLIC_VERCEL_BRANCH_URL ?? source.VERCEL_BRANCH_URL;
+  const fallback = branchUrl ? `https://${branchUrl}` : "http://localhost:3000";
+  return { ...source, NEXT_PUBLIC_SITE_URL: fallback };
+}
+
+export function parseClientEnv(source: Source): ClientEnv {
+  return clientSchema
+    .superRefine((env, ctx) => {
+      if (env.NEXT_PUBLIC_STORAGE_PROVIDER === "cloudinary") {
+        requireKeys(ctx, env, ["NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME"], "storage is cloudinary");
+      }
+    })
+    .parse(withSiteUrlFallback(source));
+}
+
+export function parseServerEnv(source: Source): ServerEnv {
+  const client = parseClientEnv(source);
+  const server = serverSchema
+    .superRefine((env, ctx) => {
+      if (env.DB_PROVIDER === "supabase" || env.AUTH_PROVIDER === "supabase") {
+        requireKeys(
+          ctx,
+          { ...client, ...env },
+          [
+            "NEXT_PUBLIC_SUPABASE_URL",
+            "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+            "SUPABASE_SERVICE_ROLE_KEY",
+          ],
+          "DB_PROVIDER or AUTH_PROVIDER is supabase",
+        );
+      }
+      if (client.NEXT_PUBLIC_STORAGE_PROVIDER === "cloudinary") {
+        requireKeys(
+          ctx,
+          env,
+          ["CLOUDINARY_API_KEY", "CLOUDINARY_API_SECRET"],
+          "storage is cloudinary",
+        );
+      }
+      // A launched production site must never serve fixture data.
+      if (env.VERCEL_ENV === "production" && client.NEXT_PUBLIC_LAUNCHED) {
+        const mocks = [
+          env.DB_PROVIDER === "mock" && "DB_PROVIDER",
+          env.AUTH_PROVIDER === "mock" && "AUTH_PROVIDER",
+          client.NEXT_PUBLIC_STORAGE_PROVIDER === "mock" && "NEXT_PUBLIC_STORAGE_PROVIDER",
+        ].filter((key): key is string => Boolean(key));
+        for (const key of mocks) {
+          ctx.addIssue({
+            code: "custom",
+            path: [key],
+            message: "Cannot be mock in launched production",
+          });
+        }
+      }
+    })
+    .parse(source);
+  return { ...client, ...server };
+}
+
+/**
+ * Browser-safe values. Each NEXT_PUBLIC_* is read by its literal name so Next.js can inline it
+ * into client bundles.
+ */
+export const clientEnv: ClientEnv = parseClientEnv({
+  NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+  NEXT_PUBLIC_VERCEL_BRANCH_URL: process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL,
+  NEXT_PUBLIC_LAUNCHED: process.env.NEXT_PUBLIC_LAUNCHED,
+  NEXT_PUBLIC_DEFAULT_LOCALE: process.env.NEXT_PUBLIC_DEFAULT_LOCALE,
+  NEXT_PUBLIC_STORAGE_PROVIDER: process.env.NEXT_PUBLIC_STORAGE_PROVIDER,
+  NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+});
+
+let cachedServerEnv: ServerEnv | undefined;
+
+/** Server-only values (secrets included). Throws if called from browser code. */
+export function serverEnv(): ServerEnv {
+  if (typeof window !== "undefined") {
+    throw new Error("serverEnv() was called in the browser; use clientEnv instead.");
+  }
+  cachedServerEnv ??= parseServerEnv(process.env);
+  return cachedServerEnv;
+}

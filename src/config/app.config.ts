@@ -1,10 +1,107 @@
 /**
- * Every tunable number in the app lives here (AGENTS.md §2). Document each value.
- * Phase 0.4 fills in the rest of this file.
+ * Every tunable number in the app lives here (AGENTS.md §2, docs/03-architecture.md §9).
+ * Change values here, never inline them. Each value says what it controls.
  */
 export const appConfig = {
+  pagination: {
+    /** Items per page for lists; also the row count of list skeletons. */
+    default: 20,
+    /** Upper bound a client may request via `?limit=`. */
+    max: 50,
+  },
+
+  search: {
+    /** Shorter queries return no results (avoids matching everything). */
+    minQueryLength: 2,
+    /** Delay after the last keystroke before suggestions are fetched. */
+    debounceMs: 200,
+    /** Suggestions shown under the search box. */
+    suggestionLimit: 8,
+    /** pg_trgm similarity below this is not a match (0–1). */
+    similarityThreshold: 0.25,
+  },
+
+  ranking: {
+    /** Below this many experiences a dish shows "এখনও পর্যাপ্ত অভিজ্ঞতা নেই" instead of a rank. */
+    minExperiencesToRank: 5,
+    /** Experiences needed before a dish can be labelled "কমিউনিটির প্রিয়". */
+    favoriteMinExperiences: 10,
+    /** z-score for the Wilson lower bound (1.96 = 95% confidence). */
+    wilsonZ: 1.96,
+  },
+
+  claims: {
+    /** Days until a confirmed claim shows ⏳ and asks "এখনও ঠিক আছে?" (decision P8). */
+    ttlDays: { price: 30, opening_hours: 30, availability: 60, place_status: 180, location: 180 },
+    /** Votes needed before a claim's status can change from "unverified". */
+    minVotes: 3,
+    /** Share of ✅ votes needed for "কমিউনিটি নিশ্চিত". */
+    confirmRatio: 0.7,
+    /** Share of ❌ votes that marks a claim as disputed. */
+    disputeRatio: 0.6,
+  },
+
+  limits: {
+    /** Max actions of each kind per user per day (docs/09-security-and-limits.md §2). */
+    perDay: {
+      experience: 30,
+      place_create: 10,
+      food_create: 10,
+      claim_vote: 50,
+      edit_suggestion: 20,
+      report: 20,
+      upload: 10,
+      save: 200,
+    },
+  },
+
+  media: {
+    /** Photos allowed on one experience (decision T5). */
+    maxPhotosPerExperience: 2,
+    /** Largest original a user may pick before browser compression (bytes). */
+    maxUploadBytes: 8_000_000,
+    /** WebP variants made in the browser; originals are never stored. Quality is 0–1. */
+    variants: {
+      thumb: { width: 400, quality: 0.72 },
+      large: { width: 1080, quality: 0.78 },
+    },
+  },
+
+  text: {
+    /** Max characters in an experience comment. */
+    commentMax: 500,
+    /** Max characters in a verification or edit note. */
+    noteMax: 300,
+    /** Max characters in a food, place or dish name. */
+    nameMax: 80,
+  },
+
+  points: {
+    /** Points per action (docs/01-product-spec.md §3.11b). */
+    experience: 10,
+    place_create: 20,
+    /** Bonus for the first place added for a famous food in a district ("আবিষ্কারক"). */
+    discoverer: 20,
+    claim_vote: 5,
+    edit_accepted: 15,
+  },
+
+  passport: {
+    /** Districts in Bangladesh — the passport's full ring. */
+    totalDistricts: 64,
+    /** Recent stamps shown on the home page. */
+    homeMiniStamps: 3,
+  },
+
+  seo: {
+    /** District pages with fewer places are noindex (thin content). */
+    minPlacesToIndexDistrict: 1,
+  },
+
   launch: {
     /** How long a founding contributor's `/?preview=<secret>` access lasts before they need the link again. */
     previewCookieMaxAgeDays: 30,
   },
 } as const;
+
+export type AppConfig = typeof appConfig;

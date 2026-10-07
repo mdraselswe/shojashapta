@@ -1,16 +1,15 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { appConfig } from "@/config/app.config";
+import { clientEnv, serverEnv } from "@/config/env";
+import { routes } from "@/config/routes";
 import { decideLaunchGate, PREVIEW_COOKIE, PREVIEW_PARAM } from "@/lib/launch-gate";
 
-const COMING_SOON_PATH = "/coming-soon";
-
 export async function proxy(request: NextRequest) {
-  // TODO(0.4): read these through the zod-validated `config/env.ts`.
-  const launched = process.env.NEXT_PUBLIC_LAUNCHED === "true";
+  const launched = clientEnv.NEXT_PUBLIC_LAUNCHED;
   const decision = await decideLaunchGate({
     launched,
-    secret: process.env.PREVIEW_ACCESS_SECRET,
+    secret: serverEnv().PREVIEW_ACCESS_SECRET,
     previewParam: request.nextUrl.searchParams.get(PREVIEW_PARAM),
     cookie: request.cookies.get(PREVIEW_COOKIE)?.value,
   });
@@ -28,7 +27,7 @@ export async function proxy(request: NextRequest) {
       maxAge: appConfig.launch.previewCookieMaxAgeDays * 24 * 60 * 60,
     });
   } else if (decision.kind === "gate") {
-    response = NextResponse.rewrite(new URL(COMING_SOON_PATH, request.url));
+    response = NextResponse.rewrite(new URL(routes.comingSoon(), request.url));
   } else {
     response = NextResponse.next();
   }
