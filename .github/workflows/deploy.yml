@@ -41,3 +41,9 @@ jobs:
             code=$(curl -s -o /dev/null -w "%{http_code}" "https://shojashapta.com$path")
             echo "$path -> $code"; [ "$code" = "200" ] || exit 1
           done
+          # A 200 alone could come from anyone (a registrar parking page answers 200 for every path):
+          # the health check must be ours and must report the commit we just deployed.
+          health=$(curl -s "https://shojashapta.com/api/health")
+          echo "/api/health -> $health"
+          echo "$health" | grep -q '"ok":true' || { echo "::error::/api/health is not this app"; exit 1; }
+          echo "$health" | grep -q "\"version\":\"$GITHUB_SHA\"" || { echo "::error::production is not serving $GITHUB_SHA"; exit 1; }
