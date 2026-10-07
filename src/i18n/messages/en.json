@@ -1,0 +1,28 @@
+{
+  "common": {
+    "loading": "Loading…",
+    "close": "Close",
+    "retry": "Try again",
+    "seeAll": "See all"
+  },
+  "nav": {
+    "label": "Main menu",
+    "home": "Home",
+    "search": "Search",
+    "add": "Add",
+    "me": "Me"
+  },
+  "comingSoon": {
+    "title": "Coming soon",
+    "body": "Where to eat what in Bangladesh, told by real community experience. Coming soon."
+  },
+  "errors": {
+    "validation": "Some details aren't right. Check them and submit again.",
+    "auth_required": "Sign in with Google to continue.",
+    "forbidden": "This action isn't available to you.",
+    "rate_limited": "You've reached today's limit. Try again tomorrow.",
+    "not_found": "Not found.",
+    "conflict": "This has already been added.",
+    "unknown": "Something went wrong. Try again."
+  }
+}

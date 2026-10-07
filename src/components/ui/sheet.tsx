@@ -5,11 +5,10 @@ import { Dialog as SheetPrimitive } from "radix-ui";
 import * as React from "react";
 
 import { Button } from "@/components/ui/button";
+import { useT } from "@/i18n/client";
 import { cn } from "@/lib/cn";
 
 // Bottom sheet (§6): scrim, handle bar, radius 28 on top; slides up 300ms. Used for verify, login, filters.
-// TODO(0.8): close label comes from i18n.
-const CLOSE_LABEL = "বন্ধ করুন";
 
 function Sheet(props: React.ComponentProps<typeof SheetPrimitive.Root>) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />;
@@ -45,6 +44,7 @@ function SheetContent({
   showCloseButton = true,
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Content> & { showCloseButton?: boolean }) {
+  const t = useT();
   return (
     <SheetPrimitive.Portal>
       <SheetOverlay />
@@ -62,7 +62,7 @@ function SheetContent({
           <SheetPrimitive.Close asChild>
             <Button variant="ghost" size="icon-sm" className="absolute top-3 right-3">
               <XIcon />
-              <span className="sr-only">{CLOSE_LABEL}</span>
+              <span className="sr-only">{t("common.close")}</span>
             </Button>
           </SheetPrimitive.Close>
         )}

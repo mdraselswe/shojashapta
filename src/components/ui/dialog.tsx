@@ -5,11 +5,10 @@ import { Dialog as DialogPrimitive } from "radix-ui";
 import * as React from "react";
 
 import { Button } from "@/components/ui/button";
+import { useT } from "@/i18n/client";
 import { cn } from "@/lib/cn";
 
 // Centered dialog for the rare cases a bottom sheet does not fit (confirmations on wide screens).
-// TODO(0.8): close label comes from i18n.
-const CLOSE_LABEL = "বন্ধ করুন";
 
 function Dialog(props: React.ComponentProps<typeof DialogPrimitive.Root>) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />;
@@ -49,6 +48,7 @@ function DialogContent({
   showCloseButton = true,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & { showCloseButton?: boolean }) {
+  const t = useT();
   return (
     <DialogPortal>
       <DialogOverlay />
@@ -65,7 +65,7 @@ function DialogContent({
           <DialogPrimitive.Close asChild>
             <Button variant="ghost" size="icon-sm" className="absolute top-3 right-3">
               <XIcon />
-              <span className="sr-only">{CLOSE_LABEL}</span>
+              <span className="sr-only">{t("common.close")}</span>
             </Button>
           </DialogPrimitive.Close>
         )}

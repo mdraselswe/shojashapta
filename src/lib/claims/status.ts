@@ -1,9 +1,9 @@
 import { appConfig } from "@/config/app.config";
+import type { ClaimStatus, ClaimType } from "@/core/domain";
 
 // Claim status and freshness rules (docs/04-database.md, decision P8). Pure: claimService saves the result.
 
-export type ClaimType = keyof typeof appConfig.claims.ttlDays;
-export type ClaimStatus = "unverified" | "confirmed" | "mixed" | "disputed";
+export type { ClaimStatus, ClaimType };
 
 export type ClaimVoteCounts = { correct: number; partial: number; wrong: number };
 
