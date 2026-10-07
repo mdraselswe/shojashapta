@@ -7,6 +7,9 @@
  * Noto 108 KB) and can only preload whole families, which put ~260 KB on the critical path and
  * pushed mobile LCP past the 2.5 s budget. Static per-weight files are 44–57 KB each, and only the
  * two that nearly every first paint draws are preloaded.
+ *
+ * Only five files exist (src/styles/fonts.css): each extra weight is another download on the first
+ * paint. Measured on the home page: nine files ≈ 3.8 s LCP, five files ≈ 3.5 s.
  */
 export const FONT_PRELOADS = [
   "/fonts/noto-sans-bengali-400-bengali.woff2",

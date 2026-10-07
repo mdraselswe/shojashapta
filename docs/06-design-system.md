@@ -128,7 +128,12 @@ are 44–57 KB each and a page downloads only the weights it uses. Changing a fo
 
 - Anek Bangla: modern geometric Bangla, great for headings and large Bangla digits (৯২%, ৭/৬৪).
 - Noto Sans Bengali: most complete conjunct (যুক্তাক্ষর) coverage, very readable at 14–16px.
-- Only the weights above exist (Anek 500/600/700, Noto 400/500/600). No runtime Google request.
+- **Five font files only** (decision D12, amended): Anek Bangla 700 (Bengali) and Noto Sans Bengali 400 + 600
+  (Bengali + Latin). Every extra weight is one more download on the first paint; the home page used to fetch
+  nine files (~420 KB) and missed the LCP budget. The browser maps the rest to the nearest weight:
+  Anek 500/600 → 700, Noto 500 → 400. So `text-heading` (600) renders in Anek 700, and `text-caption`/`text-nav`
+  (500) in Noto 400. Latin characters inside headings (like “?”) come from Noto, the second family in the stack.
+  Adding a weight needs a measured reason. No runtime Google request.
 - No letter-spacing on Bangla. Never weight < 400. Body line-height 1.7, headings 1.15–1.3.
 - Bangla digits in UI via `formatNumber()` (`Intl.NumberFormat('bn-BD')`); currency `৳২৫০–৳৩৮০`.
 
