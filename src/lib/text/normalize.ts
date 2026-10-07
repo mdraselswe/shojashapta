@@ -69,3 +69,19 @@ export function toSearchQuery(input: string): { text: string; key: string } {
   const text = stripStopWords(input);
   return { text, key: toSearchKey(text) };
 }
+
+/**
+ * The `search_text` / `search_key` columns for an entity: every name and alias, normalized and
+ * de-duplicated. Services and the seed script both use this, so stored keys match query keys.
+ */
+export function buildSearchFields(...names: (string | null | undefined)[]): {
+  searchText: string;
+  searchKey: string;
+} {
+  const present = names.filter((name): name is string => Boolean(name?.trim()));
+  const unique = (values: string[]) => [...new Set(values.filter(Boolean))].join(" ");
+  return {
+    searchText: unique(present.map(normalizeBn)),
+    searchKey: unique(present.map(toSearchKey)),
+  };
+}

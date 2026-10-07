@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { normalizeBn, stripStopWords, toSearchKey, toSearchQuery } from "./normalize";
+import {
+  buildSearchFields,
+  normalizeBn,
+  stripStopWords,
+  toSearchKey,
+  toSearchQuery,
+} from "./normalize";
 
 // Each group lists spellings people type for the same thing; all must share one search key
 // (docs/04-database.md §6: kacchi/kachchi/kacci/কাচ্চি/কাচি → same key).
@@ -135,6 +141,15 @@ describe("stripStopWords / toSearchQuery", () => {
     expect(toSearchQuery("Dhaka r KACCHI")).toEqual({
       text: "dhaka kacchi",
       key: toSearchKey("dhaka kacchi"),
+    });
+  });
+});
+
+describe("buildSearchFields", () => {
+  it("joins normalized names and their keys without duplicates", () => {
+    expect(buildSearchFields("কাচ্চি বিরিয়ানি", "Kacchi Biryani", null, "  ")).toEqual({
+      searchText: `${normalizeBn("কাচ্চি বিরিয়ানি")} kacchi biryani`,
+      searchKey: "kaci biriani",
     });
   });
 });
