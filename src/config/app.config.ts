@@ -19,6 +19,18 @@ export const appConfig = {
     suggestionLimit: 8,
     /** pg_trgm similarity below this is not a match (0–1). */
     similarityThreshold: 0.25,
+    /** Longer queries are cut off (keeps cache keys and the search_misses table small). */
+    maxQueryLength: 60,
+    /** Hits fetched per search; the results page and suggestions both slice from these. */
+    resultLimit: 20,
+    /** Hits per group shown in the typing dropdown. */
+    suggestionsPerGroup: 3,
+    /** Price filter buckets in taka, matched against a place's price range. `max: null` = no upper limit. */
+    priceTiers: [
+      { id: "budget", min: 0, max: 150 },
+      { id: "mid", min: 151, max: 300 },
+      { id: "high", min: 301, max: null },
+    ],
   },
 
   ranking: {

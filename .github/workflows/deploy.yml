@@ -38,13 +38,20 @@ jobs:
       - run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
       - name: Smoke test
         run: |
-          for path in / /food/doi /api/health; do
-            code=$(curl -s -o /dev/null -w "%{http_code}" "https://shojashapta.com$path")
+          # A new production deployment takes a short while to start serving; retry for up to ~2 min.
+          # A 200 alone could come from anyone (a registrar parking page answers 200 for every path):
+          # /api/health must be ours and must report the commit we just deployed.
+          ok=false
+          for attempt in $(seq 1 12); do
+            health=$(curl -s --max-time 15 "https://shojashapta.com/api/health" || true)
+            echo "attempt $attempt: /api/health -> $health"
+            if echo "$health" | grep -q '"ok":true' && echo "$health" | grep -q "\"version\":\"$GITHUB_SHA\""; then
+              ok=true; break
+            fi
+            sleep 10
+          done
+          $ok || { echo "::error::production is not serving $GITHUB_SHA"; exit 1; }
+          for path in / /food/doi; do
+            code=$(curl -s -o /dev/null --max-time 15 -w "%{http_code}" "https://shojashapta.com$path")
             echo "$path -> $code"; [ "$code" = "200" ] || exit 1
           done
-          # A 200 alone could come from anyone (a registrar parking page answers 200 for every path):
-          # the health check must be ours and must report the commit we just deployed.
-          health=$(curl -s "https://shojashapta.com/api/health")
-          echo "/api/health -> $health"
-          echo "$health" | grep -q '"ok":true' || { echo "::error::/api/health is not this app"; exit 1; }
-          echo "$health" | grep -q "\"version\":\"$GITHUB_SHA\"" || { echo "::error::production is not serving $GITHUB_SHA"; exit 1; }

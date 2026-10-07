@@ -4,7 +4,7 @@ import { type VariantProps } from "class-variance-authority";
 import { ToggleGroup as ToggleGroupPrimitive } from "radix-ui";
 import * as React from "react";
 
-import { toggleVariants } from "@/components/ui/toggle";
+import { toggleVariants } from "@/components/ui/toggle-variants";
 import { cn } from "@/lib/cn";
 
 type Variant = NonNullable<VariantProps<typeof toggleVariants>["variant"]>;

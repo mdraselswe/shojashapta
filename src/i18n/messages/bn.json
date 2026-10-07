@@ -33,5 +33,48 @@
     "districtsTitle": "জেলা ধরে খুঁজুন",
     "allDistricts": "সব {count}টি জেলা দেখুন",
     "divisionOf": "{name} বিভাগ"
+  },
+  "search": {
+    "back": "পেছনে যান",
+    "clear": "মুছে ফেলুন",
+    "label": "খুঁজুন",
+    "prompt": "খাবার, জেলা বা দোকানের নাম লিখুন",
+    "promptHint": "বাংলা বা ইংরেজি, যেভাবে খুশি: কাচ্চি, kacchi, kachchi",
+    "resultsFor": "“{q}”-র ফলাফল",
+    "tabs": {
+      "all": "সব",
+      "food": "খাবার",
+      "place": "জায়গা",
+      "district": "জেলা"
+    },
+    "groups": {
+      "foods": "খাবার",
+      "places": "জায়গা",
+      "districts": "জেলা"
+    },
+    "filters": {
+      "label": "ফিল্টার",
+      "price": "দাম",
+      "type": "ধরন",
+      "any": "সব"
+    },
+    "price": {
+      "budget": "৳১৫০ পর্যন্ত",
+      "mid": "৳১৫১–৩০০",
+      "high": "৳৩০০-র বেশি"
+    },
+    "empty": "“{q}” নামে কিছু পাওয়া যায়নি।",
+    "emptyHint": "বানান বদলে দেখুন, অথবা বাংলায় বা ইংরেজিতে লিখুন।",
+    "emptyFiltered": "এই ফিল্টারে কোনো জায়গা নেই।",
+    "emptyFilteredHint": "ফিল্টার খুলে আবার দেখুন।",
+    "districtMeta": "{division} বিভাগ"
+  },
+  "placeType": {
+    "restaurant": "রেস্টুরেন্ট",
+    "shop": "দোকান",
+    "street_food": "স্ট্রিট ফুড",
+    "bakery": "বেকারি",
+    "home_kitchen": "ঘরোয়া রান্না",
+    "other": "অন্যান্য"
   }
 }

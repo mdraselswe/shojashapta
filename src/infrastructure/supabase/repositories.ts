@@ -326,7 +326,16 @@ export function createSupabaseRepositoriesFrom(clients: SupabaseClients): Reposi
         });
         return { items: items.slice(0, limit), nextCursor: null };
       },
-      recordMiss: () => notYet("search.recordMiss", "2.2"),
+      async recordMiss(query) {
+        // Server-only table: needs the service client. Without it (no service key configured)
+        // misses are simply not recorded — searching must never fail because of bookkeeping.
+        if (!clients.service || !query.key) return;
+        const { error } = await clients.service.rpc("record_search_miss", {
+          p_key: query.key,
+          p_text: query.text,
+        });
+        if (error) console.error("[shojashapta] record_search_miss failed:", error.message);
+      },
     },
 
     rateLimits: {

@@ -5,7 +5,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
 
-select plan(37);
+select plan(42);
 
 -- Fixtures (as the migration owner, RLS bypassed) -------------------------------------------
 insert into auth.users (id, email) values
@@ -203,6 +203,33 @@ select ok(
   not exists (select 1 from aliases a where a.entity = 'food' and not exists (select 1 from foods f where f.id::text = a.entity_id)),
   'aliases of removed foods are cleaned up'
 );
+
+-- Search misses (migration 0008) ----------------------------------------------------------
+select lives_ok(
+  $$ select record_search_miss('zzqq', 'zzqq') $$,
+  'service role records a search miss'
+);
+select lives_ok(
+  $$ select record_search_miss('zzqq', 'ZZQQ again') $$,
+  'recording the same miss again counts it'
+);
+select is(
+  (select count from search_misses where search_key = 'zzqq'),
+  2,
+  'repeated misses are counted, one row per key'
+);
+reset role;
+set local role anon;
+select set_config('request.jwt.claims', '{"role":"anon"}', true);
+select throws_ok(
+  $$ select record_search_miss('x', 'x') $$,
+  '42501', null, 'visitors cannot write search misses'
+);
+select is_empty(
+  $$ select 1 from search_misses $$,
+  'visitors cannot read search misses'
+);
+reset role;
 
 select * from finish();
 rollback;

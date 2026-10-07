@@ -29,7 +29,7 @@ test.describe("skeleton parity (/dev/skeletons)", () => {
 });
 
 test.describe("layout stability", () => {
-  for (const path of ["/", "/coming-soon"]) {
+  for (const path of ["/", "/coming-soon", "/search?q=doi", "/search"]) {
     test(`CLS < 0.01 on a slow network: ${path}`, async ({ page }) => {
       await throttleNetwork(page);
       expect(await measureCls(page, path)).toBeLessThan(0.01);
