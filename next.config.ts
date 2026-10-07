@@ -6,6 +6,8 @@ import { serverEnv } from "./src/config/env";
 serverEnv();
 
 const nextConfig: NextConfig = {
+  // 'use cache' + cacheTag/cacheLife for catalog reads (docs/03-architecture.md §8).
+  cacheComponents: true,
   async headers() {
     // Font files never change in place (rename on update), so browsers may cache them for a year.
     return [

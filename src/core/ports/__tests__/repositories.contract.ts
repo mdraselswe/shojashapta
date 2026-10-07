@@ -65,6 +65,14 @@ export function repositoryContract(
       expect(fame.map((f) => f.food.slug)).toContain("doi");
     });
 
+    it("lists every district's famous foods in one call", async () => {
+      const repos = await make();
+      const all = await repos.districts.allFame();
+      expect(all.length).toBeGreaterThan(1);
+      const bogura = await repos.districts.bySlug("bogura");
+      expect(all.some((f) => f.districtId === bogura?.id && f.food.slug === "doi")).toBe(true);
+    });
+
     writeIt("keeps one experience per user per dish and updates dish counts", async () => {
       const repos = await make();
       const dish = (await repos.places.dishes(ids.places.second))[0];

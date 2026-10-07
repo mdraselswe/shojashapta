@@ -24,5 +24,14 @@
     "not_found": "Not found.",
     "conflict": "This has already been added.",
     "unknown": "Something went wrong. Try again."
+  },
+  "home": {
+    "title": "What will you eat today?",
+    "searchPlaceholder": "Food, district or shop name",
+    "famousTitle": "Famous for",
+    "famousHint": "An editors' list, not a rating",
+    "districtsTitle": "Browse by district",
+    "allDistricts": "See all {count} districts",
+    "divisionOf": "{name} division"
   }
 }

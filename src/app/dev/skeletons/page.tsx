@@ -5,6 +5,11 @@ import { Section } from "@/components/layout/section";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton, SkeletonAvatar, SkeletonImage, SkeletonText } from "@/components/ui/skeleton";
 import { serverEnv } from "@/config/env";
+import { DistrictChip, DistrictChipSkeleton } from "@/features/home/components/district-chip";
+import {
+  FamousFoodCard,
+  FamousFoodCardSkeleton,
+} from "@/features/home/components/famous-food-card";
 
 import { SkeletonBoard, type SkeletonPair } from "./skeleton-board";
 
@@ -22,6 +27,28 @@ function RowShell({ media, children }: { media: React.ReactNode; children: React
 }
 
 const PAIRS: readonly SkeletonPair[] = [
+  {
+    name: "Home: famous food card",
+    real: (
+      <FamousFoodCard
+        item={{
+          district: { slug: "bogura", nameBn: "বগুড়া" },
+          food: { slug: "doi", nameBn: "দই" },
+          noteBn: null,
+        }}
+      />
+    ),
+    skeleton: <FamousFoodCardSkeleton />,
+  },
+  {
+    name: "Home: district chip",
+    real: (
+      <DistrictChip
+        district={{ slug: "bogura", nameBn: "বগুড়া", famous: { slug: "doi", nameBn: "দই" } }}
+      />
+    ),
+    skeleton: <DistrictChipSkeleton />,
+  },
   {
     name: "Section + paragraph",
     real: (

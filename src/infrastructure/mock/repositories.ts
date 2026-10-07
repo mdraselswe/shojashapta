@@ -63,6 +63,11 @@ export function createMockRepositories(): Repositories {
       lovedCount: ofFood.reduce((sum, d) => sum + d.lovedCount, 0),
     };
   };
+  const fameWhere = (predicate: (fame: (typeof db.fame)[number]) => boolean) =>
+    db.fame.filter(predicate).flatMap(({ foodId, ...rest }) => {
+      const food = db.foods.find((f) => f.id === foodId);
+      return food ? [{ ...rest, food: foodWithStats(food) }] : [];
+    });
   const placeOf = (dish: Dish): DishWithPlace["place"] => {
     const place = db.places.find((p) => p.id === dish.placeId);
     if (!place) throw new Error(`mock: dish ${dish.id} has no place`);
@@ -118,13 +123,8 @@ export function createMockRepositories(): Repositories {
     districts: {
       list: async () => clone(db.districts),
       bySlug: async (slug) => clone(db.districts.find((d) => d.slug === slug) ?? null),
-      fame: async (districtId) =>
-        db.fame
-          .filter((f) => f.districtId === districtId)
-          .flatMap(({ foodId, ...rest }) => {
-            const food = db.foods.find((f) => f.id === foodId);
-            return food ? [{ ...rest, food: foodWithStats(food) }] : [];
-          }),
+      fame: async (districtId) => fameWhere((f) => f.districtId === districtId),
+      allFame: async () => fameWhere(() => true),
     },
 
     foods: {

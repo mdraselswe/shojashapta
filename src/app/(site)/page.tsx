@@ -1,12 +1,11 @@
-import { PageShell } from "@/components/layout/page-shell";
-import { siteConfig } from "@/config/site";
+import type { Metadata } from "next";
 
-// Placeholder home inside the app shell until the real home page (Phase 2.1).
+import { siteConfig } from "@/config/site";
+import { HomePage } from "@/features/home/components/home-page";
+import { buildMetadata } from "@/lib/seo/metadata";
+
+export const metadata: Metadata = buildMetadata({ description: siteConfig.description, path: "/" });
+
 export default function Home() {
-  return (
-    <PageShell className="justify-center gap-3 px-5">
-      <h1 className="text-title-1">{siteConfig.tagline}</h1>
-      <p className="text-body text-muted-foreground">{siteConfig.description}</p>
-    </PageShell>
-  );
+  return <HomePage />;
 }

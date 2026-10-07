@@ -27,6 +27,8 @@ export interface DistrictRepository {
   bySlug(slug: string): Promise<District | null>;
   /** Curated "famous for" list, in editor order. */
   fame(districtId: number): Promise<RegionalFame[]>;
+  /** The whole curated list (every district), in editor order — one query for the home page. */
+  allFame(): Promise<RegionalFame[]>;
 }
 
 export type NewFood = { nameBn: string; nameEn?: string | null };

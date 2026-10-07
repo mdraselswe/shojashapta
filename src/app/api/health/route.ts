@@ -1,8 +1,7 @@
 import { serverEnv } from "@/config/env";
 
-// Deploy smoke test target (docs/03-architecture.md §5). Built once per deploy, so `version` is the
+// Deploy smoke test target (docs/03-architecture.md §5). Prerendered at build, so `version` is the
 // commit that was built.
-export const dynamic = "force-static";
 
 export function GET() {
   const env = serverEnv();

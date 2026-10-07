@@ -91,6 +91,11 @@ const eslintConfig = defineConfig([
       ],
     },
   },
+  {
+    // Tests may use the mock adapters as ready-made fakes (never vendor SDKs).
+    files: ["src/**/*.test.ts"],
+    rules: { "no-restricted-imports": ["error", { patterns: [vendorSdks] }] },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
