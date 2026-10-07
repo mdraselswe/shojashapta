@@ -19,6 +19,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 24, cache: pnpm }
       - uses: supabase/setup-cli@v1
+        with: { version: 2.119.0 } # same CLI as package.json, so config.toml parses
       - name: Migrate DEV database
         # No migrations exist before Phase 1; skip instead of linking an unused project.
         if: hashFiles('supabase/migrations/*.sql') != ''
@@ -26,6 +27,12 @@ jobs:
           supabase link --project-ref "${{ secrets.SUPABASE_DEV_PROJECT_REF }}" -p "${{ secrets.SUPABASE_DEV_DB_PASSWORD }}"
           supabase db push -p "${{ secrets.SUPABASE_DEV_DB_PASSWORD }}"
         env: { SUPABASE_ACCESS_TOKEN: "${{ secrets.SUPABASE_ACCESS_TOKEN }}" }
+      - name: Database tests on DEV (RLS, privileges, functions — rolled back)
+        if: hashFiles('supabase/tests/*.sql') != ''
+        run: supabase test db --linked
+        env:
+          SUPABASE_ACCESS_TOKEN: "${{ secrets.SUPABASE_ACCESS_TOKEN }}"
+          SUPABASE_DB_PASSWORD: "${{ secrets.SUPABASE_DEV_DB_PASSWORD }}"
       - run: npm install --global vercel@latest
       - run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
       - run: vercel build --token=${{ secrets.VERCEL_TOKEN }}

@@ -314,8 +314,8 @@ $$;
 create or replace function search_all(q_text text, q_key text, lim int default 8)
 returns table (kind text, id text, slug text, title text, subtitle text, score real)
 language sql stable as $$
-  ( select 'food', f.id::text, f.slug, f.name_bn, null,
-           greatest(similarity(f.search_text, q_text), similarity(f.search_key, q_key))
+  ( select 'food' as kind, f.id::text as id, f.slug, f.name_bn as title, null as subtitle,
+           greatest(similarity(f.search_text, q_text), similarity(f.search_key, q_key)) as score
     from foods f where f.status='active' and (f.search_text % q_text or f.search_key % q_key)
     union all
     select 'food', f.id::text, f.slug, f.name_bn, a.alias, similarity(a.search_key, q_key)
@@ -411,6 +411,17 @@ create policy "own delete"   on experiences for delete using (user_id = auth.uid
 - `profiles`: public read of `display_name, avatar_url` via a view `public_profiles`; update own (not `role`, `is_banned` — enforce with column privileges or a trigger).
 - Aggregate columns (`*_count`, `wilson_score`, claim status) are updated only by `security definer`
   functions called from the service with the server client; regular users cannot update them.
+
+As implemented (`supabase/migrations/0001–0005`, tests in `supabase/tests/database.test.sql`, run on the DEV
+project by the Preview workflow):
+- Extensions live in the `extensions` schema (`extensions.geography`, `extensions.gin_trgm_ops`).
+- `is_active_user()` = signed in and not banned; every user insert policy requires it.
+- Inserts must start "empty": a new dish has zero counts, a new claim is `unverified` with zero votes.
+- `protect_profile_privileges` trigger: end-user requests (`anon`/`authenticated`) can change `role` / `is_banned`
+  only as admins; the service role and direct DB sessions (SQL editor, seed) are not restricted (0005).
+- `refresh_dish_stats` and `check_rate_limit` are executable by `service_role` only.
+- `search_misses` has RLS with no policies (server only); `rate_limit_events` is owner-read only.
+- Gamification tables (`point_events`, `district_stamps`, `profiles.points_total`) come in Phase 6b.1.
 
 ## 8. Seed data
 - `supabase/seed/districts.sql`: all 64 districts with bn/en names, division, center point, aliases
