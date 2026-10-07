@@ -1,15 +1,17 @@
 import { z } from "zod";
 
+import {
+  ANALYTICS_PROVIDERS as analyticsProviders,
+  AUTH_PROVIDERS as authProviders,
+  DB_PROVIDERS as dbProviders,
+  STORAGE_PROVIDERS as storageProviders,
+} from "./providers";
+
 /**
  * The only place that reads `process.env` (docs/02-tech-stack.md §7, docs/03-architecture.md §9).
  * Vendor keys are required only when that vendor is selected, so CI and local work run on mocks.
  * `next.config.ts` imports this file, so an invalid environment fails the build.
  */
-
-const dbProviders = ["supabase", "mock"] as const;
-const authProviders = ["supabase", "mock"] as const;
-const storageProviders = ["cloudinary", "imagekit", "supabase", "mock"] as const;
-const analyticsProviders = ["noop", "vercel"] as const;
 
 const optionalString = z.string().trim().min(1).optional();
 

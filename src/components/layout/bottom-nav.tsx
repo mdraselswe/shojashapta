@@ -5,18 +5,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { routes } from "@/config/routes";
+import { useT } from "@/i18n/client";
+import type { MessageKey } from "@/i18n/t";
 import { cn } from "@/lib/cn";
 
-// TODO(0.8): labels move to bn.json.
-const NAV_LABEL = "প্রধান মেনু";
-
-type NavItem = { href: string; label: string; icon: LucideIcon; primary?: boolean };
+type NavItem = { href: string; label: MessageKey; icon: LucideIcon; primary?: boolean };
 
 const ITEMS: readonly NavItem[] = [
-  { href: routes.home(), label: "হোম", icon: HouseIcon },
-  { href: routes.search(), label: "খুঁজুন", icon: SearchIcon },
-  { href: routes.add(), label: "যোগ", icon: PlusIcon, primary: true },
-  { href: routes.me(), label: "আমি", icon: UserRoundIcon },
+  { href: routes.home(), label: "nav.home", icon: HouseIcon },
+  { href: routes.search(), label: "nav.search", icon: SearchIcon },
+  { href: routes.add(), label: "nav.add", icon: PlusIcon, primary: true },
+  { href: routes.me(), label: "nav.me", icon: UserRoundIcon },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -29,9 +28,10 @@ function isActive(pathname: string, href: string) {
  */
 export function BottomNav() {
   const pathname = usePathname();
+  const t = useT();
   return (
     <nav
-      aria-label={NAV_LABEL}
+      aria-label={t("nav.label")}
       className="fixed inset-x-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 mx-auto grid h-[66px] max-w-md grid-cols-4 items-center rounded-card-lg border border-border bg-card/88 px-1.5 shadow-floating backdrop-blur-lg"
     >
       {ITEMS.map(({ href, label, icon: Icon, primary }) => {
@@ -44,7 +44,7 @@ export function BottomNav() {
             className="flex h-11 press items-center gap-1.5 justify-self-center rounded-full bg-primary px-3.5 text-sm font-semibold text-primary-foreground"
           >
             <Icon className="size-[18px]" strokeWidth={2.6} aria-hidden />
-            {label}
+            {t(label)}
           </Link>
         ) : (
           <Link
@@ -57,7 +57,7 @@ export function BottomNav() {
             )}
           >
             <Icon className="size-[22px]" strokeWidth={active ? 2.4 : 2} aria-hidden />
-            {label}
+            {t(label)}
           </Link>
         );
       })}
