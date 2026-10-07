@@ -1,16 +1,29 @@
 import { describe, expect, it } from "vitest";
 
 import type { Repositories } from "@/core/ports";
+import { toSearchQuery } from "@/lib/text/normalize";
 
 /**
  * Behaviour every Repositories adapter must have (add-provider skill, step 7). Each adapter's
  * `*.contract.test.ts` calls this with a factory returning fresh repositories loaded with the
  * standard fixtures (src/infrastructure/mock/fixtures.ts — the seed for real adapters too).
  */
+/** Fixture ids the contract refers to (src/infrastructure/mock/fixtures.ts → fixtureIds). */
+export type ContractIds = {
+  foods: { doi: string };
+  places: { sample: string; second: string };
+  users: { contract: string };
+};
+
 export function repositoryContract(
   adapter: string,
   make: () => Promise<Repositories> | Repositories,
+  {
+    ids,
+    writes = true,
+  }: { ids: ContractIds; /** false while an adapter is read-only. */ writes?: boolean },
 ) {
+  const writeIt = writes ? it : it.skip;
   describe(`${adapter} repositories (contract)`, () => {
     it("finds the pipeline's smoke-test entities by slug", async () => {
       const repos = await make();
@@ -52,37 +65,37 @@ export function repositoryContract(
       expect(fame.map((f) => f.food.slug)).toContain("doi");
     });
 
-    it("keeps one experience per user per dish and updates dish counts", async () => {
+    writeIt("keeps one experience per user per dish and updates dish counts", async () => {
       const repos = await make();
-      const dish = (await repos.places.dishes("p-second"))[0];
+      const dish = (await repos.places.dishes(ids.places.second))[0];
       if (!dish) throw new Error("fixture dish missing");
       const before = dish.experienceCount;
       await repos.experiences.upsert({
         dishId: dish.id,
-        userId: "contract-user",
+        userId: ids.users.contract,
         reaction: "loved",
       });
       await repos.experiences.upsert({
         dishId: dish.id,
-        userId: "contract-user",
+        userId: ids.users.contract,
         reaction: "okay",
       });
       const after = await repos.dishes.byId(dish.id);
       expect(after?.experienceCount).toBe(before + 1);
       expect(after?.okayCount).toBe(dish.okayCount + 1);
-      const mine = await repos.experiences.byUser("contract-user");
+      const mine = await repos.experiences.byUser(ids.users.contract);
       expect(mine.items).toHaveLength(1);
       expect(mine.items[0]?.reaction).toBe("okay");
     });
 
-    it("replaces a user's earlier claim vote instead of adding another", async () => {
+    writeIt("replaces a user's earlier claim vote instead of adding another", async () => {
       const repos = await make();
-      const [claim] = await repos.claims.forEntity("place", "p-sample");
+      const [claim] = await repos.claims.forEntity("place", ids.places.sample);
       if (!claim) throw new Error("fixture claim missing");
       const total = (c: typeof claim) => c.counts.correct + c.counts.partial + c.counts.wrong;
       const vote = {
         claimId: claim.id,
-        userId: "contract-user",
+        userId: ids.users.contract,
         reason: null,
         note: null,
         evidence: null,
@@ -94,19 +107,36 @@ export function repositoryContract(
       expect(second.counts.wrong).toBe(claim.counts.wrong + 1);
     });
 
-    it("saves and unsaves without duplicates", async () => {
+    writeIt("saves and unsaves without duplicates", async () => {
       const repos = await make();
-      await repos.saved.save("contract-user", "food", "f-doi");
-      await repos.saved.save("contract-user", "food", "f-doi");
-      expect((await repos.saved.list("contract-user")).items).toHaveLength(1);
-      await repos.saved.remove("contract-user", "food", "f-doi");
-      expect(await repos.saved.isSaved("contract-user", "food", "f-doi")).toBe(false);
+      await repos.saved.save(ids.users.contract, "food", ids.foods.doi);
+      await repos.saved.save(ids.users.contract, "food", ids.foods.doi);
+      expect((await repos.saved.list(ids.users.contract)).items).toHaveLength(1);
+      await repos.saved.remove(ids.users.contract, "food", ids.foods.doi);
+      expect(await repos.saved.isSaved(ids.users.contract, "food", ids.foods.doi)).toBe(false);
     });
 
-    it("finds foods, places and districts by name", async () => {
+    it("finds foods by Bangla and Banglish spellings", async () => {
       const repos = await make();
-      const { items } = await repos.search.search({ text: "দই", key: "doi" });
-      expect(items.some((hit) => hit.kind === "food" && hit.food.slug === "doi")).toBe(true);
+      for (const query of ["দই", "doi", "kacchi", "kachchi", "কাচ্চি"]) {
+        const { items } = await repos.search.search(toSearchQuery(query));
+        const slugs = items.flatMap((hit) => (hit.kind === "food" ? [hit.food.slug] : []));
+        expect(slugs.length, query).toBeGreaterThan(0);
+      }
+      const doi = await repos.search.search(toSearchQuery("দই"));
+      expect(doi.items.some((hit) => hit.kind === "food" && hit.food.slug === "doi")).toBe(true);
+    });
+
+    it("finds places and districts too", async () => {
+      const repos = await make();
+      const district = await repos.search.search(toSearchQuery("bogura"));
+      expect(
+        district.items.some((hit) => hit.kind === "district" && hit.district.slug === "bogura"),
+      ).toBe(true);
+      const place = await repos.search.search(toSearchQuery("নমুনা দই ঘর"));
+      expect(
+        place.items.some((hit) => hit.kind === "place" && hit.place.slug === "sample-place"),
+      ).toBe(true);
     });
   });
 }

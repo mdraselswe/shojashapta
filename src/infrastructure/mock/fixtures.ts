@@ -14,6 +14,39 @@ import { wilsonLowerBound } from "@/lib/ranking/wilson";
 // paths the pipeline checks: /food/doi, /place/sample-place, /district/bogura. Sample names are
 // placeholders, not real businesses or reviews.
 
+/** Stable UUIDs, so the same fixtures load into a real database (scripts/fixtures-sql.ts). */
+export const fixtureIds = {
+  foods: {
+    doi: "10000000-0000-4000-8000-000000000001",
+    kacchi: "10000000-0000-4000-8000-000000000002",
+    mezbani: "10000000-0000-4000-8000-000000000003",
+    kachagolla: "10000000-0000-4000-8000-000000000004",
+  },
+  places: {
+    sample: "20000000-0000-4000-8000-000000000001",
+    second: "20000000-0000-4000-8000-000000000002",
+    kacchi: "20000000-0000-4000-8000-000000000003",
+    mezbani: "20000000-0000-4000-8000-000000000004",
+  },
+  dishes: {
+    sampleDoi: "30000000-0000-4000-8000-000000000001",
+    secondDoi: "30000000-0000-4000-8000-000000000002",
+    kacchi: "30000000-0000-4000-8000-000000000003",
+    mezbani: "30000000-0000-4000-8000-000000000004",
+  },
+  users: {
+    demo: "40000000-0000-4000-8000-000000000001",
+    contract: "40000000-0000-4000-8000-000000000002",
+  },
+  experiences: {
+    first: "50000000-0000-4000-8000-000000000001",
+  },
+  claims: {
+    price: "60000000-0000-4000-8000-000000000001",
+    availability: "60000000-0000-4000-8000-000000000002",
+  },
+} as const;
+
 const district = (
   id: number,
   slug: string,
@@ -50,22 +83,34 @@ const food = (
 });
 
 export const foods: Food[] = [
-  food("f-doi", "doi", "দই", "Doi", "বগুড়ার মিষ্টি দই সারা দেশে পরিচিত।"),
-  food("f-kacchi", "kacchi", "কাচ্চি বিরিয়ানি", "Kacchi Biryani", null),
+  food(fixtureIds.foods.doi, "doi", "দই", "Doi", "বগুড়ার মিষ্টি দই সারা দেশে পরিচিত।"),
+  food(fixtureIds.foods.kacchi, "kacchi", "কাচ্চি বিরিয়ানি", "Kacchi Biryani", null),
   food(
-    "f-mezbani",
+    fixtureIds.foods.mezbani,
     "mezbani",
     "মেজবানি মাংস",
     "Mezbani Beef",
     "চট্টগ্রামের ঐতিহ্যবাহী ভোজের মাংস।",
   ),
-  food("f-kachagolla", "kachagolla", "কাঁচাগোল্লা", "Kachagolla", "নাটোরের বিখ্যাত মিষ্টি।"),
+  food(
+    fixtureIds.foods.kachagolla,
+    "kachagolla",
+    "কাঁচাগোল্লা",
+    "Kachagolla",
+    "নাটোরের বিখ্যাত মিষ্টি।",
+  ),
 ];
 
 export const regionalFame: (Omit<RegionalFame, "food"> & { foodId: string })[] = [
-  { districtId: 2, areaId: null, foodId: "f-doi", noteBn: null, sourceUrl: null },
-  { districtId: 3, areaId: null, foodId: "f-mezbani", noteBn: null, sourceUrl: null },
-  { districtId: 4, areaId: null, foodId: "f-kachagolla", noteBn: null, sourceUrl: null },
+  { districtId: 2, areaId: null, foodId: fixtureIds.foods.doi, noteBn: null, sourceUrl: null },
+  { districtId: 3, areaId: null, foodId: fixtureIds.foods.mezbani, noteBn: null, sourceUrl: null },
+  {
+    districtId: 4,
+    areaId: null,
+    foodId: fixtureIds.foods.kachagolla,
+    noteBn: null,
+    sourceUrl: null,
+  },
 ];
 
 const placeIn = (d: District): Place["district"] => ({ id: d.id, slug: d.slug, nameBn: d.nameBn });
@@ -73,7 +118,7 @@ const [dhaka, bogura, chattogram] = districts as [District, District, District, 
 
 export const places: Place[] = [
   {
-    id: "p-sample",
+    id: fixtureIds.places.sample,
     slug: "sample-place",
     nameBn: "নমুনা দই ঘর",
     nameEn: "Sample Doi Ghor",
@@ -88,7 +133,7 @@ export const places: Place[] = [
     mergedIntoId: null,
   },
   {
-    id: "p-second",
+    id: fixtureIds.places.second,
     slug: "second-sample-place",
     nameBn: "নমুনা মিষ্টিমুখ",
     nameEn: null,
@@ -103,7 +148,7 @@ export const places: Place[] = [
     mergedIntoId: null,
   },
   {
-    id: "p-kacchi",
+    id: fixtureIds.places.kacchi,
     slug: "sample-kacchi-house",
     nameBn: "নমুনা কাচ্চি ঘর",
     nameEn: null,
@@ -118,7 +163,7 @@ export const places: Place[] = [
     mergedIntoId: null,
   },
   {
-    id: "p-mezbani",
+    id: fixtureIds.places.mezbani,
     slug: "sample-mezbani",
     nameBn: "নমুনা মেজবান",
     nameEn: null,
@@ -158,14 +203,17 @@ const dish = (
 });
 
 export const dishes: Dish[] = [
-  { ...dish("d-sample-doi", "p-sample", "f-doi", 23, 2, 0), price: { min: 120, max: 180 } },
-  dish("d-second-doi", "p-second", "f-doi", 3, 0, 0),
-  dish("d-kacchi", "p-kacchi", "f-kacchi", 40, 8, 4),
-  dish("d-mezbani", "p-mezbani", "f-mezbani", 12, 3, 1),
+  {
+    ...dish(fixtureIds.dishes.sampleDoi, fixtureIds.places.sample, fixtureIds.foods.doi, 23, 2, 0),
+    price: { min: 120, max: 180 },
+  },
+  dish(fixtureIds.dishes.secondDoi, fixtureIds.places.second, fixtureIds.foods.doi, 3, 0, 0),
+  dish(fixtureIds.dishes.kacchi, fixtureIds.places.kacchi, fixtureIds.foods.kacchi, 40, 8, 4),
+  dish(fixtureIds.dishes.mezbani, fixtureIds.places.mezbani, fixtureIds.foods.mezbani, 12, 3, 1),
 ];
 
 export const demoUser: AppUser = {
-  id: "u-demo",
+  id: fixtureIds.users.demo,
   displayName: "নমুনা ব্যবহারকারী",
   avatarUrl: null,
   role: "user",
@@ -176,8 +224,8 @@ export const demoUser: AppUser = {
 
 export const experiences: Experience[] = [
   {
-    id: "e-1",
-    dishId: "d-sample-doi",
+    id: fixtureIds.experiences.first,
+    dishId: fixtureIds.dishes.sampleDoi,
     user: { id: demoUser.id, displayName: demoUser.displayName, avatarUrl: null },
     reaction: "loved",
     comment: "টক-মিষ্টি ঠিকঠাক, হাঁড়ির দই।",
@@ -191,9 +239,9 @@ export const experiences: Experience[] = [
 
 export const claims: Claim[] = [
   {
-    id: "c-price",
+    id: fixtureIds.claims.price,
     entity: "dish",
-    entityId: "d-sample-doi",
+    entityId: fixtureIds.dishes.sampleDoi,
     type: "price",
     value: { min: 120, max: 180 },
     status: "confirmed",
@@ -202,9 +250,9 @@ export const claims: Claim[] = [
     expiresAt: new Date("2026-10-20T00:00:00Z"),
   },
   {
-    id: "c-availability",
+    id: fixtureIds.claims.availability,
     entity: "place",
-    entityId: "p-sample",
+    entityId: fixtureIds.places.sample,
     type: "availability",
     value: { available: true },
     status: "unverified",
