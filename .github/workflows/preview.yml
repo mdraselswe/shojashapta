@@ -19,6 +19,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 24, cache: pnpm }
       - uses: supabase/setup-cli@v1
+        with: { version: 2.119.0 } # same CLI as package.json, so config.toml parses
       - name: Migrate DEV database
         # No migrations exist before Phase 1; skip instead of linking an unused project.
         if: hashFiles('supabase/migrations/*.sql') != ''
