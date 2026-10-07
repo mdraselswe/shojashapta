@@ -50,8 +50,9 @@ language sql stable
 set search_path = public, extensions
 as $$
   (
-    select 'food', f.id::text, f.slug, f.name_bn, null::text,
-           greatest(similarity(f.search_text, q_text), similarity(f.search_key, q_key))
+    -- The first branch names the result columns (UNION takes names from it).
+    select 'food' as kind, f.id::text as id, f.slug as slug, f.name_bn as title, null::text as subtitle,
+           greatest(similarity(f.search_text, q_text), similarity(f.search_key, q_key)) as score
     from foods f
     where f.status = 'active' and (f.search_text % q_text or f.search_key % q_key)
     union all

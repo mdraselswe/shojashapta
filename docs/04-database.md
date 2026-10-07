@@ -314,8 +314,8 @@ $$;
 create or replace function search_all(q_text text, q_key text, lim int default 8)
 returns table (kind text, id text, slug text, title text, subtitle text, score real)
 language sql stable as $$
-  ( select 'food', f.id::text, f.slug, f.name_bn, null,
-           greatest(similarity(f.search_text, q_text), similarity(f.search_key, q_key))
+  ( select 'food' as kind, f.id::text as id, f.slug, f.name_bn as title, null as subtitle,
+           greatest(similarity(f.search_text, q_text), similarity(f.search_key, q_key)) as score
     from foods f where f.status='active' and (f.search_text % q_text or f.search_key % q_key)
     union all
     select 'food', f.id::text, f.slug, f.name_bn, a.alias, similarity(a.search_key, q_key)
