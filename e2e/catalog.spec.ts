@@ -71,3 +71,57 @@ test.describe("place page", () => {
     await expect(page.locator("meta[name=robots]").first()).toHaveAttribute("content", /noindex/);
   });
 });
+
+test.describe("district pages", () => {
+  test("district page lists famous foods and places", async ({ page }) => {
+    await page.goto("/district/bogura");
+    await expect(page.getByRole("heading", { level: 1, name: "বগুড়া" })).toBeVisible();
+    const famous = page.getByRole("region", { name: "বিখ্যাত খাবার" });
+    await expect(famous.getByRole("link", { name: /দই/ })).toHaveAttribute(
+      "href",
+      "/district/bogura/doi",
+    );
+    const places = page.getByRole("region", { name: "এখানকার জায়গা" });
+    await expect(places.getByRole("link", { name: /নমুনা দই ঘর/ })).toHaveAttribute(
+      "href",
+      "/place/sample-place",
+    );
+  });
+
+  test("a district with no places says so", async ({ page }) => {
+    await page.goto("/district/natore");
+    await expect(page.getByText("এই জেলায় এখনও কোনো জায়গা যোগ হয়নি।")).toBeVisible();
+  });
+
+  test("district × food shows only that district's places", async ({ page }) => {
+    await page.goto("/district/bogura/doi");
+    await expect(page.getByRole("heading", { level: 1, name: "বগুড়া-এর দই" })).toBeVisible();
+    await expect(page.getByRole("link", { name: /নমুনা দই ঘর/ })).toBeVisible();
+    await expect(page.getByRole("link", { name: "সারা দেশে দই দেখুন" })).toHaveAttribute(
+      "href",
+      "/food/doi",
+    );
+  });
+
+  test("district × food with no dishes shows an empty state", async ({ page }) => {
+    await page.goto("/district/dhaka/doi");
+    await expect(page.getByText(/কোথায় ভালো পাওয়া যায়, এখনও কেউ জানায়নি/)).toBeVisible();
+  });
+
+  test("unknown district or pair shows the not-found page", async ({ page }) => {
+    for (const path of ["/district/nowhere", "/district/bogura/nothing"]) {
+      await page.goto(path);
+      await expect(page.getByRole("heading", { name: "পাতাটি খুঁজে পাওয়া যায়নি" })).toBeVisible();
+    }
+  });
+
+  test("works at 360px without sideways scrolling", async ({ page }) => {
+    for (const path of ["/district/bogura", "/district/bogura/doi"]) {
+      await page.goto(path);
+      const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      );
+      expect(overflow, path).toBe(0);
+    }
+  });
+});

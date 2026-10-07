@@ -96,6 +96,31 @@ export type PlaceClaimRow = {
   expiresAt: Date | null;
 };
 
+export type DistrictHeader = {
+  id: number;
+  slug: string;
+  nameBn: string;
+  divisionBn: string;
+  /** Curated "famous for" foods, in editor order. */
+  famous: { food: FoodRef; noteBn: string | null }[];
+};
+
+export type DistrictPlaceRow = {
+  slug: string;
+  nameBn: string;
+  type: PlaceType;
+  areaNameBn: string | null;
+  price: PriceRange;
+};
+
+export type DistrictFoodPage = {
+  district: DistrictRef;
+  food: FoodRef & { aboutBn: string | null };
+  /** Why the editors list this food here. */
+  noteBn: string | null;
+  dishes: FoodDishes;
+};
+
 function priceRangeOf(dishes: Pick<Dish, "price">[]): PriceRange {
   const lows = dishes.flatMap((dish) => (dish.price.min === null ? [] : [dish.price.min]));
   const highs = dishes.flatMap((dish) => (dish.price.max === null ? [] : [dish.price.max]));
@@ -109,12 +134,23 @@ export function createCatalogService({ repos }: Deps) {
   return {
     /** Slugs worth prerendering at build time. */
     async staticSlugs() {
-      const [foods, places, districts] = await Promise.all([
+      const [foods, places, districts, fame] = await Promise.all([
         repos.foods.slugs(appConfig.seo.staticFoodCount),
         repos.places.slugs(appConfig.seo.staticPlaceCount),
         repos.districts.list(),
+        repos.districts.allFame(),
       ]);
-      return { foods, places, districts: districts.map((district) => district.slug) };
+      const slugById = new Map(districts.map((district) => [district.id, district.slug]));
+      return {
+        foods,
+        places,
+        districts: districts.map((district) => district.slug),
+        /** The curated "famous for" pairs: the district×food pages worth prerendering. */
+        districtFoods: fame.flatMap((entry) => {
+          const district = slugById.get(entry.districtId);
+          return district ? [{ district, food: entry.food.slug }] : [];
+        }),
+      };
     },
 
     async foodHeader(slug: string): Promise<FoodHeader | null> {
@@ -143,8 +179,11 @@ export function createCatalogService({ repos }: Deps) {
       };
     },
 
-    async foodDishes(foodId: string): Promise<FoodDishes> {
-      const page = await repos.foods.topDishes(foodId, { limit: appConfig.pagination.default });
+    async foodDishes(foodId: string, districtId?: number): Promise<FoodDishes> {
+      const page = await repos.foods.topDishes(foodId, {
+        limit: appConfig.pagination.default,
+        ...(districtId === undefined ? {} : { districtId }),
+      });
       return {
         items: page.items.map((dish) => ({
           id: dish.id,
@@ -217,6 +256,59 @@ export function createCatalogService({ repos }: Deps) {
         lastConfirmedAt: claim.lastConfirmedAt,
         expiresAt: claim.expiresAt,
       }));
+    },
+
+    async districtHeader(slug: string): Promise<DistrictHeader | null> {
+      const district = await repos.districts.bySlug(slug);
+      if (!district) return null;
+      const fame = await repos.districts.fame(district.id);
+      return {
+        id: district.id,
+        slug: district.slug,
+        nameBn: district.nameBn,
+        divisionBn: district.divisionBn,
+        famous: fame.map((entry) => ({
+          food: { slug: entry.food.slug, nameBn: entry.food.nameBn },
+          noteBn: entry.noteBn,
+        })),
+      };
+    },
+
+    async districtPlaces(
+      districtId: number,
+    ): Promise<{ items: DistrictPlaceRow[]; hasMore: boolean }> {
+      const page = await repos.places.inDistrict(districtId, {
+        limit: appConfig.pagination.default,
+      });
+      return {
+        items: page.items.map((place) => ({
+          slug: place.slug,
+          nameBn: place.nameBn,
+          type: place.type,
+          areaNameBn: place.area?.nameBn ?? null,
+          price: place.price,
+        })),
+        hasMore: page.nextCursor !== null,
+      };
+    },
+
+    /** "বগুড়ার দই": the dishes of one food inside one district, or null if either is unknown. */
+    async districtFood(districtSlug: string, foodSlug: string): Promise<DistrictFoodPage | null> {
+      const [district, food] = await Promise.all([
+        repos.districts.bySlug(districtSlug),
+        repos.foods.bySlug(foodSlug),
+      ]);
+      if (!district || !food) return null;
+      const [fame, dishes] = await Promise.all([
+        repos.districts.fame(district.id),
+        this.foodDishes(food.id, district.id),
+      ]);
+      return {
+        district: { slug: district.slug, nameBn: district.nameBn },
+        food: { slug: food.slug, nameBn: food.nameBn, aboutBn: food.aboutBn },
+        noteBn: fame.find((entry) => entry.food.id === food.id)?.noteBn ?? null,
+        dishes,
+      };
     },
 
     async home(): Promise<HomeData> {

@@ -2,7 +2,12 @@
   "ci": {
     "collect": {
       "startServerCommand": "pnpm start",
-      "url": ["http://localhost:3000/"],
+      "url": [
+        "http://localhost:3000/",
+        "http://localhost:3000/food/doi",
+        "http://localhost:3000/place/sample-place",
+        "http://localhost:3000/district/bogura"
+      ],
       "settings": {
         "formFactor": "mobile",
         "screenEmulation": {

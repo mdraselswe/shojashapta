@@ -36,6 +36,8 @@ test.describe("layout stability", () => {
     "/search",
     "/food/doi",
     "/place/sample-place",
+    "/district/bogura",
+    "/district/bogura/doi",
   ]) {
     test(`CLS < 0.01 on a slow network: ${path}`, async ({ page }) => {
       await throttleNetwork(page);
