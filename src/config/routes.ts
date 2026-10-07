@@ -1,4 +1,4 @@
-import { withSearchParams } from "@/lib/url";
+import { withSearchParams } from "@/lib/search-params";
 
 /**
  * Typed route builders — link with these, never with string literals (docs/03-architecture.md §9).
