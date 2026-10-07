@@ -75,6 +75,23 @@ export function createSupabaseRepositoriesFrom(clients: SupabaseClients): Reposi
     return row ? toFood(row) : null;
   };
 
+  /** Curated "famous for" rows with their (active) foods; one district or all of them. */
+  const fameQuery = async (districtId: number | null) => {
+    let query = db
+      .from("regional_fame")
+      .select("district_id, area_id, note_bn, source_url, foods!inner(*)")
+      .eq("foods.status", "active");
+    if (districtId !== null) query = query.eq("district_id", districtId);
+    const rows = check(await query.order("sort_order"), "regional fame");
+    return rows.map((row) => ({
+      districtId: row.district_id,
+      areaId: row.area_id,
+      noteBn: row.note_bn,
+      sourceUrl: row.source_url,
+      food: toFood(row.foods),
+    }));
+  };
+
   const experiencesWhere = async (
     filter: { column: "dish_id" | "user_id"; values: string[] },
     opts?: PageOpts,
@@ -107,24 +124,8 @@ export function createSupabaseRepositoriesFrom(clients: SupabaseClients): Reposi
         );
         return row ? toDistrict(row) : null;
       },
-      async fame(districtId) {
-        const rows = check(
-          await db
-            .from("regional_fame")
-            .select("district_id, area_id, note_bn, source_url, foods!inner(*)")
-            .eq("district_id", districtId)
-            .eq("foods.status", "active")
-            .order("sort_order"),
-          "regional fame",
-        );
-        return rows.map((row) => ({
-          districtId: row.district_id,
-          areaId: row.area_id,
-          noteBn: row.note_bn,
-          sourceUrl: row.source_url,
-          food: toFood(row.foods),
-        }));
-      },
+      fame: (districtId) => fameQuery(districtId),
+      allFame: () => fameQuery(null),
     },
 
     foods: {
