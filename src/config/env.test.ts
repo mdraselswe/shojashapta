@@ -75,6 +75,19 @@ describe("parseServerEnv", () => {
     expect(() => parseServerEnv({ ADMIN_EMAILS: "not-an-email" })).toThrow();
   });
 
+  it("treats empty values as unset (vercel pull writes empty system vars)", () => {
+    const env = parseServerEnv({
+      VERCEL_GIT_COMMIT_SHA: "",
+      NEXT_PUBLIC_SITE_URL: "",
+      PREVIEW_ACCESS_SECRET: "  ",
+      DB_PROVIDER: "",
+    });
+    expect(env.VERCEL_GIT_COMMIT_SHA).toBeUndefined();
+    expect(env.PREVIEW_ACCESS_SECRET).toBeUndefined();
+    expect(env.NEXT_PUBLIC_SITE_URL).toBe("http://localhost:3000");
+    expect(env.DB_PROVIDER).toBe("mock");
+  });
+
   it("refuses mock providers on a launched production deploy", () => {
     expect(() =>
       parseServerEnv({ VERCEL_ENV: "production", NEXT_PUBLIC_LAUNCHED: "true" }),

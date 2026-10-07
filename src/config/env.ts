@@ -66,6 +66,16 @@ function requireKeys(
   }
 }
 
+/**
+ * An empty variable means "not set". Hosts write empty values for things they don't know
+ * (e.g. `vercel pull` sets VERCEL_GIT_COMMIT_SHA="" for CLI deploys), and `.env` files often leave keys blank.
+ */
+function withoutEmpty(source: Source): Source {
+  return Object.fromEntries(
+    Object.entries(source).filter(([, value]) => value !== undefined && value.trim() !== ""),
+  );
+}
+
 /** Preview deployments have no fixed URL; fall back to the branch URL Vercel exposes. */
 function withSiteUrlFallback(source: Source): Source {
   if (source.NEXT_PUBLIC_SITE_URL) return source;
@@ -81,10 +91,11 @@ export function parseClientEnv(source: Source): ClientEnv {
         requireKeys(ctx, env, ["NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME"], "storage is cloudinary");
       }
     })
-    .parse(withSiteUrlFallback(source));
+    .parse(withSiteUrlFallback(withoutEmpty(source)));
 }
 
-export function parseServerEnv(source: Source): ServerEnv {
+export function parseServerEnv(rawSource: Source): ServerEnv {
+  const source = withoutEmpty(rawSource);
   const client = parseClientEnv(source);
   const server = serverSchema
     .superRefine((env, ctx) => {
