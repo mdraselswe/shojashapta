@@ -42,7 +42,7 @@ Install Docker Desktop if you want a local Supabase (`pnpm db:start`); otherwise
 
 ---
 
-## Phase 1 — Database & seed
+## Phase 1 — Database & seed — ✅ done (tag `phase-1`, 2026-10-07)
 1.1 Migrations `0001_init.sql` (enums, tables), `0002_indexes.sql`, `0003_functions.sql` (wilson, refresh_dish_stats, search_all, check_rate_limit, is_admin), `0004_rls.sql`.
 1.2 Generate types; implement Supabase repositories (read methods first) with row→domain mappers.
 1.3 `lib/text/normalize.ts` + 50+ test cases (Bangla, Banglish, typos).
@@ -53,7 +53,7 @@ Install Docker Desktop if you want a local Supabase (`pnpm db:start`); otherwise
 
 ---
 
-## Phase 2 — Read experience (no login)
+## Phase 2 — Read experience (no login) — ✅ done (tag `phase-2`, 2026-10-08)
 2.1 Home page + skeleton.  2.2 Search: `/api/search`, `SearchBox` with suggestions, `/search` results + filters (price, place type) + skeletons.
 2.3 Food page + all sections + skeletons.  2.4 Place page + "প্রথমবার? এগুলো অর্ডার করুন" + external map link + skeletons.
 2.5 District page + district×food page + empty states + skeletons.  2.6 `not-found`, `error`, `global-error`.
