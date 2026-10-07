@@ -5,7 +5,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
 
-select plan(24);
+select plan(25);
 
 -- Fixtures (as the migration owner, RLS bypassed) -------------------------------------------
 insert into auth.users (id, email) values
@@ -112,9 +112,17 @@ select set_config('request.jwt.claims',
   '{"sub":"00000000-0000-4000-8000-0000000000b2","role":"authenticated"}', true);
 select is((select count(*)::int from saved_items), 0, 'saved lists are private');
 
--- Banned user ------------------------------------------------------------------------------
+-- Direct database session (SQL editor, seed): no JWT, may manage privileges ------------------------
 reset role;
-update profiles set is_banned = true where id = '00000000-0000-4000-8000-0000000000b2';
+select set_config('request.jwt.claims', '', true);
+select lives_ok(
+  $$ update profiles set is_banned = true where id = '00000000-0000-4000-8000-0000000000b2' $$,
+  'a direct database session can ban a user'
+);
+
+-- Banned user ------------------------------------------------------------------------------
+select set_config('request.jwt.claims',
+  '{"sub":"00000000-0000-4000-8000-0000000000b2","role":"authenticated"}', true);
 set local role authenticated;
 select throws_ok(
   $$ insert into reports (entity, entity_id, reason, user_id)
