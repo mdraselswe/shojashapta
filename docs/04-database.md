@@ -423,8 +423,20 @@ project by the Preview workflow):
 - `search_misses` has RLS with no policies (server only); `rate_limit_events` is owner-read only.
 - Gamification tables (`point_events`, `district_stamps`, `profiles.points_total`) come in Phase 6b.1.
 
-## 8. Seed data
-- `supabase/seed/districts.sql`: all 64 districts with bn/en names, division, center point, aliases
-  (e.g. Bogura: `bogra`, `bogura`, `বগুড়া`; Chattogram: `chittagong`, `ctg`; Cumilla: `comilla`; Barishal: `barisal`; Jashore: `jessore`).
-- `supabase/seed/regional_fame.csv`: district_slug, food_slug, food_name_bn, note_bn, source_url — reviewed by you before import.
-- `scripts/seed.ts` reads CSVs and calls services (so search keys are generated the same way as the app).
+## 8. Seed data (decision T16)
+Launch content ships as a migration, so DEV and PROD get it through the normal pipeline:
+- Source: `scripts/seed/data.ts` (typed, reviewed in PRs). `pnpm db:seed` generates
+  `supabase/migrations/0007_seed_curated_data.sql`; `scripts/seed/seed.test.ts` fails if the file is stale.
+- Contents: all 64 districts (division, Banglish/old-name aliases such as `bogra`, `chittagong`, `ctg`,
+  `comilla`, `barisal`, `jessore`), the curated "famous for" list (RegionalFame), the foods behind it with
+  aliases, and a few well-known places. **No ratings, reviews, prices, hours, addresses or claims are invented** —
+  people add those. A change after the migration is applied needs a new migration.
+- Search fields (`search_text`, `search_key`) come from `lib/text/normalize` (`buildSearchFields`), the same code
+  the app uses; food/district aliases are separate rows (`aliases`) or part of the district key.
+- **Removing it later:** everything except districts carries `is_seed = true` (users can never set it — trigger
+  `protect_seed_flag`). In the Supabase SQL editor:
+  ```sql
+  select purge_seed_data();        -- removes unused seed rows; keeps seed places/dishes real users already rated or saved
+  select purge_seed_data(false);   -- removes ALL flagged rows, including experiences on them
+  ```
+  It returns how many rows of each kind were removed, refreshes `districts.place_count` and leaves districts alone.

@@ -68,8 +68,12 @@ jobs:
       - if: failure()
         uses: actions/upload-artifact@v4
         with: { name: database-types, path: /tmp/database.types.ts, retention-days: 7 }
-      - name: Load fixtures
-        run: pnpm exec tsx scripts/fixtures-sql.ts | psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres" -v ON_ERROR_STOP=1 -q
+      - name: Load fixtures (replaces the curated seed; this database is throwaway)
+        run: |
+          DB_URL="postgresql://postgres:postgres@127.0.0.1:54322/postgres"
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -q \
+            -c "truncate districts, areas, foods, aliases, regional_fame, places, dishes cascade"
+          pnpm exec tsx scripts/fixtures-sql.ts | psql "$DB_URL" -v ON_ERROR_STOP=1 -q
       - name: Supabase repository contract
         run: |
           eval "$(supabase status -o env | sed 's/^/export /')"

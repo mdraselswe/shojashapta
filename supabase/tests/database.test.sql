@@ -5,7 +5,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
 
-select plan(25);
+select plan(37);
 
 -- Fixtures (as the migration owner, RLS bypassed) -------------------------------------------
 insert into auth.users (id, email) values
@@ -136,6 +136,72 @@ set local role service_role;
 select lives_ok(
   $$ select refresh_dish_stats('00000000-0000-4000-8000-00000000d001') $$,
   'service role refreshes dish stats'
+);
+
+
+-- Curated launch content (migrations 0006–0007) ------------------------------------------------
+reset role;
+select is((select count(*)::int from districts where id < 900), 64, 'all 64 districts are seeded');
+select ok(
+  exists (select 1 from foods where slug = 'doi' and is_seed)
+  and exists (select 1 from places where slug = 'haji-biryani-dhaka' and is_seed),
+  'launch content carries the is_seed flag'
+);
+select ok(
+  exists (select 1 from search_all('kacchi', 'kaci') where slug = 'kacchi')
+  and exists (select 1 from search_all('কাচি', 'kaci') where slug = 'kacchi')
+  and exists (select 1 from search_all('doi', 'dai') where slug = 'doi')
+  and exists (select 1 from search_all('bogra', 'bagra') where slug = 'bogura'),
+  'search_all finds kacchi / কাচি / doi / bogra from the seed'
+);
+
+set local role authenticated;
+select set_config('request.jwt.claims',
+  '{"sub":"00000000-0000-4000-8000-0000000000a1","role":"authenticated"}', true);
+select throws_ok(
+  $ insert into foods (slug, name_bn, created_by, is_seed)
+     values ('rls-user-seed-food', 'x', '00000000-0000-4000-8000-0000000000a1', true) $,
+  'P0001', null, 'users cannot flag their own rows as seed content'
+);
+select throws_ok(
+  $ select purge_seed_data() $,
+  '42501', null, 'users cannot run purge_seed_data'
+);
+reset role;
+
+-- A real person rated one seed dish; purging must keep what they built on.
+insert into experiences (user_id, dish_id, reaction)
+select '00000000-0000-4000-8000-0000000000a1', d.id, 'loved'
+from dishes d join places p on p.id = d.place_id
+where p.slug = 'haji-biryani-dhaka';
+
+set local role service_role;
+select lives_ok($ select purge_seed_data() $, 'service role purges seed content');
+select ok(
+  not exists (select 1 from places where slug = 'fakruddin-biryani-dhaka')
+  and not exists (select 1 from regional_fame where is_seed),
+  'unused seed places and the famous-for list are gone'
+);
+select ok(
+  exists (select 1 from places where slug = 'haji-biryani-dhaka')
+  and exists (select 1 from foods where slug = 'kacchi'),
+  'a seed place with a real experience, and its food, are kept'
+);
+select ok(
+  exists (select 1 from places where slug = 'rls-test-place')
+  and (select count(*)::int from districts where id < 900) = 64,
+  'user-made rows and districts are never purged'
+);
+select lives_ok($ select purge_seed_data(false) $, 'purge_seed_data(false) removes everything flagged');
+select ok(
+  not exists (select 1 from foods where is_seed)
+  and not exists (select 1 from places where is_seed)
+  and not exists (select 1 from dishes where is_seed),
+  'no seed rows remain'
+);
+select ok(
+  not exists (select 1 from aliases a where a.entity = 'food' and not exists (select 1 from foods f where f.id::text = a.entity_id)),
+  'aliases of removed foods are cleaned up'
 );
 
 select * from finish();

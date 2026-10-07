@@ -16,7 +16,7 @@
     "db:start": "supabase start",
     "db:migrate": "supabase migration up",
     "db:types": "supabase gen types typescript --local > src/infrastructure/supabase/database.types.ts",
-    "db:seed": "tsx scripts/seed.ts",
+    "db:seed": "tsx scripts/seed/generate.ts",
     "analyze": "ANALYZE=true next build --webpack",
     "prepare": "husky"
   },
