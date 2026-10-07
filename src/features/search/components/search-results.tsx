@@ -20,7 +20,7 @@ export async function SearchResults({ searchParams }: { searchParams: Promise<Ra
 
   if (q === "") {
     return (
-      <div className="px-5 pt-8 text-center">
+      <div className="page-x pt-8 text-center">
         <p className="text-card-title">{t("search.prompt")}</p>
         <p className="mt-1 text-meta text-muted-foreground">{t("search.promptHint")}</p>
       </div>
@@ -40,60 +40,68 @@ export async function SearchResults({ searchParams }: { searchParams: Promise<Ra
   const showFoods = tab === "all" || tab === "food";
   const showPlaces = tab === "all" || tab === "place";
   const showDistricts = tab === "all" || tab === "district";
+  const showFilters = tab === "all" || tab === "place";
 
   return (
-    <div className="flex flex-col gap-4 px-5 pt-1">
+    <div className="flex flex-col gap-4 page-x pt-1 lg:pt-2">
       <p className="px-1 text-meta text-muted-foreground">{t("search.resultsFor", { q })}</p>
       <SearchTabs q={q} active={tab} counts={counts} carry={{ type, price }} />
-      {(tab === "all" || tab === "place") && <SearchFilters params={params} />}
+      <div className="flex flex-col gap-4 lg:grid lg:grid-cols-12 lg:items-start lg:gap-8">
+        {showFilters && (
+          <div className="lg:sticky lg:top-6 lg:col-span-3">
+            <SearchFilters params={params} />
+          </div>
+        )}
+        <div className={`flex flex-col gap-4 ${showFilters ? "lg:col-span-9" : "lg:col-span-12"}`}>
+          {counts[tab] === 0 && (
+            <EmptyState
+              message={
+                <>
+                  <strong className="block font-semibold">
+                    {filtered && outcome.total > 0
+                      ? t("search.emptyFiltered")
+                      : t("search.empty", { q })}
+                  </strong>
+                  {filtered && outcome.total > 0
+                    ? t("search.emptyFilteredHint")
+                    : t("search.emptyHint")}
+                </>
+              }
+            />
+          )}
 
-      {counts[tab] === 0 && (
-        <EmptyState
-          message={
-            <>
-              <strong className="block font-semibold">
-                {filtered && outcome.total > 0
-                  ? t("search.emptyFiltered")
-                  : t("search.empty", { q })}
-              </strong>
-              {filtered && outcome.total > 0
-                ? t("search.emptyFilteredHint")
-                : t("search.emptyHint")}
-            </>
-          }
-        />
-      )}
-
-      {showFoods && outcome.foods.length > 0 && (
-        <section aria-label={t("search.groups.foods")}>
-          <h2 className={GROUP_HEADING_CLASS}>{t("search.groups.foods")}</h2>
-          <GroupedList>
-            {outcome.foods.map((hit) => (
-              <FoodHitRow key={hit.slug} hit={hit} />
-            ))}
-          </GroupedList>
-        </section>
-      )}
-      {showPlaces && places.length > 0 && (
-        <section aria-label={t("search.groups.places")}>
-          <h2 className={GROUP_HEADING_CLASS}>{t("search.groups.places")}</h2>
-          <GroupedList>
-            {places.map((hit) => (
-              <PlaceHitRow key={hit.slug} hit={hit} t={t} />
-            ))}
-          </GroupedList>
-        </section>
-      )}
-      {showDistricts && outcome.districts.length > 0 && (
-        <section aria-label={t("search.groups.districts")}>
-          <h2 className={GROUP_HEADING_CLASS}>{t("search.groups.districts")}</h2>
-          <GroupedList>
-            {outcome.districts.map((hit) => (
-              <DistrictHitRow key={hit.slug} hit={hit} t={t} />
-            ))}
-          </GroupedList>
-        </section>
-      )}
+          {showFoods && outcome.foods.length > 0 && (
+            <section aria-label={t("search.groups.foods")}>
+              <h2 className={GROUP_HEADING_CLASS}>{t("search.groups.foods")}</h2>
+              <GroupedList>
+                {outcome.foods.map((hit) => (
+                  <FoodHitRow key={hit.slug} hit={hit} />
+                ))}
+              </GroupedList>
+            </section>
+          )}
+          {showPlaces && places.length > 0 && (
+            <section aria-label={t("search.groups.places")}>
+              <h2 className={GROUP_HEADING_CLASS}>{t("search.groups.places")}</h2>
+              <GroupedList>
+                {places.map((hit) => (
+                  <PlaceHitRow key={hit.slug} hit={hit} t={t} />
+                ))}
+              </GroupedList>
+            </section>
+          )}
+          {showDistricts && outcome.districts.length > 0 && (
+            <section aria-label={t("search.groups.districts")}>
+              <h2 className={GROUP_HEADING_CLASS}>{t("search.groups.districts")}</h2>
+              <GroupedList>
+                {outcome.districts.map((hit) => (
+                  <DistrictHitRow key={hit.slug} hit={hit} t={t} />
+                ))}
+              </GroupedList>
+            </section>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
@@ -101,7 +109,7 @@ export async function SearchResults({ searchParams }: { searchParams: Promise<Ra
 /** Tabs, one filter row and two short groups — close to a typical result, not a promise. */
 export function SearchResultsSkeleton() {
   return (
-    <div className="flex flex-col gap-4 px-5 pt-1" aria-hidden>
+    <div className="flex flex-col gap-4 page-x pt-1" aria-hidden>
       <div className="px-1">
         <Skeleton className="h-[1.4em] w-1/2 text-meta" />
       </div>

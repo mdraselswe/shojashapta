@@ -10,6 +10,12 @@ reward color (gold). Information first, small rounded thumbnails instead of big 
 Mobile-first, one-handed: primary actions in the bottom half. Small, meaningful rewards make people
 come back (passport, stamps, points).
 
+## 1a. Breakpoints
+Mobile first. `md` = 768px (tablet), `lg` = 1024px (desktop); nothing else. Phone: one column, floating bottom nav,
+20px gutter. Tablet: 28px gutter, two-column grids, bottom nav stays. Desktop: top bar, 1200px content with a 32px
+gutter, breadcrumb, sidebars. The gutter is the `page-x` utility; type sizes step up at `lg` (title 44px, heading 24px).
+Approved layouts: `docs/design/desktop/`.
+
 ## 1b. Logo
 Final logo "কথার সিল" — files and rules in `brand/README.md`. In the app the logo is **always** rendered
 with the theme-aware React components `<LogoMark />` / `<LogoLockup />` (`brand/react/logo.tsx` →

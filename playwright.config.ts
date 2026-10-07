@@ -15,6 +15,18 @@ export default defineConfig({
       // Mobile-first: every screen must work at 360px (AGENTS.md §5).
       name: "mobile-chromium",
       use: { ...devices["Pixel 7"], viewport: { width: 360, height: 780 } },
+      testIgnore: /responsive/,
+    },
+    {
+      // Tablet and desktop layouts (docs/design/desktop).
+      name: "tablet-chromium",
+      use: { ...devices["Desktop Chrome"], viewport: { width: 834, height: 1112 } },
+      testMatch: /responsive/,
+    },
+    {
+      name: "desktop-chromium",
+      use: { ...devices["Desktop Chrome"], viewport: { width: 1280, height: 800 } },
+      testMatch: /responsive/,
     },
   ],
   webServer: {

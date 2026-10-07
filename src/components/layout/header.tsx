@@ -18,7 +18,10 @@ type HeaderProps = {
 export function Header({ start, end, className }: HeaderProps) {
   return (
     <header
-      className={cn("flex min-h-18 items-center justify-between gap-3 px-4 py-3.5", className)}
+      className={cn(
+        "flex min-h-18 items-center justify-between gap-3 px-4 py-3.5 md:px-6 lg:hidden",
+        className,
+      )}
     >
       {start ?? (
         <Link

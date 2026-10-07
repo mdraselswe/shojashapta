@@ -61,7 +61,7 @@ export function DishRowSkeleton() {
   return (
     <ListRowSkeleton
       hasTrailing={false}
-      trailing={<Skeleton className="h-7 w-14 rounded-full" />}
+      trailing={<Skeleton className="h-7 w-14 rounded-[10px]" />}
     />
   );
 }

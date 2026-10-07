@@ -32,7 +32,7 @@ export function BottomNav() {
   return (
     <nav
       aria-label={t("nav.label")}
-      className="fixed inset-x-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 mx-auto grid h-[66px] max-w-md grid-cols-4 items-center rounded-card-lg border border-border bg-card/88 px-1.5 shadow-floating backdrop-blur-lg"
+      className="fixed inset-x-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 mx-auto grid h-[66px] max-w-md grid-cols-4 items-center rounded-card-lg border border-border bg-card/88 px-1.5 shadow-floating backdrop-blur-lg lg:hidden"
     >
       {ITEMS.map(({ href, label, icon: Icon, primary }) => {
         const active = isActive(pathname, href);

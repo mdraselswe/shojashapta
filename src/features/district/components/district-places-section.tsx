@@ -18,7 +18,7 @@ export async function DistrictPlacesSection({ districtId }: { districtId: number
       {items.length === 0 ? (
         <p className="text-meta text-muted-foreground">{t("district.noPlaces")}</p>
       ) : (
-        <GroupedList>
+        <GroupedList split>
           {items.map((place) => (
             <ListRow
               key={place.slug}

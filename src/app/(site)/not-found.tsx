@@ -10,7 +10,7 @@ export default function NotFound() {
   const t = getT();
   return (
     <PageShell>
-      <section className="px-5 pt-10">
+      <section className="page-x pt-10">
         <h1 className="text-title-1">{t("notFound.title")}</h1>
         <p className="mt-2 text-body text-muted-foreground">{t("notFound.body")}</p>
         <div className="mt-5 flex gap-3">

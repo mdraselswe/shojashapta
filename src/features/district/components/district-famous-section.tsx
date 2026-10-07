@@ -12,7 +12,7 @@ export function DistrictFamousSection({ district }: { district: DistrictHeader }
   if (district.famous.length === 0) return null;
   return (
     <Section title={t("district.famous")}>
-      <GroupedList>
+      <GroupedList split>
         {district.famous.map(({ food, noteBn }) => (
           <ListRow
             key={food.slug}

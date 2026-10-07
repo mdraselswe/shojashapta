@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<title>সোজাসাপ্টা — ডেস্কটপ খাবার পেজ</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@600;700&amp;family=Noto+Sans+Bengali:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#4338CA}a:hover{color:#3730A3}
+.hd{font-family:'Anek Bangla',sans-serif}
+a:focus-visible,input:focus-visible,button:focus-visible{outline:3px solid #4F46E5;outline-offset:2px}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.bar{transform-origin:left;animation:grow .7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes toastIn{0%{transform:translateY(24px);opacity:0}100%{transform:translateY(0);opacity:1}}
+.toast{animation:toastIn .35s cubic-bezier(.2,.8,.2,1) both}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
+.popped{animation:pop .35s ease-out}
+@media (prefers-reduced-motion:reduce){.bar,.toast,.popped{animation:none}}
+</style>
+</helmet>
+<div style="min-height:1560px;position:relative;background:#F6F6F8;color:#16161D;font-family:'Noto Sans Bengali',sans-serif;font-size:16px;line-height:1.7">
+
+<header style="background:#FFFFFF;border-bottom:1px solid #E8E8EE">
+<div style="max-width:1200px;margin:0 auto;padding:0 32px;height:72px;display:flex;align-items:center;gap:24px">
+<a href="Main.dc.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:#16161D">
+<svg width="40" height="40" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 4a28 28 0 1 1-16.4 50.7L5 59l3.6-10.7A28 28 0 0 1 32 4zM19 31h26a13 13 0 0 1-26 0z" fill="#4F46E5" fill-rule="evenodd"></path><rect x="23" y="22" width="18" height="3.6" rx="1.8" fill="#F59E0B"></rect></svg>
+<span class="hd" style="font-size:22px;font-weight:700">সোজাসাপ্টা</span>
+</a>
+<label for="hq" style="flex:1;max-width:440px;display:flex;align-items:center;gap:10px;background:#F6F6F8;border:1px solid #E8E8EE;border-radius:14px;height:46px;padding:0 16px">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5E5E6E" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
+<input id="hq" placeholder="খাবার, জেলা বা দোকানের নাম" style="border:0;outline:0;flex:1;font:inherit;font-size:15px;color:#16161D;background:transparent">
+</label>
+<nav aria-label="প্রধান মেনু" style="display:flex;align-items:center;gap:4px">
+<a href="Main.dc.html" style="height:44px;padding:0 16px;display:flex;align-items:center;border-radius:12px;color:#5E5E6E;text-decoration:none">হোম</a>
+<a href="Search.dc.html" style="height:44px;padding:0 16px;display:flex;align-items:center;border-radius:12px;color:#5E5E6E;text-decoration:none">খুঁজুন</a>
+<a href="Passport.dc.html" style="height:44px;padding:0 16px;display:flex;align-items:center;border-radius:12px;color:#5E5E6E;text-decoration:none">আমি</a>
+</nav>
+<div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+<span style="display:flex;align-items:center;gap:6px;height:38px;padding:0 12px;border-radius:19px;background:#FFFFFF;border:1px solid #E8E8EE;font-size:14px;font-weight:600"><svg width="16" height="16" viewBox="0 0 24 24" fill="#F5A524" aria-hidden="true"><path d="M12 2c1 4 5 5.500 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z"></path></svg>৫ দিন</span>
+<span style="display:flex;align-items:center;gap:6px;height:38px;padding:0 12px;border-radius:19px;background:#FFF7E6;color:#92400E;font-size:14px;font-weight:600"><svg width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" aria-hidden="true"><path d="M12 3l2.700 5.600 6.100.9-4.400 4.300 1 6.100L12 17l-5.400 2.900 1-6.100L3.200 9.500l6.100-.9z"></path></svg>{{points}}</span>
+<a href="Add.dc.html" style="height:44px;padding:0 20px;display:flex;align-items:center;gap:6px;border-radius:22px;background:#4F46E5;color:#FFFFFF;text-decoration:none;font-weight:600"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.600" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>যোগ</a>
+<a href="Passport.dc.html" aria-label="প্রোফাইল" class="hd" style="width:44px;height:44px;border-radius:22px;background:#EEF0FF;color:#3730A3;display:flex;align-items:center;justify-content:center;font-weight:700;text-decoration:none">রা</a>
+</div>
+</div>
+</header>
+
+<main style="max-width:1200px;margin:0 auto;padding:28px 32px 100px">
+<nav aria-label="পথ" style="font-size:14px;color:#5E5E6E;display:flex;gap:8px;align-items:center">
+<a href="Main.dc.html" style="color:#4338CA">হোম</a><span aria-hidden="true">/</span><span>খাবার</span><span aria-hidden="true">/</span><span style="color:#16161D">দই</span>
+</nav>
+
+<section style="margin-top:20px;display:flex;align-items:center;gap:24px">
+<span style="flex:0 0 120px;height:120px;border-radius:28px;background:#F3E6CC"></span>
+<div style="flex:1">
+<a href="District.dc.html" style="display:inline-block;background:#EEF0FF;color:#3730A3;border-radius:8px;padding:2px 10px;font-size:13px;font-weight:600;text-decoration:none">বগুড়ার বিখ্যাত</a>
+<h1 class="hd" style="margin:4px 0 0;font-size:48px;font-weight:700;line-height:1.15">দই</h1>
+<p style="margin:2px 0 0;font-size:15px;color:#5E5E6E">৮টি জায়গায় পাওয়া যায়</p>
+</div>
+<div style="display:flex;gap:10px">
+<button style="height:44px;padding:0 18px;border-radius:22px;background:#FFFFFF;border:1px solid #E8E8EE;font:inherit;font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px;color:#16161D;cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"></path></svg>খেতে চাই</button>
+<button style="height:44px;padding:0 18px;border-radius:22px;background:#FFFFFF;border:1px solid #E8E8EE;font:inherit;font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px;color:#16161D;cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"></path></svg>শেয়ার</button>
+</div>
+</section>
+
+<div style="margin-top:32px;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:32px;align-items:start">
+
+<div style="grid-column:span 8;display:flex;flex-direction:column;gap:36px">
+
+<section aria-labelledby="h-rank">
+<h2 id="h-rank" class="hd" style="margin:0 0 10px;font-size:24px;font-weight:600;line-height:1.3">কমিউনিটির প্রিয় জায়গা</h2>
+<div style="background:#FFFFFF;border:1px solid #E8E8EE;border-radius:20px;padding:4px 20px">
+<sc-for list="{{ranked}}" as="r" hint-placeholder-count="3">
+<a href="Place.dc.html" style="text-decoration:none;color:#16161D;display:grid;grid-template-columns:32px 1fr auto;gap:14px;align-items:center;padding:14px 0;border-top:{{r.border}}">
+<span class="hd" style="{{r.badge}}">{{r.rank}}</span>
+<span><span style="display:block;font-size:16px;font-weight:600">{{r.name}}</span><span style="display:block;font-size:13px;color:#5E5E6E">{{r.meta}}</span></span>
+<span style="text-align:right"><span style="display:inline-block;background:#E9F8EF;color:#0E7A3D;border-radius:10px;padding:3px 10px;font-size:14px;font-weight:600">{{r.pct}}</span><span style="display:block;font-size:12px;color:#5E5E6E">{{r.count}}</span></span>
+</a>
+</sc-for>
+<a href="Place.dc.html" style="text-decoration:none;color:#16161D;display:grid;grid-template-columns:32px 1fr auto;gap:14px;align-items:center;padding:14px 0;border-top:1px solid #F0F0F4">
+<span class="hd" style="width:32px;height:32px;border-radius:10px;background:#EDEDF2;color:#5E5E6E;font-weight:700;display:flex;align-items:center;justify-content:center">·</span>
+<span><span style="display:block;font-size:16px;font-weight:600">[দোকানের নাম]</span><span style="display:block;font-size:13px;color:#5E5E6E">বনানী, ঢাকা</span></span>
+<span style="text-align:right;font-size:12px;color:#5E5E6E;line-height:1.4">৩ জন<br>অভিজ্ঞতা কম</span>
+</a>
+</div>
+</section>
+
+<section aria-labelledby="h-voices">
+<h2 id="h-voices" class="hd" style="margin:0 0 10px;font-size:24px;font-weight:600;line-height:1.3">মানুষ যা বলছেন</h2>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
+<sc-for list="{{voices}}" as="v" hint-placeholder-count="2">
+<div style="background:#FFFFFF;border:1px solid #E8E8EE;border-radius:20px;padding:18px">
+<div style="display:flex;align-items:center;gap:10px"><span class="hd" style="width:36px;height:36px;border-radius:18px;background:#EEF0FF;color:#3730A3;font-weight:700;display:flex;align-items:center;justify-content:center">{{v.initial}}</span><span style="flex:1"><span style="display:block;font-size:15px;font-weight:600;line-height:1.4">{{v.name}} <span style="font-size:12px;font-weight:600;color:#3730A3;background:#EEF0FF;border-radius:6px;padding:1px 6px">স্থানীয়</span></span><span style="font-size:13px;color:#5E5E6E">{{v.when}}</span></span></div>
+<p style="margin:10px 0 0;font-size:16px;line-height:1.7">{{v.text}}</p>
+</div>
+</sc-for>
+</div>
+</section>
+</div>
+
+<aside style="grid-column:span 4;position:sticky;top:24px;display:flex;flex-direction:column;gap:16px">
+<div style="background:#FFFFFF;border:1px solid #E8E8EE;border-radius:24px;padding:22px">
+<div style="display:flex;align-items:baseline;gap:8px"><span class="hd" style="font-size:44px;font-weight:700;line-height:1">৯২%</span><span style="font-size:15px;color:#5E5E6E">পছন্দ করেছেন</span></div>
+<div style="display:flex;gap:3px;height:8px;margin:14px 0 8px"><span class="bar" style="flex:92;background:#12A150;border-radius:4px"></span><span class="bar" style="flex:6;background:#F5A524;border-radius:4px;animation-delay:.1s"></span><span class="bar" style="flex:2;background:#E5484D;border-radius:4px;animation-delay:.15s"></span></div>
+<p style="margin:0;font-size:14px;color:#5E5E6E">১,২৮৪ জন খেয়েছেন · সাধারণ দাম ৳১৬০–৳৩০০</p>
+<div style="height:1px;background:#F0F0F4;margin:18px 0"></div>
+<p class="hd" style="margin:0 0 10px;font-size:18px;font-weight:600">আপনি খেয়েছেন? কেমন লাগল?</p>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+<sc-for list="{{reactions}}" as="r" hint-placeholder-count="3">
+<button aria-pressed="{{r.pressed}}" onClick="{{r.pick}}" style="{{r.style}}">
+<span class="{{r.iconCls}}" style="display:flex">
+<sc-if value="{{r.isLoved}}" hint-placeholder-val="{{true}}"><svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke="{{r.ink}}" stroke-width="2.200" stroke-linecap="round" aria-hidden="true"><circle cx="16" cy="16" r="13"></circle><path d="M10 18c1.500 3 3.500 4.500 6 4.500s4.500-1.500 6-4.500z" fill="{{r.ink}}"></path><path d="M11 12.500v1M21 12.500v1"></path></svg></sc-if>
+<sc-if value="{{r.isOkay}}" hint-placeholder-val="{{false}}"><svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke="{{r.ink}}" stroke-width="2.200" stroke-linecap="round" aria-hidden="true"><circle cx="16" cy="16" r="13"></circle><path d="M11 20h10M11 12.500v1M21 12.500v1"></path></svg></sc-if>
+<sc-if value="{{r.isBad}}" hint-placeholder-val="{{false}}"><svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke="{{r.ink}}" stroke-width="2.200" stroke-linecap="round" aria-hidden="true"><circle cx="16" cy="16" r="13"></circle><path d="M11 22c1.400-2.200 3-3.200 5-3.200s3.600 1 5 3.200M11 12.500v1M21 12.500v1"></path></svg></sc-if>
+</span>
+<span>{{r.label}}</span>
+</button>
+</sc-for>
+</div>
+<p style="margin:12px 0 0;font-size:13px;color:#5E5E6E">দোকান বেছে নিয়ে বিস্তারিত যোগ করতে পারবেন।</p>
+</div>
+</aside>
+</div>
+<p style="margin:48px 0 0;font-size:13px;color:#5E5E6E">নমুনা ডিজাইন: সব তথ্য উদাহরণ মাত্র। প্রতিক্রিয়ায় ক্লিক করে দেখুন।</p>
+</main>
+
+<sc-if value="{{showToast}}" hint-placeholder-val="{{false}}">
+<div class="toast" role="status" style="position:absolute;right:32px;bottom:32px;width:380px;background:#16161D;color:#FFFFFF;border-radius:20px;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 12px 32px rgba(22,22,29,0.25)">
+<span class="hd" style="flex:0 0 auto;height:40px;padding:0 12px;border-radius:20px;background:#F59E0B;color:#16161D;font-weight:700;font-size:17px;display:flex;align-items:center">+১০</span>
+<span style="flex:1;font-size:15px;line-height:1.5"><b>{{toastTitle}}</b><br><span style="color:#C9C9D4">{{toastBody}}</span></span>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1560}}'>
+class Component extends DCLogic {
+constructor(props) { super(props); this.state = { picked: null }; }
+renderVals() {
+const picked = this.state.picked;
+const defs = [
+{ id: 'loved', label: 'দারুণ', ink: '#0E7A3D', bg: '#E9F8EF', border: '#12A150' },
+{ id: 'okay', label: 'মোটামুটি', ink: '#8A5A00', bg: '#FFF6E0', border: '#F5A524' },
+{ id: 'disliked', label: 'ভালো না', ink: '#B4232A', bg: '#FDECEC', border: '#E5484D' }
+];
+const reactions = defs.map((d) => {
+const on = picked === d.id;
+return {
+label: d.label,
+pressed: on ? 'true' : 'false',
+isLoved: d.id === 'loved', isOkay: d.id === 'okay', isBad: d.id === 'disliked',
+ink: on ? d.ink : '#16161D',
+iconCls: on ? 'popped' : '',
+style: 'height:84px;border-radius:18px;font:inherit;font-size:15px;font-weight:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;' +
+(on ? 'background:' + d.bg + ';border:2px solid ' + d.border + ';color:' + d.ink : 'background:#F6F6F8;border:2px solid transparent;color:#16161D'),
+pick: () => this.setState({ picked: d.id })
+};
+});
+const base = 'width:32px;height:32px;border-radius:10px;font-weight:700;display:flex;align-items:center;justify-content:center;';
+const rows = [
+['নমুনা দই ঘর','শেরপুর রোড, বগুড়া · ৳১৮০–৳২৫০','৯৬%','৪১২ জন'],
+['[দোকানের নাম]','সাতমাথা, বগুড়া · ৳১৬০–৳২২০','৯২%','২৮৮ জন']
+];
+return {
+points: picked === null ? '৩৪০' : '৩৫০',
+reactions,
+ranked: rows.map((r, i) => ({ rank: ['১','২'][i], name: r[0], meta: r[1], pct: r[2], count: r[3], border: i ? '1px solid #F0F0F4' : 'none', badge: base + (i === 0 ? 'background:#4F46E5;color:#FFFFFF' : 'background:#EDEDF2;color:#16161D') })),
+voices: [
+{ initial: 'র', name: 'রাশেদ', when: '৩ দিন আগে · দারুণ লেগেছে', text: 'সকালে গেলে টাটকা পাওয়া যায়। মিষ্টি একটু বেশি, তবে ঘনত্ব দারুণ।' },
+{ initial: 'ন', name: 'নমুনা ব্যবহারকারী', when: '১ সপ্তাহ আগে · দারুণ লেগেছে', text: 'টক-মিষ্টি ঠিকঠাক, হাঁড়ির দই।' }
+],
+showToast: picked !== null,
+toastTitle: picked === 'loved' ? 'দারুণ! বগুড়া আনলক হয়েছে' : 'মতামত যোগ হয়েছে',
+toastBody: picked === 'loved' ? 'স্ট্যাম্প পাসপোর্টে যোগ হয়েছে' : 'আপনার মতামত কমিউনিটিকে সাহায্য করবে'
+};
+}
+}
+</script>
+</body>
+</html>

@@ -180,6 +180,20 @@
   font-size: 30px;
   line-height: 1.25;
   font-weight: 700;
+  @media (min-width: 64rem) {
+    font-size: 44px;
+    line-height: 1.2;
+  }
+}
+/* Page gutter: 20px phone, 28px tablet, 32px desktop (docs/design/desktop). */
+@utility page-x {
+  padding-inline: 1.25rem;
+  @media (min-width: 48rem) {
+    padding-inline: 1.75rem;
+  }
+  @media (min-width: 64rem) {
+    padding-inline: 2rem;
+  }
 }
 @utility text-stat {
   font-family: var(--font-display);
@@ -192,6 +206,9 @@
   font-size: 21px;
   line-height: 1.3;
   font-weight: 600;
+  @media (min-width: 64rem) {
+    font-size: 24px;
+  }
 }
 @utility text-card-title {
   font-family: var(--font-sans);

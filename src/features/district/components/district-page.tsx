@@ -13,7 +13,9 @@ import { DistrictPlacesSection, DistrictPlacesSectionSkeleton } from "./district
 
 export function DistrictPage({ district }: { district: DistrictHeader }) {
   return (
-    <PageShell header={<SubPageBar backHref={routes.home()} />}>
+    <PageShell
+      header={<SubPageBar backHref={routes.home()} crumbs={[{ label: district.nameBn }]} />}
+    >
       <DistrictHero district={district} />
       <DistrictFamousSection district={district} />
       <Suspense fallback={<DistrictPlacesSectionSkeleton />}>

@@ -9,19 +9,40 @@ import type { FoodHeader } from "@/services/catalog-service";
 
 import { FoodDishesSection, FoodDishesSectionSkeleton } from "./food-dishes-section";
 import { FoodHero, FoodHeroSkeleton } from "./food-hero";
+import { FoodSummaryCard } from "./food-summary-card";
 import { FoodVoicesSection, FoodVoicesSectionSkeleton } from "./food-voices-section";
 
-/** Food page: the hero is ready with the header; dishes and comments stream in behind skeletons. */
+/**
+ * Food page: the hero is ready with the header; dishes and comments stream in behind skeletons.
+ * From 1024px the lists take 8 of 12 columns and a sticky summary card the other 4.
+ */
 export function FoodPage({ food }: { food: FoodHeader }) {
+  const t = getT();
   return (
-    <PageShell header={<SubPageBar backHref={routes.home()} />}>
+    <PageShell
+      header={
+        <SubPageBar
+          backHref={routes.home()}
+          crumbs={[{ label: t("breadcrumb.foods") }, { label: food.nameBn }]}
+        />
+      }
+    >
       <FoodHero food={food} />
-      <Suspense fallback={<FoodDishesSectionSkeleton />}>
-        <FoodDishesSection foodId={food.id} />
-      </Suspense>
-      <Suspense fallback={<FoodVoicesSectionSkeleton />}>
-        <FoodVoicesSection foodId={food.id} />
-      </Suspense>
+      <div className="lg:grid lg:grid-cols-12">
+        <div className="lg:col-span-8">
+          <Suspense fallback={<FoodDishesSectionSkeleton />}>
+            <FoodDishesSection foodId={food.id} />
+          </Suspense>
+          <Suspense fallback={<FoodVoicesSectionSkeleton />}>
+            <FoodVoicesSection foodId={food.id} />
+          </Suspense>
+        </div>
+        <aside className="hidden lg:col-span-4 lg:block">
+          <div className="sticky top-6 page-x pt-10">
+            <FoodSummaryCard food={food} />
+          </div>
+        </aside>
+      </div>
     </PageShell>
   );
 }
@@ -32,8 +53,12 @@ export function FoodPageSkeleton() {
     <LoadingRegion label={t("common.loading")}>
       <PageShell header={<SubPageBar backHref={routes.home()} />}>
         <FoodHeroSkeleton />
-        <FoodDishesSectionSkeleton />
-        <FoodVoicesSectionSkeleton />
+        <div className="lg:grid lg:grid-cols-12">
+          <div className="lg:col-span-8">
+            <FoodDishesSectionSkeleton />
+            <FoodVoicesSectionSkeleton />
+          </div>
+        </div>
       </PageShell>
     </LoadingRegion>
   );

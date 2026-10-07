@@ -7,7 +7,7 @@ import { cn } from "@/lib/cn";
 // Pills: each color carries one meaning (docs/06-design-system.md §2). Status badges always pair
 // color with an icon and text.
 const badgeVariants = cva(
-  "inline-flex h-7 w-fit shrink-0 items-center justify-center gap-1 rounded-full px-2.5 text-caption whitespace-nowrap [&>svg]:pointer-events-none [&>svg]:size-3.5",
+  "inline-flex h-7 w-fit shrink-0 items-center justify-center gap-1 rounded-[10px] px-2.5 text-caption whitespace-nowrap [&>svg]:pointer-events-none [&>svg]:size-3.5",
   {
     variants: {
       variant: {
