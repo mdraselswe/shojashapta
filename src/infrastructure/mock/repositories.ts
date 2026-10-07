@@ -18,6 +18,7 @@ import type {
 } from "@/core/domain";
 import type { Repositories, SearchHit } from "@/core/ports";
 import { wilsonLowerBound } from "@/lib/ranking/wilson";
+import { buildSearchFields } from "@/lib/text/normalize";
 
 import * as fixtures from "./fixtures";
 
@@ -368,11 +369,14 @@ export function createMockRepositories(): Repositories {
     },
 
     search: {
-      // Simple substring match; the real fuzzy search is SQL search_all (Phase 1).
-      search: async ({ text }, opts) => {
+      // Same inputs as SQL search_all (normalized text + phonetic key), matched by substring
+      // instead of trigram similarity.
+      search: async ({ text, key }, opts) => {
         const q = text.trim().toLowerCase();
-        const matches = (...names: (string | null)[]) =>
-          names.some((n) => n?.toLowerCase().includes(q));
+        const matches = (...names: (string | null)[]) => {
+          const fields = buildSearchFields(...names);
+          return fields.searchText.includes(q) || (key !== "" && fields.searchKey.includes(key));
+        };
         const hits: SearchHit[] = q
           ? [
               ...db.foods

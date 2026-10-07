@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { Repositories } from "@/core/ports";
+import { toSearchQuery } from "@/lib/text/normalize";
 
 /**
  * Behaviour every Repositories adapter must have (add-provider skill, step 7). Each adapter's
@@ -115,10 +116,27 @@ export function repositoryContract(
       expect(await repos.saved.isSaved(ids.users.contract, "food", ids.foods.doi)).toBe(false);
     });
 
-    it("finds foods, places and districts by name", async () => {
+    it("finds foods by Bangla and Banglish spellings", async () => {
       const repos = await make();
-      const { items } = await repos.search.search({ text: "দই", key: "doi" });
-      expect(items.some((hit) => hit.kind === "food" && hit.food.slug === "doi")).toBe(true);
+      for (const query of ["দই", "doi", "kacchi", "kachchi", "কাচ্চি"]) {
+        const { items } = await repos.search.search(toSearchQuery(query));
+        const slugs = items.flatMap((hit) => (hit.kind === "food" ? [hit.food.slug] : []));
+        expect(slugs.length, query).toBeGreaterThan(0);
+      }
+      const doi = await repos.search.search(toSearchQuery("দই"));
+      expect(doi.items.some((hit) => hit.kind === "food" && hit.food.slug === "doi")).toBe(true);
+    });
+
+    it("finds places and districts too", async () => {
+      const repos = await make();
+      const district = await repos.search.search(toSearchQuery("bogura"));
+      expect(
+        district.items.some((hit) => hit.kind === "district" && hit.district.slug === "bogura"),
+      ).toBe(true);
+      const place = await repos.search.search(toSearchQuery("নমুনা দই ঘর"));
+      expect(
+        place.items.some((hit) => hit.kind === "place" && hit.place.slug === "sample-place"),
+      ).toBe(true);
     });
   });
 }

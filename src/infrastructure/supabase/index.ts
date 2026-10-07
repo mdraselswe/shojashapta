@@ -2,19 +2,16 @@ import "server-only";
 
 import type { AuthProvider, Repositories } from "@/core/ports";
 
-// Supabase adapters (DB_PROVIDER / AUTH_PROVIDER = supabase). Empty until the Supabase projects exist:
-// repositories arrive in Phase 1.2, auth in Phase 3.1. Use the mock provider until then.
+import { createSupabaseClients } from "./client.server";
+import { createSupabaseRepositoriesFrom } from "./repositories";
 
-function notYet(what: string, phase: string): never {
-  throw new Error(
-    `Supabase ${what} is implemented in Phase ${phase}; use the mock provider until then.`,
-  );
-}
+// Supabase adapters (DB_PROVIDER / AUTH_PROVIDER = supabase). Repositories: public reads since
+// Phase 1.2, writes with the phases that need them. Auth arrives in Phase 3.1.
 
 export function createSupabaseRepositories(): Repositories {
-  return notYet("repositories", "1.2");
+  return createSupabaseRepositoriesFrom(createSupabaseClients());
 }
 
 export function createSupabaseAuth(): AuthProvider {
-  return notYet("auth", "3.1");
+  throw new Error("Supabase auth is implemented in Phase 3.1; use AUTH_PROVIDER=mock until then.");
 }
