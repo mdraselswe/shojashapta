@@ -161,10 +161,10 @@
 }
 @keyframes shimmer {
   from {
-    background-position: 200% 0;
+    transform: translateX(-100%);
   }
   to {
-    background-position: -200% 0;
+    transform: translateX(100%);
   }
 }
 
@@ -233,16 +233,20 @@
 }
 
 /* Skeleton fill with shimmer (docs/05-loading-skeletons.md). */
+/* Shimmer is a transformed pseudo-element (compositor-only, no repaint per frame). The global
+   reduced-motion rule stops it. */
 @utility skeleton-shimmer {
+  position: relative;
+  overflow: hidden;
   background-color: var(--skeleton);
-  background-image: linear-gradient(
-    90deg,
-    transparent 0%,
-    var(--skeleton-highlight) 50%,
-    transparent 100%
-  );
-  background-size: 200% 100%;
-  animation: var(--animate-shimmer);
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, var(--skeleton-highlight), transparent);
+    animation: var(--animate-shimmer);
+  }
 }
 
 @layer base {
