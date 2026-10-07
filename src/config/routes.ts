@@ -8,7 +8,18 @@ const segment = (value: string) => encodeURIComponent(value);
 
 export const routes = {
   home: () => "/",
-  search: (query?: { q?: string }) => withSearchParams("/search", { q: query?.q }),
+  search: (query?: {
+    q?: string | undefined;
+    tab?: string | undefined;
+    type?: string | undefined;
+    price?: string | undefined;
+  }) =>
+    withSearchParams("/search", {
+      q: query?.q,
+      tab: query?.tab,
+      type: query?.type,
+      price: query?.price,
+    }),
   food: (slug: string) => `/food/${segment(slug)}`,
   place: (slug: string) => `/place/${segment(slug)}`,
   district: (slug: string) => `/district/${segment(slug)}`,

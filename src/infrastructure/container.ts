@@ -11,6 +11,7 @@ import type {
   StorageProvider,
 } from "@/core/ports";
 import { createCatalogService, type CatalogService } from "@/services/catalog-service";
+import { createSearchService, type SearchService } from "@/services/search-service";
 import { createDefineAction } from "@/lib/action";
 
 import { noopAnalytics } from "./analytics/noop";
@@ -33,6 +34,7 @@ function assertNever(value: never): never {
 export type Services = {
   repos: Repositories;
   catalog: CatalogService;
+  search: SearchService;
   auth: AuthProvider;
   storage: StorageProvider;
   cache: CacheInvalidator;
@@ -80,6 +82,7 @@ export function getServices(): Services {
   services = {
     repos,
     catalog: createCatalogService({ repos }),
+    search: createSearchService({ repos }),
     auth,
     storage,
     cache: nextCacheInvalidator,

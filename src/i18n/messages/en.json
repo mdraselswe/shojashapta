@@ -33,5 +33,48 @@
     "districtsTitle": "Browse by district",
     "allDistricts": "See all {count} districts",
     "divisionOf": "{name} division"
+  },
+  "search": {
+    "back": "Go back",
+    "clear": "Clear",
+    "label": "Search",
+    "prompt": "Type a food, district or shop name",
+    "promptHint": "Bangla or English, any spelling: কাচ্চি, kacchi, kachchi",
+    "resultsFor": "Results for “{q}”",
+    "tabs": {
+      "all": "All",
+      "food": "Food",
+      "place": "Places",
+      "district": "Districts"
+    },
+    "groups": {
+      "foods": "Food",
+      "places": "Places",
+      "districts": "Districts"
+    },
+    "filters": {
+      "label": "Filters",
+      "price": "Price",
+      "type": "Type",
+      "any": "Any"
+    },
+    "price": {
+      "budget": "Up to ৳150",
+      "mid": "৳151–300",
+      "high": "Over ৳300"
+    },
+    "empty": "Nothing found for “{q}”.",
+    "emptyHint": "Try another spelling, or write it in Bangla or English.",
+    "emptyFiltered": "No places match these filters.",
+    "emptyFilteredHint": "Open the filters and try again.",
+    "districtMeta": "{division} division"
+  },
+  "placeType": {
+    "restaurant": "Restaurant",
+    "shop": "Shop",
+    "street_food": "Street food",
+    "bakery": "Bakery",
+    "home_kitchen": "Home kitchen",
+    "other": "Other"
   }
 }

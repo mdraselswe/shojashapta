@@ -3,7 +3,9 @@ import { notFound } from "next/navigation";
 
 import { Section } from "@/components/layout/section";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { GroupedList, ListRowSkeleton } from "@/components/ui/grouped-list";
 import { Skeleton, SkeletonAvatar, SkeletonImage, SkeletonText } from "@/components/ui/skeleton";
+import { FoodHitRow } from "@/features/search/components/search-hit-rows";
 import { serverEnv } from "@/config/env";
 import { DistrictChip, DistrictChipSkeleton } from "@/features/home/components/district-chip";
 import {
@@ -27,6 +29,21 @@ function RowShell({ media, children }: { media: React.ReactNode; children: React
 }
 
 const PAIRS: readonly SkeletonPair[] = [
+  {
+    name: "Grouped list row (search hit)",
+    real: (
+      <GroupedList>
+        <FoodHitRow
+          hit={{ slug: "doi", nameBn: "দই", aboutBn: "মাটির হাঁড়িতে জমানো মিষ্টি দই।" }}
+        />
+      </GroupedList>
+    ),
+    skeleton: (
+      <GroupedList>
+        <ListRowSkeleton />
+      </GroupedList>
+    ),
+  },
   {
     name: "Home: famous food card",
     real: (

@@ -908,6 +908,7 @@ export type Database = {
       is_active_user: { Args: Record<PropertyKey, never>; Returns: boolean };
       is_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
       purge_seed_data: { Args: { p_keep_used?: boolean }; Returns: Json };
+      record_search_miss: { Args: { p_key: string; p_text: string }; Returns: undefined };
       refresh_dish_stats: { Args: { p_dish: string }; Returns: undefined };
       search_all: {
         Args: { lim?: number; q_key: string; q_text: string };
