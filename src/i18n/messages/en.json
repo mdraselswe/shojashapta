@@ -27,6 +27,13 @@
     "welcome": "Welcome, {name}",
     "profileTitle": "Me"
   },
+  "experience": {
+    "question": "Have you eaten it? How was it?",
+    "where": "Where did you eat it?",
+    "submit": "Submit",
+    "added": "Added. Thank you!",
+    "updated": "Your answer was updated."
+  },
   "comingSoon": {
     "title": "Coming soon",
     "body": "Where to eat what in Bangladesh, told by real community experience. Coming soon."
@@ -156,6 +163,9 @@
   "reaction": {
     "loved": "Loved it",
     "okay": "It was okay",
-    "disliked": "Didn't like it"
+    "disliked": "Didn't like it",
+    "lovedShort": "Loved it",
+    "okayShort": "It was okay",
+    "dislikedShort": "Not good"
   }
 }

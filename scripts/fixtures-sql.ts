@@ -55,9 +55,12 @@ const statements = [
         name_bn: p.area?.nameBn ?? null,
       })),
   ),
-  insert("auth.users", [{ id: fixtures.demoUser.id, email: "demo@fixtures.invalid" }]),
+  insert("auth.users", [
+    { id: fixtures.demoUser.id, email: "demo@fixtures.invalid" },
+    { id: fixtures.fixtureIds.users.contract, email: "contract@fixtures.invalid" },
+  ]),
   // Migration 0009 creates a profile for every new auth user; the fixture sets its own fields.
-  `delete from profiles where id = ${sql(fixtures.demoUser.id)};
+  `delete from profiles where id in (${sql(fixtures.demoUser.id)}, ${sql(fixtures.fixtureIds.users.contract)});
 `,
   insert("profiles", [
     {
@@ -65,6 +68,12 @@ const statements = [
       display_name: fixtures.demoUser.displayName,
       role: fixtures.demoUser.role,
       home_district_id: fixtures.demoUser.homeDistrictId,
+    },
+    {
+      id: fixtures.fixtureIds.users.contract,
+      display_name: "কন্ট্রাক্ট টেস্ট",
+      role: "user",
+      home_district_id: null,
     },
   ]),
   insert(

@@ -1,0 +1,43 @@
+import { expect, test } from "@playwright/test";
+
+test.describe("reaction picker", () => {
+  test("a signed-out tap asks for login and returns to the page", async ({ page }) => {
+    await page.goto("/place/second-sample-place");
+    await page.getByRole("button", { name: "দারুণ" }).first().click();
+    await expect(page).toHaveURL(/\/login\?next=%2Fplace%2Fsecond-sample-place/);
+    await page.getByRole("link", { name: "গুগল দিয়ে চালিয়ে যান" }).click();
+    await expect(page).toHaveURL(/\/place\/second-sample-place$/);
+  });
+
+  test("a signed-in tap saves, shows a toast and updates the place page", async ({ page }) => {
+    await page.goto("/auth/sign-in?next=/place/second-sample-place");
+    const before = await page
+      .getByText(/[০-৯]+ জন/)
+      .first()
+      .textContent();
+    await page.getByRole("button", { name: "দারুণ" }).first().click();
+    await expect(page.getByText("অভিজ্ঞতা যোগ হয়েছে। ধন্যবাদ!")).toBeVisible();
+    await expect(page.getByRole("button", { name: "দারুণ" }).first()).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await expect
+      .poll(async () =>
+        page
+          .getByText(/[০-৯]+ জন/)
+          .first()
+          .textContent(),
+      )
+      .not.toBe(before);
+  });
+
+  test("on a food page the person chooses where they ate, then submits", async ({ page }) => {
+    await page.goto("/auth/sign-in?next=/food/doi");
+    await page.getByRole("button", { name: "মোটামুটি" }).first().click();
+    await expect(page.getByLabel("কোথায় খেয়েছেন?").first()).toBeVisible();
+    await page.getByRole("button", { name: "জমা দিন" }).first().click();
+    await expect(
+      page.getByText(/অভিজ্ঞতা যোগ হয়েছে। ধন্যবাদ!|আপনার মতামত বদলানো হয়েছে।/),
+    ).toBeVisible();
+  });
+});

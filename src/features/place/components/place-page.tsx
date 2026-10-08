@@ -7,6 +7,10 @@ import { routes } from "@/config/routes";
 import { getT } from "@/i18n/server";
 import type { PlaceHeader } from "@/services/catalog-service";
 
+import {
+  PlaceReactionCard,
+  ReactionCardSkeleton,
+} from "@/features/experience/components/reaction-card";
 import { PlaceClaimsSection, PlaceClaimsSectionSkeleton } from "./place-claims-section";
 import { PlaceDishesSection, PlaceDishesSectionSkeleton } from "./place-dishes-section";
 import { PlaceHero, PlaceHeroSkeleton } from "./place-hero";
@@ -37,6 +41,11 @@ export function PlacePage({ place }: { place: PlaceHeader }) {
           </Suspense>
         </div>
         <div className="lg:col-span-5">
+          <div className="page-x pt-6 lg:pt-10">
+            <Suspense fallback={<ReactionCardSkeleton />}>
+              <PlaceReactionCard placeId={place.id} />
+            </Suspense>
+          </div>
           <PlaceInfoSection place={place} />
         </div>
       </div>

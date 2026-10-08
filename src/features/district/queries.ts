@@ -24,6 +24,9 @@ export async function getDistrictPlaces(districtId: number) {
 export async function getDistrictFood(districtSlug: string, foodSlug: string) {
   "use cache";
   cacheLife("hours");
-  cacheTag("districts", "foods");
-  return getServices().catalog.districtFood(districtSlug, foodSlug);
+  cacheTag("districts");
+  const data = await getServices().catalog.districtFood(districtSlug, foodSlug);
+  // New experiences refresh the page through the food's tag.
+  if (data) cacheTag(`food:${data.food.id}`);
+  return data;
 }

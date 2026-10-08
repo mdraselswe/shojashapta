@@ -10,12 +10,17 @@ import { createSupabaseRepositoriesFrom } from "./repositories";
 // (scripts/fixtures-sql.ts). Skipped elsewhere: it needs SUPABASE_TEST_* and never targets DEV/PROD.
 const url = process.env.SUPABASE_TEST_URL;
 const anonKey = process.env.SUPABASE_TEST_ANON_KEY;
+const serviceKey = process.env.SUPABASE_TEST_SERVICE_KEY;
 
 if (url && anonKey) {
   repositoryContract(
     "supabase",
-    () => createSupabaseRepositoriesFrom(createSupabaseClients({ url, anonKey })),
-    { ids: fixtureIds, writes: false }, // read-only until Phase 3
+    () =>
+      createSupabaseRepositoriesFrom(
+        createSupabaseClients({ url, anonKey, ...(serviceKey ? { serviceKey } : {}) }),
+      ),
+    // Areas are added as their Supabase writes land (Phase 3.2: experiences).
+    { ids: fixtureIds, writes: serviceKey ? ["experiences"] : false },
   );
 } else {
   describe.skip("supabase repositories (contract) — needs SUPABASE_TEST_URL / SUPABASE_TEST_ANON_KEY", () => {});
