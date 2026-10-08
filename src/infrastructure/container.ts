@@ -13,6 +13,7 @@ import type {
 import { createCatalogService, type CatalogService } from "@/services/catalog-service";
 import { createAddService, type AddService } from "@/services/add-service";
 import { createExperienceService, type ExperienceService } from "@/services/experience-service";
+import { createSavedService, type SavedService } from "@/services/saved-service";
 import { createSearchService, type SearchService } from "@/services/search-service";
 import { createDefineAction } from "@/lib/action";
 
@@ -42,6 +43,7 @@ export type Services = {
   search: SearchService;
   experience: ExperienceService;
   add: AddService;
+  saved: SavedService;
   auth: AuthProvider;
   storage: StorageProvider;
   cache: CacheInvalidator;
@@ -94,6 +96,7 @@ export function getServices(): Services {
     catalog: createCatalogService({ repos }),
     search: createSearchService({ repos }),
     experience,
+    saved: createSavedService({ repos }),
     add: createAddService({ repos, experience, rateLimiter, cache: nextCacheInvalidator }),
     auth,
     storage,

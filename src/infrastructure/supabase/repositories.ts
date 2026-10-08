@@ -408,10 +408,55 @@ export function createSupabaseRepositoriesFrom(clients: SupabaseClients): Reposi
     reports: { create: () => notYet("reports.create", "4.5") },
 
     saved: {
-      list: () => notYet("saved.list", "3.4"),
-      isSaved: () => notYet("saved.isSaved", "3.4"),
-      save: () => notYet("saved.save", "3.4"),
-      remove: () => notYet("saved.remove", "3.4"),
+      async list(userId, opts) {
+        const window = pageWindow(opts);
+        const rows = check(
+          await writer(clients)
+            .from("saved_items")
+            .select("*")
+            .eq("user_id", userId)
+            .order("created_at", { ascending: false })
+            .range(window.from, window.to),
+          "saved items",
+        );
+        return toPage(
+          rows.map((row) => ({
+            entity: row.entity as "food" | "dish" | "place",
+            entityId: row.entity_id,
+            kind: "want_to_try" as const,
+            createdAt: new Date(row.created_at),
+          })),
+          window,
+        );
+      },
+      async isSaved(userId, entity, entityId) {
+        const result = await writer(clients)
+          .from("saved_items")
+          .select("entity_id", { count: "exact", head: true })
+          .eq("user_id", userId)
+          .eq("entity", entity)
+          .eq("entity_id", entityId);
+        if (result.error) throw new Error(`Supabase saved check: ${result.error.message}`);
+        return (result.count ?? 0) > 0;
+      },
+      async save(userId, entity, entityId) {
+        const { error } = await writer(clients)
+          .from("saved_items")
+          .upsert(
+            { user_id: userId, entity, entity_id: entityId, kind: "want_to_try" },
+            { onConflict: "user_id,entity,entity_id,kind", ignoreDuplicates: true },
+          );
+        if (error) throw new Error(`Supabase save: ${error.message}`);
+      },
+      async remove(userId, entity, entityId) {
+        const { error } = await writer(clients)
+          .from("saved_items")
+          .delete()
+          .eq("user_id", userId)
+          .eq("entity", entity)
+          .eq("entity_id", entityId);
+        if (error) throw new Error(`Supabase unsave: ${error.message}`);
+      },
     },
 
     media: {

@@ -11,6 +11,8 @@ import {
   FoodReactionCard,
   ReactionCardSkeleton,
 } from "@/features/experience/components/reaction-card";
+import { SaveButtonSkeleton } from "@/features/saved/components/save-button";
+import { SaveControl } from "@/features/saved/components/save-control";
 import { FoodDishesSection, FoodDishesSectionSkeleton } from "./food-dishes-section";
 import { FoodHero, FoodHeroSkeleton } from "./food-hero";
 import { FoodSummaryCard } from "./food-summary-card";
@@ -28,6 +30,11 @@ export function FoodPage({ food }: { food: FoodHeader }) {
         <SubPageBar
           backHref={routes.home()}
           crumbs={[{ label: t("breadcrumb.foods") }, { label: food.nameBn }]}
+          actions={
+            <Suspense fallback={<SaveButtonSkeleton />}>
+              <SaveControl entity="food" entityId={food.id} />
+            </Suspense>
+          }
         />
       }
     >
