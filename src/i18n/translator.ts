@@ -25,7 +25,7 @@ export function createTranslator(primary: Messages, fallback: Messages) {
   return function t(key: MessageKey, params?: Params): string {
     const template = lookup(primary, key) ?? lookup(fallback, key) ?? key;
     if (!params) return template;
-    return template.replace(/{(w+)}/g, (match, name: string) =>
+    return template.replace(/\{(\w+)\}/g, (match, name: string) =>
       name in params ? String(params[name]) : match,
     );
   };

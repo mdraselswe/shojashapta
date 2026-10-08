@@ -25,6 +25,10 @@ describe("i18n", () => {
     expect(t("common.loading", { unused: 1 })).toBe("লোড হচ্ছে…");
   });
 
+  it("fills {placeholders} from params", () => {
+    expect(createT("bn")("food.famousIn", { district: "বগুড়া" })).toBe("বগুড়া-এর বিখ্যাত");
+  });
+
   it("never uses the banned words (AGENTS.md §5)", () => {
     const all = JSON.stringify(messages);
     expect(all).not.toMatch(/সেরা|Verified/);
