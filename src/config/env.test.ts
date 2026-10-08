@@ -95,4 +95,18 @@ describe("parseServerEnv", () => {
     // Pre-launch production (coming-soon page) may still run on mocks.
     expect(parseServerEnv({ VERCEL_ENV: "production" }).DB_PROVIDER).toBe("mock");
   });
+
+  it("treats Vercel's [SENSITIVE] placeholders as hidden while building, never otherwise", () => {
+    const pulled = {
+      DB_PROVIDER: "supabase",
+      NEXT_PUBLIC_SUPABASE_URL: "https://abc.supabase.co",
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: "anon",
+      AUTH_PROVIDER: '"[SENSITIVE]"',
+      SUPABASE_SERVICE_ROLE_KEY: '"[SENSITIVE]"',
+      ADMIN_EMAILS: '"[SENSITIVE]"',
+    };
+    expect(() => parseServerEnv({ ...pulled, NEXT_PHASE: "phase-production-build" })).not.toThrow();
+    // at runtime a placeholder is a mistake, not a value
+    expect(() => parseServerEnv(pulled)).toThrow();
+  });
 });

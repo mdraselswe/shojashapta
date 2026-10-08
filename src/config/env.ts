@@ -62,9 +62,10 @@ function requireKeys(
   source: Record<string, unknown>,
   keys: readonly string[],
   reason: string,
+  hidden: ReadonlySet<string> = new Set(),
 ) {
   for (const key of keys) {
-    if (source[key] === undefined) {
+    if (source[key] === undefined && !hidden.has(key)) {
       ctx.addIssue({ code: "custom", path: [key], message: `Required when ${reason}` });
     }
   }
@@ -98,8 +99,28 @@ export function parseClientEnv(source: Source): ClientEnv {
     .parse(withSiteUrlFallback(withoutEmpty(source)));
 }
 
+/**
+ * `vercel pull` writes "[SENSITIVE]" instead of the value of variables marked Sensitive; the real
+ * values reach the running site, never the build. Only while building, those variables count as
+ * "hidden": left out of the parse and not reported as missing. Anywhere else the placeholder stays
+ * an invalid value, so it can never be mistaken for a real one.
+ */
+const SENSITIVE_PLACEHOLDER = "[SENSITIVE]";
+
+function withoutHidden(source: Source): { source: Source; hidden: Set<string> } {
+  const hidden = new Set<string>();
+  if (source.NEXT_PHASE !== "phase-production-build") return { source, hidden };
+  const kept: Source = {};
+  for (const [key, value] of Object.entries(source)) {
+    if (value?.replace(/^"|"$/g, "") === SENSITIVE_PLACEHOLDER) hidden.add(key);
+    else kept[key] = value;
+  }
+  return { source: kept, hidden };
+}
+
 export function parseServerEnv(rawSource: Source): ServerEnv {
-  const source = withoutEmpty(rawSource);
+  const { source: visible, hidden } = withoutHidden(rawSource);
+  const source = withoutEmpty(visible);
   const client = parseClientEnv(source);
   const server = serverSchema
     .superRefine((env, ctx) => {
@@ -113,6 +134,7 @@ export function parseServerEnv(rawSource: Source): ServerEnv {
             "SUPABASE_SERVICE_ROLE_KEY",
           ],
           "DB_PROVIDER or AUTH_PROVIDER is supabase",
+          hidden,
         );
       }
       if (client.NEXT_PUBLIC_STORAGE_PROVIDER === "cloudinary") {
@@ -121,13 +143,14 @@ export function parseServerEnv(rawSource: Source): ServerEnv {
           env,
           ["CLOUDINARY_API_KEY", "CLOUDINARY_API_SECRET"],
           "storage is cloudinary",
+          hidden,
         );
       }
       // A launched production site must never serve fixture data.
       if (env.VERCEL_ENV === "production" && client.NEXT_PUBLIC_LAUNCHED) {
         const mocks = [
           env.DB_PROVIDER === "mock" && "DB_PROVIDER",
-          env.AUTH_PROVIDER === "mock" && "AUTH_PROVIDER",
+          env.AUTH_PROVIDER === "mock" && !hidden.has("AUTH_PROVIDER") && "AUTH_PROVIDER",
           client.NEXT_PUBLIC_STORAGE_PROVIDER === "mock" && "NEXT_PUBLIC_STORAGE_PROVIDER",
         ].filter((key): key is string => Boolean(key));
         for (const key of mocks) {
