@@ -320,15 +320,15 @@ select is(
   '00000000-0000-4000-8000-00000000d001'::uuid, 'its experiences move to the survivor''s dish'
 );
 select is_empty(
-  $ select 1 from dishes where id = '00000000-0000-4000-8000-00000000d002' $,
+  $$ select 1 from dishes where id = '00000000-0000-4000-8000-00000000d002' $$,
   'the duplicate dish is gone'
 );
 select throws_ok(
-  $ select merge_places('00000000-0000-4000-8000-00000000c001', '00000000-0000-4000-8000-00000000c001') $,
+  $$ select merge_places('00000000-0000-4000-8000-00000000c001', '00000000-0000-4000-8000-00000000c001') $$,
   'P0001', null, 'a place cannot be merged into itself'
 );
 select throws_ok(
-  $ select merge_places('00000000-0000-4000-8000-00000000c001', '00000000-0000-4000-8000-00000000c002') $,
+  $$ select merge_places('00000000-0000-4000-8000-00000000c001', '00000000-0000-4000-8000-00000000c002') $$,
   'P0001', null, 'the survivor must be active'
 );
 
