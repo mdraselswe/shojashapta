@@ -1,5 +1,7 @@
 import { Suspense } from "react";
 
+import { LegalLinks } from "@/features/legal/components/legal-links";
+
 import { PageShell } from "@/components/layout/page-shell";
 import { LoadingRegion } from "@/components/ui/skeleton";
 import { getT } from "@/i18n/server";
@@ -38,6 +40,7 @@ export function HomePage() {
       <Suspense fallback={null}>
         <HomePassport />
       </Suspense>
+      <LegalLinks />
     </PageShell>
   );
 }

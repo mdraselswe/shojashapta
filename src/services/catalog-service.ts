@@ -155,6 +155,31 @@ function priceRangeOf(dishes: Pick<Dish, "price">[]): PriceRange {
 
 export function createCatalogService({ repos }: Deps) {
   return {
+    /** Every public page worth listing in the sitemap (real content only: no empty pairs). */
+    async sitemapEntries() {
+      const [foods, places, districts, fame] = await Promise.all([
+        repos.foods.slugs(appConfig.seo.sitemapPerType),
+        repos.places.slugs(appConfig.seo.sitemapPerType),
+        repos.districts.list(),
+        repos.districts.allFame(),
+      ]);
+      const slugById = new Map(districts.map((district) => [district.id, district.slug]));
+      const pairs = new Set<string>();
+      for (const entry of fame) {
+        const district = slugById.get(entry.districtId);
+        if (district) pairs.add(`${district}/${entry.food.slug}`);
+      }
+      return {
+        districts: districts.map((district) => district.slug),
+        foods,
+        places,
+        districtFoods: [...pairs].map((pair) => {
+          const [district = "", food = ""] = pair.split("/");
+          return { district, food };
+        }),
+      };
+    },
+
     /** Slugs worth prerendering at build time. */
     async staticSlugs() {
       const [foods, places, districts, fame] = await Promise.all([

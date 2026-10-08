@@ -118,6 +118,8 @@ export const appConfig = {
     // Every prerendered page is several files that Vercel uploads on each deploy (the free plan
     // allows 5000 uploads a day), so only a small head start is built; the rest renders on the
     // first visit and is cached.
+    /** Most pages of one kind listed in one sitemap file (the protocol allows 50,000). */
+    sitemapPerType: 5000,
     /** Food pages prerendered at build (most experienced first). */
     staticFoodCount: 10,
     /** Place pages prerendered at build. */

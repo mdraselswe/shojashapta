@@ -6,6 +6,7 @@ import { PageShell } from "@/components/layout/page-shell";
 import { Section } from "@/components/layout/section";
 import { ThemePreferenceControl } from "@/components/theme/theme-preference-control";
 import { Button } from "@/components/ui/button";
+import { LegalLinks } from "@/features/legal/components/legal-links";
 import { MePassport } from "@/features/passport/components/passport-section";
 import { GroupedList, ListRow, ListTile } from "@/components/ui/grouped-list";
 import { routes } from "@/config/routes";
@@ -172,6 +173,7 @@ export function MePage({ user, tab }: { user: AppUser; tab: MeTab }) {
           </form>
         </div>
       </Section>
+      <LegalLinks />
     </PageShell>
   );
 }

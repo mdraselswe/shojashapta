@@ -42,7 +42,7 @@ export function DistrictFoodPage({ data }: { data: DistrictFoodData }) {
         {about ? <p className="mt-2 text-body">{about}</p> : null}
         <Link
           href={routes.food(food.slug)}
-          className="mt-2 inline-block text-meta font-semibold text-primary"
+          className="mt-2 inline-block text-meta font-semibold text-primary-text"
         >
           {t("district.allCountry", { food: food.nameBn })}
         </Link>
