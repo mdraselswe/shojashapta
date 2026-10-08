@@ -65,7 +65,7 @@ Install Docker Desktop if you want a local Supabase (`pnpm db:start`); otherwise
 
 ---
 
-## Phase 3 — Auth & contributions
+## Phase 3 — Auth & contributions — ✅ done (tag `phase-3`, 2026-10-08)
 3.1 Google login via `AuthProvider`, `/auth/callback`, `profiles` upsert, `proxy.ts`, `LoginGate`, admin bootstrap.
 3.2 `ReactionPicker` + `addExperience` action (optimistic), `refresh_dish_stats`, cache invalidation.
 3.3 Add flow `/add` (3 steps) with food/place search-select, duplicate check, area dropdown, location from "আমার লোকেশন".
@@ -75,7 +75,7 @@ Install Docker Desktop if you want a local Supabase (`pnpm db:start`); otherwise
 
 ---
 
-## Phase 4 — Trust
+## Phase 4 — Trust — ✅ done (tag `phase-4`, 2026-10-08)
 4.1 Claims auto-created (availability from add flow, price from experiences).
 4.2 `VerifyPrompt` (✅/⚠️/❌ → reason → note → optional evidence), `claimService` status rules, staleness.
 4.3 Inline "এখনও ঠিক আছে?" for stale claims and after experiences.
@@ -85,7 +85,7 @@ Install Docker Desktop if you want a local Supabase (`pnpm db:start`); otherwise
 
 ---
 
-## Phase 5 — Media
+## Phase 5 — Media — ✅ done (tag `phase-5`, 2026-10-08)
 5.1 `lib/image/compress` + `useImageCompression`.  5.2 Cloudinary `StorageProvider` (tickets, confirm, delete, url).
 5.3 Upload in experience + add flow (max 2).  5.4 `AppImage` with custom loader + dominant color.  5.5 Photo strip + viewer (dynamic import).
 
@@ -93,7 +93,7 @@ Install Docker Desktop if you want a local Supabase (`pnpm db:start`); otherwise
 
 ---
 
-## Phase 6 — Profile & share
+## Phase 6 — Profile & share — ✅ done (tag `phase-6`, 2026-10-08)
 6.1 `/me` with tabs (অবদান · খেয়েছি · খেতে চাই) + skeletons.  6.2 `ShareButton` + `useShare`.
 6.3 OG images for food, place, district, district×food (Bangla font).
 
@@ -101,7 +101,7 @@ Install Docker Desktop if you want a local Supabase (`pnpm db:start`); otherwise
 
 ---
 
-## Phase 6b — Passport & points (MVP-light gamification)
+## Phase 6b — Passport & points (MVP-light gamification) — ✅ done (tag `phase-6b`, 2026-10-08)
 6b.1 Migration: `point_events`, `district_stamps`, `profiles.points_total`, `award_points()`.
 6b.2 `passportService` + `pointsService`; hook into experience/place/claim/edit services; revoke on hide.
 6b.3 Components: `PassportRing`, `PassportCard`, `Stamp` (SVG, rough filter), `LockedStamp`, `PointsPill`, `DivisionProgressTile` + skeletons.
@@ -112,14 +112,14 @@ Install Docker Desktop if you want a local Supabase (`pnpm db:start`); otherwise
 
 ---
 
-## Phase 7 — Admin
+## Phase 7 — Admin — ✅ done (tag `phase-7`, 2026-10-08)
 7.1 `/admin` guarded by role.  7.2 Queues: reports, disputed claims, edit suggestions, new places, duplicates, flagged media.
 7.3 Actions: approve/reject, merge places (move dishes/experiences, set `merged_into`, redirect), hide, ban, edit RegionalFame.
 7.4 Maintenance: clean old rate-limit rows, orphan uploads; usage panel (counts of rows, media).
 
 ---
 
-## Phase 8 — SEO, PWA, polish
+## Phase 8 — SEO, PWA, polish — ✅ done (tag `phase-8`, 2026-10-08)
 8.1 Metadata helpers on all pages, JSON-LD, canonical, `sitemap.ts` (split), `robots.ts`, noindex thin pages.
 8.2 `manifest.ts`, icons, minimal SW, install card.  8.3 `/policy`, `/about`.
 8.4 Accessibility pass (axe), keyboard, focus, contrast.  8.5 Performance pass: bundle analyze, budgets in CI (Lighthouse CI).
@@ -129,7 +129,7 @@ Install Docker Desktop if you want a local Supabase (`pnpm db:start`); otherwise
 
 ---
 
-## Phase 9 — Launch
+## Phase 9 — Launch (owner actions: see the checklist given with the Phase 8 hand-off)
 9.1 Final production checks: prod Supabase auth URLs, Google OAuth origins for shojashapta.com, Cloudinary prod folder, quotas (`11-delivery-workflow.md` §4).
 9.1b Set `NEXT_PUBLIC_LAUNCHED=true` in Vercel Production → redeploy → site public and indexable; submit `https://shojashapta.com/sitemap.xml` in Google Search Console; tag `v1.0.0`.
 9.2 Final content review (RegionalFame sources, 150+ places).  9.3 Soft launch to 20–30 founding contributors, fix feedback for 1–2 weeks.
