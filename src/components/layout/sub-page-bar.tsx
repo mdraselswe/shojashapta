@@ -11,12 +11,22 @@ export type Crumb = { label: string; href?: string };
  * Top of a detail page. Phones and tablets get a round back button to the fixed parent; from 1024px
  * the breadcrumb takes over (docs/design/desktop). The current page is the last crumb, no link.
  */
-export function SubPageBar({ backHref, crumbs = [] }: { backHref: string; crumbs?: Crumb[] }) {
+export function SubPageBar({
+  backHref,
+  crumbs = [],
+  actions,
+}: {
+  backHref: string;
+  crumbs?: Crumb[];
+  /** Round icon buttons (save, share); shown right of the back button or the breadcrumb. */
+  actions?: React.ReactNode;
+}) {
   const t = getT();
   return (
     <>
       <div className="flex items-center gap-2 px-4 py-3 md:px-6 lg:hidden">
         <BackButton href={backHref} />
+        {actions ? <div className="ml-auto flex items-center gap-2">{actions}</div> : null}
       </div>
       <nav
         aria-label={t("breadcrumb.label")}
@@ -39,6 +49,7 @@ export function SubPageBar({ backHref, crumbs = [] }: { backHref: string; crumbs
             )}
           </span>
         ))}
+        {actions ? <div className="ml-auto flex items-center gap-2">{actions}</div> : null}
       </nav>
     </>
   );
