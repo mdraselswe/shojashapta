@@ -97,6 +97,37 @@
     "thanks": "Thanks, your answer was added.",
     "confirmed": "Thanks, confirmed."
   },
+  "moderation": {
+    "moreTitle": "See something wrong?",
+    "suggest": "Suggest a correction",
+    "report": "Report",
+    "fieldLabel": "What should change?",
+    "fields": {
+      "name_bn": "Name",
+      "address": "Address",
+      "type": "Type",
+      "about_bn": "Description",
+      "other": "Something else"
+    },
+    "current": "Now: {value}",
+    "proposed": "Your suggestion",
+    "note": "Why change it? (optional)",
+    "send": "Send",
+    "sent": "Thanks, we will take a look.",
+    "reasonLabel": "What is the problem?",
+    "reasons": {
+      "wrong_info": "Wrong information",
+      "misleading": "Misleading",
+      "wrong_place": "Wrong place",
+      "closed": "Place is closed",
+      "fake_photo": "Fake photo",
+      "offensive": "Offensive",
+      "other": "Other"
+    },
+    "reported": "Report sent.",
+    "alreadyReported": "You already reported this.",
+    "profanity": "Please remove the offensive words."
+  },
   "comingSoon": {
     "title": "Coming soon",
     "body": "Where to eat what in Bangladesh, told by real community experience. Coming soon."

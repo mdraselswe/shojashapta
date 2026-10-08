@@ -140,7 +140,7 @@ export function createMockRepositories(): Repositories {
         return food ? foodWithStats(food) : null;
       },
       byId: async (id) => {
-        const food = db.foods.find((f) => f.id === id);
+        const food = db.foods.find((f) => f.id === id && f.status === "active");
         return food ? foodWithStats(food) : null;
       },
       topDishes: async (foodId, opts = {}) =>
@@ -176,8 +176,8 @@ export function createMockRepositories(): Repositories {
           .map((p) => p.slug)
           .sort()
           .slice(0, limit),
-      bySlug: async (slug) => clone(db.places.find((p) => p.slug === slug) ?? null),
-      byId: async (id) => clone(db.places.find((p) => p.id === id) ?? null),
+      bySlug: async (slug) => clone(active(db.places).find((p) => p.slug === slug) ?? null),
+      byId: async (id) => clone(active(db.places).find((p) => p.id === id) ?? null),
       inDistrict: async (districtId, opts) =>
         paginate(clone(active(db.places).filter((p) => p.district.id === districtId)), opts),
       dishes: async (placeId) =>
@@ -347,6 +347,12 @@ export function createMockRepositories(): Repositories {
     },
 
     reports: {
+      openFor: async (entity, entityId) =>
+        clone(
+          db.reports.filter(
+            (r) => r.entity === entity && r.entityId === entityId && r.status === "open",
+          ),
+        ),
       create: async (input) => {
         const report: Report = { ...input, id: newId("r"), status: "open", createdAt: new Date() };
         db.reports.push(report);
@@ -440,6 +446,20 @@ export function createMockRepositories(): Repositories {
     },
 
     admin: {
+      hide: async (entity, entityId) => {
+        const rows: { id: string; status: string }[] =
+          entity === "place"
+            ? db.places
+            : entity === "food"
+              ? db.foods
+              : entity === "dish"
+                ? db.dishes
+                : entity === "experience"
+                  ? db.experiences
+                  : [];
+        const row = rows.find((candidate) => candidate.id === entityId);
+        if (row) row.status = "hidden";
+      },
       openReports: async (opts) =>
         paginate(clone(db.reports.filter((r) => r.status === "open")), opts),
       openEditSuggestions: async (opts) =>

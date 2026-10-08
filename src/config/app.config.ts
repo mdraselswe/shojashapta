@@ -55,6 +55,11 @@ export const appConfig = {
     disputeRatio: 0.6,
   },
 
+  moderation: {
+    /** Independent open reports that hide a place, food, dish or comment until an admin reviews it. */
+    autoHideReports: 3,
+  },
+
   limits: {
     /** Max actions of each kind per user per day (docs/09-security-and-limits.md §2). */
     perDay: {

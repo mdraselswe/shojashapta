@@ -13,6 +13,8 @@ import {
 } from "@/features/experience/components/reaction-card";
 import { SaveButtonSkeleton } from "@/features/saved/components/save-button";
 import { SaveControl } from "@/features/saved/components/save-control";
+import { Section } from "@/components/layout/section";
+import { ContentActions } from "@/features/moderation/components/content-actions";
 import { FoodDishesSection, FoodDishesSectionSkeleton } from "./food-dishes-section";
 import { FoodHero, FoodHeroSkeleton } from "./food-hero";
 import { FoodSummaryCard } from "./food-summary-card";
@@ -52,6 +54,15 @@ export function FoodPage({ food }: { food: FoodHeader }) {
           <Suspense fallback={<FoodVoicesSectionSkeleton />}>
             <FoodVoicesSection foodId={food.id} />
           </Suspense>
+          <Section title={t("moderation.moreTitle")}>
+            <ContentActions
+              target={{ entity: "food", entityId: food.id }}
+              fields={[
+                { id: "name_bn", current: food.nameBn },
+                { id: "about_bn", current: food.aboutBn },
+              ]}
+            />
+          </Section>
         </div>
         <aside className="hidden lg:col-span-4 lg:block">
           <div className="sticky top-6 page-x pt-10">
