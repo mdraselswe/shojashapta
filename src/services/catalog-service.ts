@@ -115,7 +115,7 @@ export type DistrictPlaceRow = {
 
 export type DistrictFoodPage = {
   district: DistrictRef;
-  food: FoodRef & { aboutBn: string | null };
+  food: FoodRef & { id: string; aboutBn: string | null };
   /** Why the editors list this food here. */
   noteBn: string | null;
   dishes: FoodDishes;
@@ -315,7 +315,7 @@ export function createCatalogService({ repos }: Deps) {
       ]);
       return {
         district: { slug: district.slug, nameBn: district.nameBn },
-        food: { slug: food.slug, nameBn: food.nameBn, aboutBn: food.aboutBn },
+        food: { id: food.id, slug: food.slug, nameBn: food.nameBn, aboutBn: food.aboutBn },
         noteBn: fame.find((entry) => entry.food.id === food.id)?.noteBn ?? null,
         dishes,
       };

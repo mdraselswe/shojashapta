@@ -15,15 +15,22 @@ export type ContractIds = {
   users: { contract: string };
 };
 
+export type WriteArea = "experiences" | "claims" | "saved";
+
 export function repositoryContract(
   adapter: string,
   make: () => Promise<Repositories> | Repositories,
   {
     ids,
     writes = true,
-  }: { ids: ContractIds; /** false while an adapter is read-only. */ writes?: boolean },
+  }: {
+    ids: ContractIds;
+    /** false while an adapter is read-only; or just the write areas it already implements. */
+    writes?: boolean | WriteArea[];
+  },
 ) {
-  const writeIt = writes ? it : it.skip;
+  const writeIt = (area: WriteArea) =>
+    writes === true || (Array.isArray(writes) && writes.includes(area)) ? it : it.skip;
   describe(`${adapter} repositories (contract)`, () => {
     it("finds the pipeline's smoke-test entities by slug", async () => {
       const repos = await make();
@@ -80,49 +87,59 @@ export function repositoryContract(
       expect(all.some((f) => f.districtId === bogura?.id && f.food.slug === "doi")).toBe(true);
     });
 
-    writeIt("keeps one experience per user per dish and updates dish counts", async () => {
-      const repos = await make();
-      const dish = (await repos.places.dishes(ids.places.second))[0];
-      if (!dish) throw new Error("fixture dish missing");
-      const before = dish.experienceCount;
-      await repos.experiences.upsert({
-        dishId: dish.id,
-        userId: ids.users.contract,
-        reaction: "loved",
-      });
-      await repos.experiences.upsert({
-        dishId: dish.id,
-        userId: ids.users.contract,
-        reaction: "okay",
-      });
-      const after = await repos.dishes.byId(dish.id);
-      expect(after?.experienceCount).toBe(before + 1);
-      expect(after?.okayCount).toBe(dish.okayCount + 1);
-      const mine = await repos.experiences.byUser(ids.users.contract);
-      expect(mine.items).toHaveLength(1);
-      expect(mine.items[0]?.reaction).toBe("okay");
-    });
+    writeIt("experiences")(
+      "keeps one experience per user per dish and updates dish counts",
+      async () => {
+        const repos = await make();
+        const dish = (await repos.places.dishes(ids.places.second))[0];
+        if (!dish) throw new Error("fixture dish missing");
+        // Real databases recompute a dish's counts from its experience rows, mock fixtures carry
+        // counts without rows; so compare the second write with the first, not with the fixture.
+        await repos.experiences.upsert({
+          dishId: dish.id,
+          userId: ids.users.contract,
+          reaction: "loved",
+        });
+        const afterFirst = await repos.dishes.byId(dish.id);
+        await repos.experiences.upsert({
+          dishId: dish.id,
+          userId: ids.users.contract,
+          reaction: "okay",
+        });
+        const after = await repos.dishes.byId(dish.id);
+        expect(afterFirst?.experienceCount).toBeGreaterThanOrEqual(1);
+        expect(after?.experienceCount).toBe(afterFirst?.experienceCount); // an edit, not a second vote
+        expect(after?.okayCount).toBe((afterFirst?.okayCount ?? 0) + 1);
+        expect(after?.lovedCount).toBe((afterFirst?.lovedCount ?? 0) - 1);
+        const mine = await repos.experiences.byUser(ids.users.contract);
+        expect(mine.items).toHaveLength(1);
+        expect(mine.items[0]?.reaction).toBe("okay");
+      },
+    );
 
-    writeIt("replaces a user's earlier claim vote instead of adding another", async () => {
-      const repos = await make();
-      const [claim] = await repos.claims.forEntity("place", ids.places.sample);
-      if (!claim) throw new Error("fixture claim missing");
-      const total = (c: typeof claim) => c.counts.correct + c.counts.partial + c.counts.wrong;
-      const vote = {
-        claimId: claim.id,
-        userId: ids.users.contract,
-        reason: null,
-        note: null,
-        evidence: null,
-      };
-      const first = await repos.claims.vote({ ...vote, verdict: "correct" });
-      const second = await repos.claims.vote({ ...vote, verdict: "wrong", reason: "closed" });
-      expect(total(first)).toBe(total(claim) + 1);
-      expect(total(second)).toBe(total(first));
-      expect(second.counts.wrong).toBe(claim.counts.wrong + 1);
-    });
+    writeIt("claims")(
+      "replaces a user's earlier claim vote instead of adding another",
+      async () => {
+        const repos = await make();
+        const [claim] = await repos.claims.forEntity("place", ids.places.sample);
+        if (!claim) throw new Error("fixture claim missing");
+        const total = (c: typeof claim) => c.counts.correct + c.counts.partial + c.counts.wrong;
+        const vote = {
+          claimId: claim.id,
+          userId: ids.users.contract,
+          reason: null,
+          note: null,
+          evidence: null,
+        };
+        const first = await repos.claims.vote({ ...vote, verdict: "correct" });
+        const second = await repos.claims.vote({ ...vote, verdict: "wrong", reason: "closed" });
+        expect(total(first)).toBe(total(claim) + 1);
+        expect(total(second)).toBe(total(first));
+        expect(second.counts.wrong).toBe(claim.counts.wrong + 1);
+      },
+    );
 
-    writeIt("saves and unsaves without duplicates", async () => {
+    writeIt("saved")("saves and unsaves without duplicates", async () => {
       const repos = await make();
       await repos.saved.save(ids.users.contract, "food", ids.foods.doi);
       await repos.saved.save(ids.users.contract, "food", ids.foods.doi);

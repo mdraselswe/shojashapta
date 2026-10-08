@@ -7,6 +7,10 @@ import { routes } from "@/config/routes";
 import { getT } from "@/i18n/server";
 import type { FoodHeader } from "@/services/catalog-service";
 
+import {
+  FoodReactionCard,
+  ReactionCardSkeleton,
+} from "@/features/experience/components/reaction-card";
 import { FoodDishesSection, FoodDishesSectionSkeleton } from "./food-dishes-section";
 import { FoodHero, FoodHeroSkeleton } from "./food-hero";
 import { FoodSummaryCard } from "./food-summary-card";
@@ -28,6 +32,11 @@ export function FoodPage({ food }: { food: FoodHeader }) {
       }
     >
       <FoodHero food={food} />
+      <div className="page-x pt-5 lg:hidden">
+        <Suspense fallback={<ReactionCardSkeleton />}>
+          <FoodReactionCard foodId={food.id} />
+        </Suspense>
+      </div>
       <div className="lg:grid lg:grid-cols-12">
         <div className="lg:col-span-8">
           <Suspense fallback={<FoodDishesSectionSkeleton />}>
@@ -40,6 +49,11 @@ export function FoodPage({ food }: { food: FoodHeader }) {
         <aside className="hidden lg:col-span-4 lg:block">
           <div className="sticky top-6 page-x pt-10">
             <FoodSummaryCard food={food} />
+            <div className="mt-4">
+              <Suspense fallback={<ReactionCardSkeleton />}>
+                <FoodReactionCard foodId={food.id} />
+              </Suspense>
+            </div>
           </div>
         </aside>
       </div>
@@ -53,6 +67,9 @@ export function FoodPageSkeleton() {
     <LoadingRegion label={t("common.loading")}>
       <PageShell header={<SubPageBar backHref={routes.home()} />}>
         <FoodHeroSkeleton />
+        <div className="page-x pt-5 lg:hidden">
+          <ReactionCardSkeleton />
+        </div>
         <div className="lg:grid lg:grid-cols-12">
           <div className="lg:col-span-8">
             <FoodDishesSectionSkeleton />

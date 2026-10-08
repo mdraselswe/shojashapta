@@ -11,6 +11,7 @@ import type {
   StorageProvider,
 } from "@/core/ports";
 import { createCatalogService, type CatalogService } from "@/services/catalog-service";
+import { createExperienceService, type ExperienceService } from "@/services/experience-service";
 import { createSearchService, type SearchService } from "@/services/search-service";
 import { createDefineAction } from "@/lib/action";
 
@@ -38,6 +39,7 @@ export type Services = {
   repos: Repositories;
   catalog: CatalogService;
   search: SearchService;
+  experience: ExperienceService;
   auth: AuthProvider;
   storage: StorageProvider;
   cache: CacheInvalidator;
@@ -86,6 +88,7 @@ export function getServices(): Services {
     repos,
     catalog: createCatalogService({ repos }),
     search: createSearchService({ repos }),
+    experience: createExperienceService({ repos, cache: nextCacheInvalidator }),
     auth,
     storage,
     cache: nextCacheInvalidator,

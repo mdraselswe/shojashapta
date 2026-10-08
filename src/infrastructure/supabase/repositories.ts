@@ -27,6 +27,13 @@ import {
 // Supabase repositories (DB_PROVIDER=supabase). Phase 1.2 = public reads through the anon client,
 // so RLS applies exactly as for visitors. Writes arrive with the phase that needs them.
 
+// Writes use the service client: every write comes from a server action that has already
+// authenticated the user and applied the daily limit, so the user id it passes is trusted.
+function writer(clients: SupabaseClients): Db {
+  if (!clients.service) throw new Error("Supabase writes need SUPABASE_SERVICE_ROLE_KEY");
+  return clients.service;
+}
+
 function notYet(method: string, phase: string): never {
   throw new Error(`Supabase ${method} arrives in Phase ${phase}`);
 }
@@ -229,7 +236,31 @@ export function createSupabaseRepositoriesFrom(clients: SupabaseClients): Reposi
         );
         return row ? toDishWithPlace(row as unknown as DishWithPlaceRow) : null;
       },
-      findOrCreate: () => notYet("dishes.findOrCreate", "3.2"),
+      async findOrCreate(placeId, foodId) {
+        const service = writer(clients);
+        const find = async () =>
+          check(
+            await service
+              .from("dishes")
+              .select(DISH_WITH_PLACE_SELECT)
+              .eq("place_id", placeId)
+              .eq("food_id", foodId)
+              .maybeSingle(),
+            "dish by place and food",
+          );
+        let row = await find();
+        if (!row) {
+          const { error } = await service
+            .from("dishes")
+            .insert({ place_id: placeId, food_id: foodId });
+          // unique (place_id, food_id): a request that raced us created it first, which is fine
+          if (error && error.code !== "23505")
+            throw new Error(`Supabase create dish: ${error.message}`);
+          row = await find();
+        }
+        if (!row) throw new Error("Supabase dish missing after create");
+        return toDishWithPlace(row as unknown as DishWithPlaceRow);
+      },
     },
 
     experiences: {
@@ -242,7 +273,30 @@ export function createSupabaseRepositoriesFrom(clients: SupabaseClients): Reposi
         return experiencesWhere({ column: "dish_id", values: dishes.map((d) => d.id) }, opts);
       },
       byUser: (userId, opts) => experiencesWhere({ column: "user_id", values: [userId] }, opts),
-      upsert: () => notYet("experiences.upsert", "3.2"),
+      async upsert(input) {
+        const service = writer(clients);
+        const row = check(
+          await service
+            .from("experiences")
+            .upsert(
+              {
+                dish_id: input.dishId,
+                user_id: input.userId,
+                reaction: input.reaction,
+                comment: input.comment ?? null,
+                price_paid: input.pricePaid ?? null,
+                visited_on: input.visitedOn ? input.visitedOn.toISOString().slice(0, 10) : null,
+              },
+              { onConflict: "user_id,dish_id" },
+            )
+            .select(EXPERIENCE_SELECT)
+            .single(),
+          "experience upsert",
+        );
+        const stats = await service.rpc("refresh_dish_stats", { p_dish: input.dishId });
+        if (stats.error) throw new Error(`Supabase refresh_dish_stats: ${stats.error.message}`);
+        return toExperience(row as unknown as ExperienceRow);
+      },
     },
 
     claims: {
@@ -359,8 +413,22 @@ export function createSupabaseRepositoriesFrom(clients: SupabaseClients): Reposi
     },
 
     rateLimits: {
-      countSince: () => notYet("rateLimits.countSince", "3.5"),
-      record: () => notYet("rateLimits.record", "3.5"),
+      async countSince(userId, action, since) {
+        const result = await writer(clients)
+          .from("rate_limit_events")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", userId)
+          .eq("action", action)
+          .gte("created_at", since.toISOString());
+        if (result.error) throw new Error(`Supabase rate limit count: ${result.error.message}`);
+        return result.count ?? 0;
+      },
+      async record(userId, action) {
+        const { error } = await writer(clients)
+          .from("rate_limit_events")
+          .insert({ user_id: userId, action });
+        if (error) throw new Error(`Supabase rate limit record: ${error.message}`);
+      },
     },
 
     admin: {
