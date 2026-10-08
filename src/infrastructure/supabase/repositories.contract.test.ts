@@ -20,7 +20,7 @@ if (url && anonKey) {
         createSupabaseClients({ url, anonKey, ...(serviceKey ? { serviceKey } : {}) }),
       ),
     // Areas are added as their Supabase writes land (experiences 3.2, saved 3.4).
-    { ids: fixtureIds, writes: serviceKey ? ["experiences", "saved", "claims"] : false },
+    { ids: fixtureIds, writes: serviceKey ? ["experiences", "saved", "claims", "places"] : false },
   );
 } else {
   describe.skip("supabase repositories (contract) — needs SUPABASE_TEST_URL / SUPABASE_TEST_ANON_KEY", () => {});

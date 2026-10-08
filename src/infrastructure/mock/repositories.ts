@@ -237,6 +237,13 @@ export function createMockRepositories(): Repositories {
       create: async (input, createdBy) => {
         const home = district(input.districtId);
         if (!home) throw new Error(`mock: unknown district ${input.districtId}`);
+        // The same area name in the same district is one area (as in the database).
+        const areaNamed = (districtId: number, nameBn: string) => {
+          const known = db.places.find(
+            (p) => p.district.id === districtId && p.area?.nameBn === nameBn,
+          )?.area;
+          return known ?? { id: 1000 + db.places.length, slug: nameBn, nameBn };
+        };
         const place: Place = {
           id: newId("p"),
           slug: input.slug,
@@ -244,9 +251,7 @@ export function createMockRepositories(): Repositories {
           nameEn: input.nameEn ?? null,
           type: input.type,
           district: { id: home.id, slug: home.slug, nameBn: home.nameBn },
-          area: input.areaName
-            ? { id: db.places.length + 1000, slug: input.areaName, nameBn: input.areaName }
-            : null,
+          area: input.areaName ? areaNamed(home.id, input.areaName) : null,
           address: input.address ?? null,
           location: input.location ?? null,
           openingHours: null,
