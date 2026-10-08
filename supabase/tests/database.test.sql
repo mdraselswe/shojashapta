@@ -5,7 +5,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
 
-select plan(46);
+select plan(54);
 
 -- Fixtures (as the migration owner, RLS bypassed) -------------------------------------------
 insert into auth.users (id, email) values
@@ -264,6 +264,34 @@ select is(
   (select display_name from profiles where id = 'aaaaaaaa-0000-4000-8000-00000000000a'),
   'no.name',
   'without a Google name the email prefix is used'
+);
+
+-- Points and stamps (migration 0011) ------------------------------------------------------------
+select is(
+  award_points('00000000-0000-4000-8000-0000000000a1', 'experience', 'experience', 'exp-1', 10),
+  10, 'a first award returns its points'
+);
+select is(
+  award_points('00000000-0000-4000-8000-0000000000a1', 'experience', 'experience', 'exp-1', 10),
+  0, 'the same action is never paid twice'
+);
+select is(
+  (select points_total from profiles where id = '00000000-0000-4000-8000-0000000000a1'),
+  10, 'the total counts it once'
+);
+select is(revoke_points('experience', 'exp-1'), 10, 'revoking returns the points taken back');
+select is(
+  (select points_total from profiles where id = '00000000-0000-4000-8000-0000000000a1'),
+  0, 'and the total drops'
+);
+select is(revoke_points('experience', 'exp-1'), 0, 'revoking twice takes nothing more');
+select is(
+  unlock_stamp('00000000-0000-4000-8000-0000000000a1', 900::smallint, 'visit', null),
+  true, 'a first stamp for a district is new'
+);
+select is(
+  unlock_stamp('00000000-0000-4000-8000-0000000000a1', 900::smallint, 'visit', null),
+  false, 'the same stamp again is not new'
 );
 
 select * from finish();

@@ -7,19 +7,21 @@ import { createRateLimiter } from "@/infrastructure/shared/rate-limiter";
 import { createAddService } from "./add-service";
 import { createClaimService } from "./claim-service";
 import { createExperienceService } from "./experience-service";
+import { createRewardService } from "./reward-service";
 
 const user = { ...demoUser, id: fixtureIds.users.contract };
 
 function setup(limits: Record<string, number> = { food_create: 10, place_create: 10 }) {
   const repos = createMockRepositories();
   const cache = { invalidate: vi.fn(async () => {}) };
-  const experience = createExperienceService({ repos, cache });
+  const rewards = createRewardService({ repos });
+  const experience = createExperienceService({ repos, cache, rewards });
   const rateLimiter = createRateLimiter(repos.rateLimits, limits);
-  const claims = createClaimService({ repos, cache });
+  const claims = createClaimService({ repos, cache, rewards });
   return {
     repos,
     cache,
-    service: createAddService({ repos, experience, claims, rateLimiter, cache }),
+    service: createAddService({ repos, experience, claims, rewards, rateLimiter, cache }),
   };
 }
 

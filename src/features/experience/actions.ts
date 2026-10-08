@@ -38,7 +38,7 @@ export const addExperience = defineAction(
       pricePaid: input.pricePaid,
     });
     if (!result.ok) return result;
-    return { ok: true as const, data: { isNew: result.data.isNew } };
+    return { ok: true as const, data: { isNew: result.data.isNew, reward: result.data.reward } };
   },
   { auth: true, rateLimit: "experience" },
 );

@@ -165,6 +165,26 @@
     "label": "শেয়ার করুন",
     "copied": "লিংক কপি হয়েছে।"
   },
+  "reward": {
+    "stampUnlocked": "{district} আনলক হয়েছে",
+    "discoverer": "আপনি {district}-এর আবিষ্কারক!",
+    "points": "পয়েন্ট",
+    "stampsTitle": "স্ট্যাম্প",
+    "passportTitle": "খাদ্য পাসপোর্ট",
+    "ofDistricts": "{count} জেলার",
+    "passportHint": "{count}টা জেলার খাবার চেখেছেন।",
+    "next": "পরের স্ট্যাম্প",
+    "nextCta": "{food} চেখে খুলুন",
+    "where": "কোথায় পাবেন",
+    "byDivision": "বিভাগ অনুযায়ী",
+    "locked": "বন্ধ",
+    "allStamps": "সব {total}টা",
+    "stampOf": "{district} জেলার স্ট্যাম্প",
+    "discovererStamp": "আবিষ্কারক",
+    "pointsLabel": "পয়েন্ট",
+    "ate": "খাবার খেয়েছেন",
+    "nothingYet": "এখনও কোনো স্ট্যাম্প নেই। প্রথম অভিজ্ঞতা জানান।"
+  },
   "comingSoon": {
     "title": "শিগগিরই আসছে",
     "body": "বাংলাদেশে কোথায় কী খাবেন, তা জানাবে কমিউনিটির সত্যিকারের অভিজ্ঞতা। শিগগিরই আসছে।"

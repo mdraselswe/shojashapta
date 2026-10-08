@@ -657,6 +657,63 @@ export type Database = {
           },
         ];
       };
+      point_events: {
+        Row: {
+          created_at: string;
+          entity: string;
+          entity_id: string;
+          id: number;
+          kind: string;
+          points: number;
+          revoked_at: string | null;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          entity: string;
+          entity_id: string;
+          id?: number;
+          kind: string;
+          points: number;
+          revoked_at?: string | null;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          entity?: string;
+          entity_id?: string;
+          id?: number;
+          kind?: string;
+          points?: number;
+          revoked_at?: string | null;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      district_stamps: {
+        Row: {
+          created_at: string;
+          district_id: number;
+          food_id: string | null;
+          kind: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          district_id: number;
+          food_id?: string | null;
+          kind?: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          district_id?: number;
+          food_id?: string | null;
+          kind?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       profiles: {
         Row: {
           avatar_url: string | null;
@@ -665,6 +722,7 @@ export type Database = {
           home_district_id: number | null;
           id: string;
           is_banned: boolean;
+          points_total: number;
           role: Database["public"]["Enums"]["user_role"];
         };
         Insert: {
@@ -674,6 +732,7 @@ export type Database = {
           home_district_id?: number | null;
           id: string;
           is_banned?: boolean;
+          points_total?: number;
           role?: Database["public"]["Enums"]["user_role"];
         };
         Update: {
@@ -683,6 +742,7 @@ export type Database = {
           home_district_id?: number | null;
           id?: string;
           is_banned?: boolean;
+          points_total?: number;
           role?: Database["public"]["Enums"]["user_role"];
         };
         Relationships: [
@@ -901,6 +961,21 @@ export type Database = {
       };
     };
     Functions: {
+      award_points: {
+        Args: {
+          p_entity: string;
+          p_entity_id: string;
+          p_kind: string;
+          p_points: number;
+          p_user: string;
+        };
+        Returns: number;
+      };
+      revoke_points: { Args: { p_entity: string; p_entity_id: string }; Returns: number };
+      unlock_stamp: {
+        Args: { p_district: number; p_food: string; p_kind: string; p_user: string };
+        Returns: boolean;
+      };
       check_rate_limit: {
         Args: { p_action: string; p_max: number; p_user: string; p_window: string };
         Returns: boolean;

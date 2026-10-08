@@ -10,6 +10,8 @@ import type { MessageKey } from "@/i18n/t";
 import { cn } from "@/lib/cn";
 import type { Reaction } from "@/core/domain";
 
+import { showReward } from "@/features/reward/show-reward";
+
 import { addExperience } from "../actions";
 import { REACTION_HEADING_CLASS } from "./reaction-styles";
 
@@ -78,7 +80,11 @@ export function ReactionPicker({ options }: { options: DishOption[] }) {
     startTransition(async () => {
       const result = await addExperience({ dishId: forDish, reaction });
       if (result.ok) {
-        toast.success(t(result.data.isNew ? "experience.added" : "experience.updated"));
+        showReward(
+          t,
+          result.data.reward,
+          t(result.data.isNew ? "experience.added" : "experience.updated"),
+        );
         return;
       }
       setPicked(null);

@@ -17,6 +17,7 @@ import { createExperienceService, type ExperienceService } from "@/services/expe
 import { createMeService, type MeService } from "@/services/me-service";
 import { createMediaService, type MediaService } from "@/services/media-service";
 import { createModerationService, type ModerationService } from "@/services/moderation-service";
+import { createRewardService, type RewardService } from "@/services/reward-service";
 import { createSavedService, type SavedService } from "@/services/saved-service";
 import { createSearchService, type SearchService } from "@/services/search-service";
 import { createDefineAction } from "@/lib/action";
@@ -52,6 +53,7 @@ export type Services = {
   moderation: ModerationService;
   media: MediaService;
   me: MeService;
+  rewards: RewardService;
   auth: AuthProvider;
   storage: StorageProvider;
   cache: CacheInvalidator;
@@ -97,8 +99,9 @@ export function getServices(): Services {
       : assertNever(env.ANALYTICS_PROVIDER);
 
   const rateLimiter = createRateLimiter(repos.rateLimits);
-  const experience = createExperienceService({ repos, cache: nextCacheInvalidator });
-  const claims = createClaimService({ repos, cache: nextCacheInvalidator });
+  const rewards = createRewardService({ repos });
+  const experience = createExperienceService({ repos, cache: nextCacheInvalidator, rewards });
+  const claims = createClaimService({ repos, cache: nextCacheInvalidator, rewards });
 
   services = {
     repos,
@@ -114,8 +117,16 @@ export function getServices(): Services {
       cache: nextCacheInvalidator,
       provider: storageProvider,
     }),
-    moderation: createModerationService({ repos, cache: nextCacheInvalidator }),
-    add: createAddService({ repos, experience, claims, rateLimiter, cache: nextCacheInvalidator }),
+    rewards,
+    moderation: createModerationService({ repos, cache: nextCacheInvalidator, rewards }),
+    add: createAddService({
+      repos,
+      experience,
+      claims,
+      rewards,
+      rateLimiter,
+      cache: nextCacheInvalidator,
+    }),
     auth,
     storage,
     cache: nextCacheInvalidator,

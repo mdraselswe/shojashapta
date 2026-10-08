@@ -4,13 +4,15 @@ import { demoUser, fixtureIds } from "@/infrastructure/mock/fixtures";
 import { createMockRepositories } from "@/infrastructure/mock/repositories";
 
 import { createModerationService } from "./moderation-service";
+import { createRewardService } from "./reward-service";
 
 const person = (n: number) => ({ ...demoUser, id: `person-${n}` });
 
 function setup() {
   const repos = createMockRepositories();
   const cache = { invalidate: vi.fn(async () => {}) };
-  return { repos, cache, service: createModerationService({ repos, cache }) };
+  const rewards = createRewardService({ repos });
+  return { repos, cache, service: createModerationService({ repos, cache, rewards }) };
 }
 
 describe("moderationService.suggestEdit", () => {

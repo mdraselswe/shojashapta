@@ -15,6 +15,7 @@ import type {
   Place,
   Report,
   SavedItem,
+  Stamp,
 } from "@/core/domain";
 import type { Repositories, SearchHit } from "@/core/ports";
 import { wilsonLowerBound } from "@/lib/ranking/wilson";
@@ -52,6 +53,15 @@ export function createMockRepositories(): Repositories {
     reports: [] as Report[],
     saved: [] as (SavedItem & { userId: string })[],
     placeCreators: new Map<string, string>(),
+    points: [] as {
+      userId: string;
+      kind: string;
+      entity: string;
+      entityId: string;
+      points: number;
+      revoked: boolean;
+    }[],
+    stamps: [] as (Stamp & { userId: string })[],
     media: [] as (MediaRef & { entity: string; entityId: string })[],
     rateEvents: [] as { userId: string; action: string; at: Date }[],
   };
@@ -449,6 +459,55 @@ export function createMockRepositories(): Repositories {
         return paginate(hits, opts);
       },
       recordMiss: async () => {},
+    },
+
+    rewards: {
+      award: async ({ userId, kind, entity, entityId, points }) => {
+        if (
+          db.points.some((e) => e.userId === userId && e.kind === kind && e.entityId === entityId)
+        ) {
+          return 0;
+        }
+        db.points.push({ userId, kind, entity, entityId, points, revoked: false });
+        return points;
+      },
+      revoke: async (entity, entityId) => {
+        let taken = 0;
+        for (const event of db.points) {
+          if (event.entity === entity && event.entityId === entityId && !event.revoked) {
+            event.revoked = true;
+            taken += event.points;
+          }
+        }
+        return taken;
+      },
+      unlockStamp: async ({ userId, districtId, kind, foodId = null }) => {
+        if (
+          db.stamps.some(
+            (s) => s.userId === userId && s.districtId === districtId && s.kind === kind,
+          )
+        ) {
+          return false;
+        }
+        db.stamps.push({ userId, districtId, kind, foodId, createdAt: new Date() });
+        return true;
+      },
+      stamps: async (userId) =>
+        clone(
+          db.stamps
+            .filter((s) => s.userId === userId)
+            .map((s) => ({
+              districtId: s.districtId,
+              kind: s.kind,
+              foodId: s.foodId,
+              createdAt: s.createdAt,
+            })),
+        ),
+      total: async (userId) =>
+        (userId === fixtures.demoUser.id ? fixtures.demoUser.pointsTotal : 0) +
+        db.points
+          .filter((e) => e.userId === userId && !e.revoked)
+          .reduce((sum, e) => sum + e.points, 0),
     },
 
     rateLimits: {

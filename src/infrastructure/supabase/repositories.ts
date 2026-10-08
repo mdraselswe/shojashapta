@@ -1,7 +1,7 @@
 import "server-only";
 
 import { appConfig } from "@/config/app.config";
-import type { District, Food, Page, PageOpts, Place } from "@/core/domain";
+import type { District, Food, Page, PageOpts, Place, StampKind } from "@/core/domain";
 import type { Repositories, SearchHit } from "@/core/ports";
 import { buildSearchFields } from "@/lib/text/normalize";
 import { slugify } from "@/lib/text/slug";
@@ -759,6 +759,65 @@ export function createSupabaseRepositoriesFrom(clients: SupabaseClients): Reposi
           p_text: query.text,
         });
         if (error) console.error("[shojashapta] record_search_miss failed:", error.message);
+      },
+    },
+
+    rewards: {
+      async award({ userId, kind, entity, entityId, points }) {
+        const { data, error } = await writer(clients).rpc("award_points", {
+          p_user: userId,
+          p_kind: kind,
+          p_entity: entity,
+          p_entity_id: entityId,
+          p_points: points,
+        });
+        if (error) throw new Error(`Supabase award_points: ${error.message}`);
+        return data ?? 0;
+      },
+      async revoke(entity, entityId) {
+        const { data, error } = await writer(clients).rpc("revoke_points", {
+          p_entity: entity,
+          p_entity_id: entityId,
+        });
+        if (error) throw new Error(`Supabase revoke_points: ${error.message}`);
+        return data ?? 0;
+      },
+      async unlockStamp({ userId, districtId, kind, foodId }) {
+        const { data, error } = await writer(clients).rpc("unlock_stamp", {
+          p_user: userId,
+          p_district: districtId,
+          p_kind: kind,
+          p_food: foodId ?? (null as unknown as string),
+        });
+        if (error) throw new Error(`Supabase unlock_stamp: ${error.message}`);
+        return data === true;
+      },
+      async stamps(userId) {
+        const rows = check(
+          await writer(clients)
+            .from("district_stamps")
+            .select("*")
+            .eq("user_id", userId)
+            .order("created_at"),
+          "stamps",
+        );
+        return rows.map((row) => ({
+          districtId: row.district_id,
+          kind: row.kind as StampKind,
+          foodId: row.food_id,
+          createdAt: new Date(row.created_at),
+        }));
+      },
+      async total(userId) {
+        const row = check<{ points_total: number } | null>(
+          await writer(clients)
+            .from("profiles")
+            .select("points_total")
+            .eq("id", userId)
+            .maybeSingle(),
+          "points total",
+        );
+        return row?.points_total ?? 0;
       },
     },
 

@@ -6,6 +6,7 @@ import { PageShell } from "@/components/layout/page-shell";
 import { Section } from "@/components/layout/section";
 import { ThemePreferenceControl } from "@/components/theme/theme-preference-control";
 import { Button } from "@/components/ui/button";
+import { MePassport } from "@/features/passport/components/passport-section";
 import { GroupedList, ListRow, ListTile } from "@/components/ui/grouped-list";
 import { routes } from "@/config/routes";
 import type { AppUser } from "@/core/domain";
@@ -131,6 +132,8 @@ export function MePage({ user, tab }: { user: AppUser; tab: MeTab }) {
         </span>
         <h1 className="text-title-1">{user.displayName}</h1>
       </section>
+
+      <MePassport userId={user.id} />
 
       <nav aria-label={t("me.tabs.label")} className="mt-5 page-x">
         <div className="flex h-12 items-center gap-1 rounded-input bg-muted p-1">

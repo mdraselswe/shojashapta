@@ -8,6 +8,8 @@ import { routes } from "@/config/routes";
 import type { Verdict, WrongReason } from "@/core/domain";
 import { useT } from "@/i18n/client";
 
+import { showReward } from "@/features/reward/show-reward";
+
 import { voteClaim } from "../actions";
 
 /** Shared vote call: handles login redirects, errors and the thank-you toast. */
@@ -29,7 +31,11 @@ export function useVote(claimId: string) {
     startTransition(async () => {
       const result = await voteClaim({ claimId, ...input });
       if (result.ok) {
-        toast.success(t(result.data.confirmedNow ? "verify.confirmed" : "verify.thanks"));
+        showReward(
+          t,
+          result.data.reward,
+          t(result.data.confirmedNow ? "verify.confirmed" : "verify.thanks"),
+        );
         onDone?.();
         return;
       }
