@@ -2,6 +2,7 @@ import { appConfig } from "@/config/app.config";
 import type { AppUser, DishWithPlace, Experience, Reaction } from "@/core/domain";
 import type { CacheInvalidator, Repositories } from "@/core/ports";
 import { fail, ok, type Result } from "@/lib/result";
+import { containsProfanity } from "@/lib/text/profanity";
 
 // "আমি খেয়েছি": one experience per user per dish (decision P6). Pure: ports only.
 
@@ -36,6 +37,11 @@ export type AddedExperience = {
 export function createExperienceService({ repos, cache }: Deps) {
   return {
     async add(user: AppUser, input: AddExperienceInput): Promise<Result<AddedExperience>> {
+      const comment = cleanComment(input.comment);
+      if (comment && containsProfanity(comment)) {
+        return fail("validation", { fields: { comment: "profanity" } });
+      }
+
       let dish: DishWithPlace | null;
       if ("dishId" in input) {
         dish = await repos.dishes.byId(input.dishId);
@@ -55,7 +61,7 @@ export function createExperienceService({ repos, cache }: Deps) {
         dishId: dish.id,
         userId: user.id,
         reaction: input.reaction,
-        comment: cleanComment(input.comment),
+        comment,
         pricePaid: input.pricePaid ?? null,
       });
 

@@ -120,6 +120,8 @@ export interface EditSuggestionRepository {
 
 export interface ReportRepository {
   create(input: Omit<Report, "id" | "status" | "createdAt">): Promise<Report>;
+  /** Reports about this content that no admin has handled yet. */
+  openFor(entity: Report["entity"], entityId: string): Promise<Report[]>;
 }
 
 export interface SavedRepository {
@@ -154,6 +156,8 @@ export interface RateLimitRepository {
 }
 
 export interface AdminRepository {
+  /** Hides content (status `hidden`) until an admin restores or removes it. */
+  hide(entity: Report["entity"], entityId: string): Promise<void>;
   openReports(opts?: PageOpts): Promise<Page<Report>>;
   openEditSuggestions(opts?: PageOpts): Promise<Page<EditSuggestion>>;
 }

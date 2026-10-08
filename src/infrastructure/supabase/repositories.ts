@@ -7,6 +7,7 @@ import { buildSearchFields } from "@/lib/text/normalize";
 import { slugify } from "@/lib/text/slug";
 
 import type { Db, SupabaseClients } from "./client.server";
+import type { Database } from "./database.types";
 import {
   DISH_WITH_FOOD_SELECT,
   DISH_WITH_PLACE_SELECT,
@@ -480,8 +481,87 @@ export function createSupabaseRepositoriesFrom(clients: SupabaseClients): Reposi
       },
     },
 
-    editSuggestions: { create: () => notYet("editSuggestions.create", "4.4") },
-    reports: { create: () => notYet("reports.create", "4.5") },
+    editSuggestions: {
+      async create(input) {
+        const row = checkOne<Database["public"]["Tables"]["edit_suggestions"]["Row"]>(
+          await writer(clients)
+            .from("edit_suggestions")
+            .insert({
+              entity: input.entity,
+              entity_id: input.entityId,
+              field: input.field,
+              current_value: input.currentValue,
+              proposed_value: input.proposedValue,
+              note: input.note,
+              user_id: input.userId,
+            })
+            .select("*")
+            .single(),
+          "create edit suggestion",
+        );
+        return {
+          id: row.id,
+          entity: row.entity,
+          entityId: row.entity_id,
+          field: row.field,
+          currentValue: row.current_value,
+          proposedValue: row.proposed_value,
+          note: row.note,
+          userId: row.user_id,
+          status: row.status,
+          createdAt: new Date(row.created_at),
+        };
+      },
+    },
+    reports: {
+      async create(input) {
+        const row = checkOne<Database["public"]["Tables"]["reports"]["Row"]>(
+          await writer(clients)
+            .from("reports")
+            .insert({
+              entity: input.entity,
+              entity_id: input.entityId,
+              reason: input.reason,
+              note: input.note,
+              user_id: input.userId,
+            })
+            .select("*")
+            .single(),
+          "create report",
+        );
+        return {
+          id: row.id,
+          entity: row.entity,
+          entityId: row.entity_id,
+          reason: row.reason,
+          note: row.note,
+          userId: row.user_id,
+          status: row.status,
+          createdAt: new Date(row.created_at),
+        };
+      },
+      async openFor(entity, entityId) {
+        const rows = check(
+          await writer(clients)
+            .from("reports")
+            .select("*")
+            .eq("entity", entity)
+            .eq("entity_id", entityId)
+            .eq("status", "open"),
+          "open reports",
+        );
+        return rows.map((row) => ({
+          id: row.id,
+          entity: row.entity,
+          entityId: row.entity_id,
+          reason: row.reason,
+          note: row.note,
+          userId: row.user_id,
+          status: row.status,
+          createdAt: new Date(row.created_at),
+        }));
+      },
+    },
 
     saved: {
       async list(userId, opts) {
@@ -637,6 +717,17 @@ export function createSupabaseRepositoriesFrom(clients: SupabaseClients): Reposi
     },
 
     admin: {
+      async hide(entity, entityId) {
+        const table = (
+          { place: "places", food: "foods", dish: "dishes", experience: "experiences" } as const
+        )[entity as "place" | "food" | "dish" | "experience"];
+        if (!table) throw new Error(`Supabase hide: cannot hide a ${entity}`);
+        const { error } = await writer(clients)
+          .from(table)
+          .update({ status: "hidden" })
+          .eq("id", entityId);
+        if (error) throw new Error(`Supabase hide ${entity}: ${error.message}`);
+      },
       openReports: () => notYet("admin.openReports", "7.2"),
       openEditSuggestions: () => notYet("admin.openEditSuggestions", "7.2"),
     },

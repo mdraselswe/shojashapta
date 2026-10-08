@@ -13,6 +13,8 @@ import {
 } from "@/features/experience/components/reaction-card";
 import { SaveButtonSkeleton } from "@/features/saved/components/save-button";
 import { SaveControl } from "@/features/saved/components/save-control";
+import { Section } from "@/components/layout/section";
+import { ContentActions } from "@/features/moderation/components/content-actions";
 import { PlaceClaimsSection, PlaceClaimsSectionSkeleton } from "./place-claims-section";
 import { PlaceDishesSection, PlaceDishesSectionSkeleton } from "./place-dishes-section";
 import { PlaceHero, PlaceHeroSkeleton } from "./place-hero";
@@ -20,6 +22,7 @@ import { PlaceInfoSection } from "./place-info-section";
 
 /** Place page: hero and info are ready with the header; claims and dishes stream in. */
 export function PlacePage({ place }: { place: PlaceHeader }) {
+  const t = getT();
   return (
     <PageShell
       header={
@@ -54,6 +57,16 @@ export function PlacePage({ place }: { place: PlaceHeader }) {
             </Suspense>
           </div>
           <PlaceInfoSection place={place} />
+          <Section title={t("moderation.moreTitle")}>
+            <ContentActions
+              target={{ entity: "place", entityId: place.id }}
+              fields={[
+                { id: "name_bn", current: place.nameBn },
+                { id: "address", current: place.address },
+                { id: "type", current: t(`placeType.${place.type}`) },
+              ]}
+            />
+          </Section>
         </div>
       </div>
     </PageShell>
