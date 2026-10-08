@@ -26,8 +26,18 @@ export function createMockAuth(): AuthProvider {
       return { ...demoUser };
     },
     async signInWithGoogleUrl(redirectTo) {
-      // The /auth/callback route (Phase 3.1) sets the mock cookie and redirects back.
-      return `/auth/callback?mock=1&next=${encodeURIComponent(redirectTo)}`;
+      // Skips Google: the callback route sees `mock=1` and signs in the demo user.
+      return `${redirectTo}${redirectTo.includes("?") ? "&" : "?"}mock=1`;
+    },
+    async completeSignIn(code) {
+      if (code !== "1") return false;
+      (await cookies()).set(MOCK_SESSION_COOKIE, demoUser.id, {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        maxAge: 24 * 60 * 60,
+      });
+      return true;
     },
     async signOut() {
       (await cookies()).delete(MOCK_SESSION_COOKIE);

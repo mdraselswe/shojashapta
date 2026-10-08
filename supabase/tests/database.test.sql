@@ -5,12 +5,14 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
 
-select plan(42);
+select plan(46);
 
 -- Fixtures (as the migration owner, RLS bypassed) -------------------------------------------
 insert into auth.users (id, email) values
   ('00000000-0000-4000-8000-0000000000a1', 'rls-a@test.invalid'),
   ('00000000-0000-4000-8000-0000000000b2', 'rls-b@test.invalid');
+-- (migration 0009 already made profiles for them; replace with the fixture ones)
+delete from profiles where id in ('00000000-0000-4000-8000-0000000000a1', '00000000-0000-4000-8000-0000000000b2');
 insert into districts (id, slug, name_bn, name_en, division_bn, division_en, search_key)
   values (900, 'rls-test-district', 'টেস্ট জেলা', 'Test District', 'টেস্ট', 'Test', 'test');
 insert into profiles (id, display_name, home_district_id) values
@@ -230,6 +232,39 @@ select is_empty(
   'visitors cannot read search misses'
 );
 reset role;
+
+-- New users get a profile (migration 0009) ------------------------------------------------------
+insert into auth.users (id, instance_id, aud, role, email, raw_user_meta_data)
+values (
+  'aaaaaaaa-0000-4000-8000-000000000009', '00000000-0000-0000-0000-000000000000',
+  'authenticated', 'authenticated', 'new.person@example.com',
+  '{"full_name":"নতুন মানুষ","picture":"https://example.com/p.jpg"}'::jsonb
+);
+select is(
+  (select display_name from profiles where id = 'aaaaaaaa-0000-4000-8000-000000000009'),
+  'নতুন মানুষ',
+  'signing up creates a profile with the Google name'
+);
+select is(
+  (select avatar_url from profiles where id = 'aaaaaaaa-0000-4000-8000-000000000009'),
+  'https://example.com/p.jpg',
+  'the Google picture becomes the avatar'
+);
+select is(
+  (select role::text from profiles where id = 'aaaaaaaa-0000-4000-8000-000000000009'),
+  'user',
+  'a new profile is never an admin'
+);
+insert into auth.users (id, instance_id, aud, role, email, raw_user_meta_data)
+values (
+  'aaaaaaaa-0000-4000-8000-00000000000a', '00000000-0000-0000-0000-000000000000',
+  'authenticated', 'authenticated', 'no.name@example.com', '{}'::jsonb
+);
+select is(
+  (select display_name from profiles where id = 'aaaaaaaa-0000-4000-8000-00000000000a'),
+  'no.name',
+  'without a Google name the email prefix is used'
+);
 
 select * from finish();
 rollback;

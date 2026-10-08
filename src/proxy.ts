@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { appConfig } from "@/config/app.config";
 import { clientEnv, serverEnv } from "@/config/env";
 import { routes } from "@/config/routes";
+import { refreshAuthSession } from "@/infrastructure/container";
 import { decideLaunchGate, PREVIEW_COOKIE, PREVIEW_PARAM } from "@/lib/launch-gate";
 
 export async function proxy(request: NextRequest) {
@@ -30,6 +31,19 @@ export async function proxy(request: NextRequest) {
     response = NextResponse.rewrite(new URL(routes.comingSoon(), request.url));
   } else {
     response = NextResponse.next();
+  }
+
+  // Supabase sessions expire; renewing them here lets Server Components stay read-only.
+  const env = serverEnv();
+  if (
+    env.AUTH_PROVIDER === "supabase" &&
+    env.NEXT_PUBLIC_SUPABASE_URL &&
+    env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  ) {
+    await refreshAuthSession(request, response, {
+      url: env.NEXT_PUBLIC_SUPABASE_URL,
+      anonKey: env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    });
   }
 
   // Nothing is indexed before launch, including what preview users see.

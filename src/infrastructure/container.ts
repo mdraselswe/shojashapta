@@ -24,6 +24,9 @@ import { nextCacheInvalidator } from "./next/cache-invalidator";
 import { createRateLimiter } from "./shared/rate-limiter";
 import { createSupabaseAuth, createSupabaseRepositories } from "./supabase";
 
+/** Renews an expiring Supabase session; called from proxy.ts (Server Components cannot write cookies). */
+export { refreshSupabaseSession as refreshAuthSession } from "./supabase/proxy-session";
+
 // Wires every port to an adapter chosen by env (docs/03-architecture.md §5). The only module the
 // app imports from infrastructure on the server. Services join here as they are built (Phase 1+).
 

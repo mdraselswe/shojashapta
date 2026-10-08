@@ -25,6 +25,7 @@ function setup({ signedIn = true, banned = false, allowed = true } = {}) {
       return { ...user, isBanned: banned };
     },
     signInWithGoogleUrl: async () => "",
+    completeSignIn: async () => true,
     signOut: async () => {},
   };
   const consume = vi.fn<RateLimiter["consume"]>(async () =>
