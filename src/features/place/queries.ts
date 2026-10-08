@@ -35,3 +35,11 @@ export async function getPlaceClaims(placeId: string) {
   // Staleness is judged at the time the cache was filled, not at request time.
   return { items, asOf: new Date() };
 }
+
+/** Where an old link to a merged duplicate should go (the surviving place's slug), if any. */
+export async function getPlaceRedirect(slug: string) {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("places");
+  return getServices().repos.places.redirectFor(slug);
+}

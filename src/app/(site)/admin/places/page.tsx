@@ -1,0 +1,57 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+
+import { EmptyState } from "@/components/layout/empty-state";
+import { routes } from "@/config/routes";
+import { AdminButton } from "@/features/admin/components/admin-button";
+import { AdminCard, AdminFrame } from "@/features/admin/components/admin-frame";
+import { MergeForm } from "@/features/admin/components/admin-forms";
+import { getServices } from "@/infrastructure/container";
+import { getT } from "@/i18n/server";
+import { buildMetadata } from "@/lib/seo/metadata";
+
+export const metadata: Metadata = buildMetadata({
+  title: getT()("admin.sections.places"),
+  description: getT()("admin.title"),
+  path: "/admin/places",
+  noindex: true,
+});
+
+export default function AdminPlaces() {
+  return (
+    <AdminFrame section="places">
+      {async () => {
+        const t = getT();
+        const places = await getServices().admin.newPlaces();
+        if (places.length === 0) return <EmptyState message={t("admin.empty")} />;
+        return (
+          <>
+            <p className="text-meta text-muted-foreground">{t("admin.placesHint")}</p>
+            {places.map((place) => (
+              <AdminCard key={place.id}>
+                <p className="text-body font-semibold">
+                  <Link href={routes.place(place.slug)} className="text-primary-text">
+                    {place.nameBn}
+                  </Link>
+                </p>
+                <p className="mt-0.5 text-meta text-muted-foreground">
+                  {place.district.nameBn} · {t(`placeType.${place.type}`)} · {place.slug}
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <AdminButton
+                    variant="destructive"
+                    confirm={t("admin.hideConfirm")}
+                    payload={{ kind: "hide", entity: "place", entityId: place.id }}
+                  >
+                    {t("admin.hide")}
+                  </AdminButton>
+                </div>
+                <MergeForm fromId={place.id} />
+              </AdminCard>
+            ))}
+          </>
+        );
+      }}
+    </AdminFrame>
+  );
+}

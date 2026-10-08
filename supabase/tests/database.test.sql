@@ -5,7 +5,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
 
-select plan(54);
+select plan(61);
 
 -- Fixtures (as the migration owner, RLS bypassed) -------------------------------------------
 insert into auth.users (id, email) values
@@ -292,6 +292,44 @@ select is(
 select is(
   unlock_stamp('00000000-0000-4000-8000-0000000000a1', 900::smallint, 'visit', null),
   false, 'the same stamp again is not new'
+);
+
+-- Merging places (migration 0012) -----------------------------------------------------------------
+-- start from a clean survivor dish so the move below is the only change
+delete from experiences where dish_id = '00000000-0000-4000-8000-00000000d001';
+insert into places (id, slug, name_bn, district_id) values
+  ('00000000-0000-4000-8000-00000000c002', 'rls-test-duplicate', 'টেস্ট দোকান (ডুপ্লিকেট)', 900);
+insert into dishes (id, place_id, food_id) values
+  ('00000000-0000-4000-8000-00000000d002', '00000000-0000-4000-8000-00000000c002', '00000000-0000-4000-8000-00000000f001');
+insert into experiences (id, dish_id, user_id, reaction) values
+  ('00000000-0000-4000-8000-00000000e001', '00000000-0000-4000-8000-00000000d002', '00000000-0000-4000-8000-0000000000a1', 'loved');
+select is(
+  merge_places('00000000-0000-4000-8000-00000000c002', '00000000-0000-4000-8000-00000000c001'),
+  1, 'merging reports how many dishes were handled'
+);
+select is(
+  (select status::text from places where id = '00000000-0000-4000-8000-00000000c002'),
+  'merged', 'the duplicate is kept with status merged'
+);
+select is(
+  (select merged_into from places where id = '00000000-0000-4000-8000-00000000c002'),
+  '00000000-0000-4000-8000-00000000c001'::uuid, 'and points at the survivor'
+);
+select is(
+  (select dish_id from experiences where id = '00000000-0000-4000-8000-00000000e001'),
+  '00000000-0000-4000-8000-00000000d001'::uuid, 'its experiences move to the survivor''s dish'
+);
+select is_empty(
+  $$ select 1 from dishes where id = '00000000-0000-4000-8000-00000000d002' $$,
+  'the duplicate dish is gone'
+);
+select throws_ok(
+  $$ select merge_places('00000000-0000-4000-8000-00000000c001', '00000000-0000-4000-8000-00000000c001') $$,
+  'P0001', null, 'a place cannot be merged into itself'
+);
+select throws_ok(
+  $$ select merge_places('00000000-0000-4000-8000-00000000c001', '00000000-0000-4000-8000-00000000c002') $$,
+  'P0001', null, 'the survivor must be active'
 );
 
 select * from finish();

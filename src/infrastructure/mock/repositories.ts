@@ -53,6 +53,7 @@ export function createMockRepositories(): Repositories {
     reports: [] as Report[],
     saved: [] as (SavedItem & { userId: string })[],
     placeCreators: new Map<string, string>(),
+    banned: new Set<string>(),
     points: [] as {
       userId: string;
       kind: string;
@@ -154,6 +155,12 @@ export function createMockRepositories(): Repositories {
         const food = db.foods.find((f) => f.id === id && f.status === "active");
         return food ? foodWithStats(food) : null;
       },
+      update: async (id, patch) => {
+        const food = db.foods.find((f) => f.id === id);
+        if (!food) return;
+        if (patch.nameBn !== undefined) food.nameBn = patch.nameBn;
+        if (patch.aboutBn !== undefined) food.aboutBn = patch.aboutBn;
+      },
       topDishes: async (foodId, opts = {}) =>
         paginate(
           active(db.dishes)
@@ -205,6 +212,18 @@ export function createMockRepositories(): Repositories {
               (p.nameBn.includes(needle) || needle.includes(p.nameBn)),
           ),
         );
+      },
+      redirectFor: async (slug) => {
+        const merged = db.places.find((p) => p.slug === slug && p.status === "merged");
+        const target = merged && db.places.find((p) => p.id === merged.mergedIntoId);
+        return target?.slug ?? null;
+      },
+      update: async (id, patch) => {
+        const place = db.places.find((p) => p.id === id);
+        if (!place) return;
+        if (patch.nameBn !== undefined) place.nameBn = patch.nameBn;
+        if (patch.address !== undefined) place.address = patch.address;
+        if (patch.type !== undefined) place.type = patch.type;
       },
       byCreator: async (userId, opts) =>
         paginate(
@@ -520,6 +539,108 @@ export function createMockRepositories(): Repositories {
     },
 
     admin: {
+      counts: async () => ({
+        users: new Set([...db.experiences.map((e) => e.user.id), ...db.placeCreators.values()])
+          .size,
+        places: active(db.places).length,
+        foods: active(db.foods).length,
+        dishes: active(db.dishes).length,
+        experiences: active(db.experiences).length,
+        media: db.media.length,
+        openReports: db.reports.filter((r) => r.status === "open").length,
+        openEdits: db.edits.filter((e) => e.status === "open").length,
+        disputedClaims: db.claims.filter((c) => c.status === "disputed" || c.status === "mixed")
+          .length,
+      }),
+      recentPlaces: async (sinceDays, limit) => {
+        void sinceDays;
+        return clone([...active(db.places)].reverse().slice(0, limit));
+      },
+      disputedClaims: async (limit) =>
+        clone(
+          db.claims.filter((c) => c.status === "disputed" || c.status === "mixed").slice(0, limit),
+        ),
+      mergePlaces: async (fromId, intoId) => {
+        const from = db.places.find((p) => p.id === fromId);
+        const into = db.places.find((p) => p.id === intoId);
+        if (!from || !into || fromId === intoId || into.status !== "active") {
+          throw new Error("mock: cannot merge");
+        }
+        let handled = 0;
+        for (const dish of db.dishes.filter((d) => d.placeId === fromId)) {
+          const target = db.dishes.find((d) => d.placeId === intoId && d.foodId === dish.foodId);
+          if (!target) dish.placeId = intoId;
+          else {
+            db.experiences = db.experiences.filter(
+              (e) =>
+                e.dishId !== dish.id ||
+                !db.experiences.some((k) => k.dishId === target.id && k.user.id === e.user.id),
+            );
+            for (const experience of db.experiences) {
+              if (experience.dishId === dish.id) experience.dishId = target.id;
+            }
+            db.dishes = db.dishes.filter((d) => d.id !== dish.id);
+            recount(target);
+          }
+          handled += 1;
+        }
+        from.status = "merged";
+        from.mergedIntoId = intoId;
+        return handled;
+      },
+      restore: async (entity, entityId) => {
+        const rows: { id: string; status: string }[] =
+          entity === "place"
+            ? db.places
+            : entity === "food"
+              ? db.foods
+              : entity === "dish"
+                ? db.dishes
+                : entity === "experience"
+                  ? db.experiences
+                  : [];
+        const row = rows.find((candidate) => candidate.id === entityId);
+        if (row) row.status = "active";
+      },
+      setBanned: async (userId, banned) => {
+        if (banned) db.banned.add(userId);
+        else db.banned.delete(userId);
+      },
+      setReportStatus: async (id, status) => {
+        const report = db.reports.find((r) => r.id === id);
+        if (report) report.status = status;
+      },
+      editSuggestion: async (id) => clone(db.edits.find((e) => e.id === id) ?? null),
+      setEditStatus: async (id, status) => {
+        const edit = db.edits.find((e) => e.id === id);
+        if (edit) edit.status = status;
+      },
+      setFame: async ({ districtId, foodId, noteBn }) => {
+        const existing = db.fame.find((f) => f.districtId === districtId && f.foodId === foodId);
+        if (existing) existing.noteBn = noteBn;
+        else db.fame.push({ districtId, areaId: null, foodId, noteBn, sourceUrl: null });
+      },
+      removeFame: async (districtId, foodId) => {
+        db.fame = db.fame.filter((f) => !(f.districtId === districtId && f.foodId === foodId));
+      },
+      purgeRateEvents: async (olderThanDays) => {
+        const cutoff = Date.now() - olderThanDays * 24 * 60 * 60 * 1000;
+        const before = db.rateEvents.length;
+        db.rateEvents = db.rateEvents.filter((event) => event.at.getTime() >= cutoff);
+        return before - db.rateEvents.length;
+      },
+      orphanMedia: async (limit) =>
+        db.media
+          .filter(
+            (m) =>
+              m.entity === "experience" &&
+              !db.experiences.some((e) => e.id === m.entityId && e.status === "active"),
+          )
+          .slice(0, limit)
+          .map((m) => ({ id: m.id, key: m.key })),
+      deleteMedia: async (id) => {
+        db.media = db.media.filter((m) => m.id !== id);
+      },
       hide: async (entity, entityId) => {
         const rows: { id: string; status: string }[] =
           entity === "place"

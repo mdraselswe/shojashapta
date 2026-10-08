@@ -16,6 +16,8 @@ import { err, fail, type AppError, type Result } from "@/lib/result";
 type ActionOptions = {
   /** Require a signed-in, non-banned user. */
   auth?: boolean;
+  /** Only admins may run it (implies auth). */
+  role?: "admin";
   /** Count against this daily limit (needs auth). */
   rateLimit?: RateLimitedAction;
 };
@@ -54,9 +56,10 @@ export function createDefineAction<S>(deps: Deps<S>) {
 
       try {
         let user: AppUser | null = null;
-        if (options.auth || options.rateLimit) {
+        if (options.auth || options.rateLimit || options.role) {
           user = await deps.auth().requireUser();
           if (user.isBanned) return fail("forbidden");
+          if (options.role === "admin" && user.role !== "admin") return fail("forbidden");
         }
         if (options.rateLimit && user) {
           const decision = await deps.rateLimiter().consume(user.id, options.rateLimit);

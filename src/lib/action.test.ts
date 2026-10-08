@@ -17,12 +17,17 @@ const user: AppUser = {
   pointsTotal: 0,
 };
 
-function setup({ signedIn = true, banned = false, allowed = true } = {}) {
+function setup({
+  signedIn = true,
+  banned = false,
+  allowed = true,
+  role = "user" as AppUser["role"],
+} = {}) {
   const auth: AuthProvider = {
     getSession: async () => null,
     requireUser: async () => {
       if (!signedIn) throw new AuthRequiredError();
-      return { ...user, isBanned: banned };
+      return { ...user, role, isBanned: banned };
     },
     signInWithGoogleUrl: async () => "",
     completeSignIn: async () => true,
@@ -113,5 +118,17 @@ describe("defineAction", () => {
     });
     expect(await action({ name: "দই" })).toEqual({ ok: false, error: { code: "unknown" } });
     expect(report).toHaveBeenCalledWith(boom, expect.any(Object));
+  });
+
+  it("lets only admins through when the action asks for the admin role", async () => {
+    const handler = vi.fn(async () => ok("done"));
+    const asUser = setup().defineAction(schema, handler, { auth: true, role: "admin" });
+    expect(await asUser({ name: "দই" })).toEqual({ ok: false, error: { code: "forbidden" } });
+    expect(handler).not.toHaveBeenCalled();
+    const asAdmin = setup({ role: "admin" }).defineAction(schema, handler, {
+      auth: true,
+      role: "admin",
+    });
+    expect(await asAdmin({ name: "দই" })).toEqual({ ok: true, data: "done" });
   });
 });
