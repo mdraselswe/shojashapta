@@ -56,6 +56,9 @@ const statements = [
       })),
   ),
   insert("auth.users", [{ id: fixtures.demoUser.id, email: "demo@fixtures.invalid" }]),
+  // Migration 0009 creates a profile for every new auth user; the fixture sets its own fields.
+  `delete from profiles where id = ${sql(fixtures.demoUser.id)};
+`,
   insert("profiles", [
     {
       id: fixtures.demoUser.id,

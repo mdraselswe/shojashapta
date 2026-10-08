@@ -17,6 +17,16 @@
     "label": "Breadcrumb",
     "foods": "Foods"
   },
+  "auth": {
+    "loginTitle": "Sign in",
+    "loginBody": "Sign in with Google to add places, share what you ate and check facts. Only your name and photo are shown.",
+    "google": "Continue with Google",
+    "loginError": "Sign-in did not work. Please try again.",
+    "signOut": "Sign out",
+    "banned": "Your account is currently suspended.",
+    "welcome": "Welcome, {name}",
+    "profileTitle": "Me"
+  },
   "comingSoon": {
     "title": "Coming soon",
     "body": "Where to eat what in Bangladesh, told by real community experience. Coming soon."
