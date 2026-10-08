@@ -75,6 +75,28 @@
     "added": "Saved to your want-to-try list.",
     "removed": "Removed from your list."
   },
+  "verify": {
+    "open": "Verify",
+    "stillOk": "Still correct?",
+    "title": "Is this correct?",
+    "hint": "Tell us what you know.",
+    "correct": "Correct",
+    "partial": "Partly",
+    "wrong": "Wrong",
+    "which": "What is wrong?",
+    "reasons": {
+      "not_available": "Not available",
+      "wrong_price": "Wrong price",
+      "wrong_location": "Wrong address",
+      "closed": "Place is closed",
+      "other": "Something else"
+    },
+    "note": "Anything to add?",
+    "evidence": "Link as proof (optional)",
+    "submit": "Submit",
+    "thanks": "Thanks, your answer was added.",
+    "confirmed": "Thanks, confirmed."
+  },
   "comingSoon": {
     "title": "Coming soon",
     "body": "Where to eat what in Bangladesh, told by real community experience. Coming soon."

@@ -97,6 +97,14 @@ export interface ExperienceRepository {
 export interface ClaimRepository {
   forEntity(entity: Claim["entity"], entityId: string): Promise<Claim[]>;
   byId(id: string): Promise<Claim | null>;
+  /** Creates the claim if (entity, entityId, type) has none yet (created empty, `unverified`); else returns the existing one. */
+  ensure(input: {
+    entity: Claim["entity"];
+    entityId: string;
+    type: Claim["type"];
+    value: Record<string, unknown>;
+    createdBy: string;
+  }): Promise<Claim>;
   /** Records (or replaces) the user's vote and returns the claim with fresh counts. */
   vote(vote: ClaimVote): Promise<Claim>;
   /** Persists a status/expiry computed by claimService. */

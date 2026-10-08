@@ -295,6 +295,27 @@ export function createMockRepositories(): Repositories {
       forEntity: async (entity, entityId) =>
         clone(db.claims.filter((c) => c.entity === entity && c.entityId === entityId)),
       byId: async (id) => clone(db.claims.find((c) => c.id === id) ?? null),
+      ensure: async (input) => {
+        let claim = db.claims.find(
+          (c) =>
+            c.entity === input.entity && c.entityId === input.entityId && c.type === input.type,
+        );
+        if (!claim) {
+          claim = {
+            id: newId("c"),
+            entity: input.entity,
+            entityId: input.entityId,
+            type: input.type,
+            value: input.value,
+            status: "unverified",
+            counts: { correct: 0, partial: 0, wrong: 0 },
+            lastConfirmedAt: null,
+            expiresAt: null,
+          };
+          db.claims.push(claim);
+        }
+        return clone(claim);
+      },
       vote: async (vote) => {
         const claim = db.claims.find((c) => c.id === vote.claimId);
         if (!claim) throw new Error(`mock: unknown claim ${vote.claimId}`);
