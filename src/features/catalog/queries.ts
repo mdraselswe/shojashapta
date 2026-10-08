@@ -9,3 +9,11 @@ export async function getStaticSlugs() {
   cacheLife("hours");
   return getServices().catalog.staticSlugs();
 }
+
+/** District id + name for the add form's picker. */
+export async function getDistrictOptions() {
+  "use cache";
+  cacheTag("districts");
+  cacheLife("hours");
+  return getServices().catalog.districtOptions();
+}

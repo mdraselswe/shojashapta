@@ -1,0 +1,120 @@
+import { describe, expect, it, vi } from "vitest";
+
+import { demoUser, fixtureIds } from "@/infrastructure/mock/fixtures";
+import { createMockRepositories } from "@/infrastructure/mock/repositories";
+import { createRateLimiter } from "@/infrastructure/shared/rate-limiter";
+
+import { createAddService } from "./add-service";
+import { createExperienceService } from "./experience-service";
+
+const user = { ...demoUser, id: fixtureIds.users.contract };
+
+function setup(limits: Record<string, number> = { food_create: 10, place_create: 10 }) {
+  const repos = createMockRepositories();
+  const cache = { invalidate: vi.fn(async () => {}) };
+  const experience = createExperienceService({ repos, cache });
+  const rateLimiter = createRateLimiter(repos.rateLimits, limits);
+  return { repos, cache, service: createAddService({ repos, experience, rateLimiter, cache }) };
+}
+
+const bogura = 2;
+
+describe("addService.submit", () => {
+  it("reuses an existing food and place and records the reaction", async () => {
+    const { repos, service } = setup();
+    const result = await service.submit(user, {
+      food: { id: fixtureIds.foods.doi },
+      place: { id: fixtureIds.places.second },
+      reaction: "loved",
+    });
+    expect(result).toMatchObject({ ok: true, data: { createdFood: false, createdPlace: false } });
+    const dishes = await repos.places.dishes(fixtureIds.places.second);
+    expect(dishes.find((dish) => dish.foodId === fixtureIds.foods.doi)?.experienceCount).toBe(4);
+  });
+
+  it("creates a new food and place with clean slugs, and refreshes search and district tags", async () => {
+    const { repos, service, cache } = setup();
+    const result = await service.submit(user, {
+      food: { nameBn: "  কটকটি " },
+      place: {
+        nameBn: "মহাস্থান কটকটি",
+        districtId: bogura,
+        type: "street_food",
+        areaName: "মহাস্থানগড়",
+      },
+      reaction: "loved",
+      pricePaid: 80,
+    });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.data).toMatchObject({ createdFood: true, createdPlace: true });
+    expect(result.data.foodSlug).toMatch(/^[a-z0-9-]+$/);
+    expect(await repos.foods.bySlug(result.data.foodSlug)).toMatchObject({ nameBn: "কটকটি" });
+    const place = await repos.places.bySlug(result.data.placeSlug);
+    expect(place?.area?.nameBn).toBe("মহাস্থানগড়");
+    expect(cache.invalidate).toHaveBeenCalledWith(
+      expect.arrayContaining(["search", `district:${bogura}`]),
+    );
+  });
+
+  it("does not create a second food when the name matches an existing one", async () => {
+    const { service } = setup();
+    const result = await service.submit(user, {
+      food: { nameBn: "দই" },
+      place: { id: fixtureIds.places.second },
+      reaction: "okay",
+    });
+    expect(result).toMatchObject({ ok: true, data: { createdFood: false, foodSlug: "doi" } });
+  });
+
+  it("asks before creating a place that looks like an existing one", async () => {
+    const { service } = setup();
+    const draft = {
+      food: { id: fixtureIds.foods.doi },
+      place: { nameBn: "নমুনা দই ঘর", districtId: bogura, type: "shop" as const },
+      reaction: "loved" as const,
+    };
+    const first = await service.submit(user, draft);
+    expect(first.ok).toBe(false);
+    if (!first.ok) expect(first.error.code).toBe("conflict");
+    const confirmed = await service.submit(user, { ...draft, confirmNewPlace: true });
+    expect(confirmed).toMatchObject({ ok: true, data: { createdPlace: true } });
+  });
+
+  it("limits how many places one person can create a day", async () => {
+    const { service } = setup({ food_create: 10, place_create: 1 });
+    const make = (name: string) =>
+      service.submit(user, {
+        food: { id: fixtureIds.foods.doi },
+        place: { nameBn: name, districtId: bogura, type: "shop" },
+        reaction: "loved",
+      });
+    expect((await make("প্রথম নতুন দোকান")).ok).toBe(true);
+    const second = await make("দ্বিতীয় নতুন দোকান");
+    expect(second.ok).toBe(false);
+    if (!second.ok) expect(second.error.code).toBe("rate_limited");
+  });
+
+  it("rejects an unknown food or place", async () => {
+    const { service } = setup();
+    const bad = await service.submit(user, {
+      food: { id: "nope" },
+      place: { id: fixtureIds.places.sample },
+      reaction: "loved",
+    });
+    expect(bad.ok).toBe(false);
+  });
+});
+
+describe("addService.suggest", () => {
+  it("suggests foods and, within a district, places", async () => {
+    const { service } = setup();
+    expect((await service.suggest({ kind: "food", q: "doi" })).map((s) => s.nameBn)).toContain(
+      "দই",
+    );
+    const places = await service.suggest({ kind: "place", q: "দই", districtId: bogura });
+    expect(places.length).toBeGreaterThan(0);
+    expect(await service.suggest({ kind: "place", q: "দই", districtId: 1 })).toEqual([]);
+    expect(await service.suggest({ kind: "food", q: " " })).toEqual([]);
+  });
+});

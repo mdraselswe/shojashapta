@@ -11,6 +11,7 @@ import type {
   StorageProvider,
 } from "@/core/ports";
 import { createCatalogService, type CatalogService } from "@/services/catalog-service";
+import { createAddService, type AddService } from "@/services/add-service";
 import { createExperienceService, type ExperienceService } from "@/services/experience-service";
 import { createSearchService, type SearchService } from "@/services/search-service";
 import { createDefineAction } from "@/lib/action";
@@ -40,6 +41,7 @@ export type Services = {
   catalog: CatalogService;
   search: SearchService;
   experience: ExperienceService;
+  add: AddService;
   auth: AuthProvider;
   storage: StorageProvider;
   cache: CacheInvalidator;
@@ -84,17 +86,21 @@ export function getServices(): Services {
       ? noopAnalytics // Vercel analytics adapter arrives when it is enabled
       : assertNever(env.ANALYTICS_PROVIDER);
 
+  const rateLimiter = createRateLimiter(repos.rateLimits);
+  const experience = createExperienceService({ repos, cache: nextCacheInvalidator });
+
   services = {
     repos,
     catalog: createCatalogService({ repos }),
     search: createSearchService({ repos }),
-    experience: createExperienceService({ repos, cache: nextCacheInvalidator }),
+    experience,
+    add: createAddService({ repos, experience, rateLimiter, cache: nextCacheInvalidator }),
     auth,
     storage,
     cache: nextCacheInvalidator,
     analytics,
     errors: consoleErrorReporter,
-    rateLimiter: createRateLimiter(repos.rateLimits),
+    rateLimiter,
   };
   return services;
 }

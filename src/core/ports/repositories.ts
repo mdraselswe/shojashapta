@@ -52,6 +52,8 @@ export type NewPlace = {
   type: PlaceType;
   districtId: number;
   areaId?: number | null;
+  /** A neighbourhood typed by the contributor; the adapter finds or creates the area. */
+  areaName?: string | null;
   address?: string | null;
   location?: { lat: number; lng: number } | null;
 };
