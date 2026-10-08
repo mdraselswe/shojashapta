@@ -1,9 +1,9 @@
 import type { NextConfig } from "next";
 
 // Validates the environment at build/start time: a missing or invalid variable fails here.
-import { serverEnv } from "./src/config/env";
+import { validateBuildEnv } from "./src/config/env";
 
-serverEnv();
+validateBuildEnv();
 
 const nextConfig: NextConfig = {
   // 'use cache' + cacheTag/cacheLife for catalog reads (docs/03-architecture.md §8).

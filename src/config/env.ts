@@ -107,9 +107,14 @@ export function parseClientEnv(source: Source): ClientEnv {
  */
 const SENSITIVE_PLACEHOLDER = "[SENSITIVE]";
 
-function withoutHidden(source: Source): { source: Source; hidden: Set<string> } {
+function withoutHidden(
+  source: Source,
+  allowPlaceholders: boolean,
+): { source: Source; hidden: Set<string> } {
   const hidden = new Set<string>();
-  if (source.NEXT_PHASE !== "phase-production-build") return { source, hidden };
+  if (!allowPlaceholders && source.NEXT_PHASE !== "phase-production-build") {
+    return { source, hidden };
+  }
   const kept: Source = {};
   for (const [key, value] of Object.entries(source)) {
     if (value?.replace(/^"|"$/g, "") === SENSITIVE_PLACEHOLDER) hidden.add(key);
@@ -118,8 +123,11 @@ function withoutHidden(source: Source): { source: Source; hidden: Set<string> } 
   return { source: kept, hidden };
 }
 
-export function parseServerEnv(rawSource: Source): ServerEnv {
-  const { source: visible, hidden } = withoutHidden(rawSource);
+export function parseServerEnv(
+  rawSource: Source,
+  options: { allowPlaceholders?: boolean } = {},
+): ServerEnv {
+  const { source: visible, hidden } = withoutHidden(rawSource, options.allowPlaceholders ?? false);
   const source = withoutEmpty(visible);
   const client = parseClientEnv(source);
   const server = serverSchema
@@ -191,6 +199,14 @@ export function serverEnv(): ServerEnv {
   }
   cachedServerEnv ??= parseServerEnv(process.env);
   return cachedServerEnv;
+}
+
+/**
+ * For next.config.ts, which runs before Next sets NEXT_PHASE: the same checks, but Vercel's
+ * [SENSITIVE] placeholders are allowed (the running site validates the real values with serverEnv()).
+ */
+export function validateBuildEnv(): void {
+  parseServerEnv(process.env, { allowPlaceholders: true });
 }
 
 /** True on the server (and in Node scripts/tests). */
