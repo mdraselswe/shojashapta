@@ -19,7 +19,7 @@
         },
         "throttlingMethod": "simulate"
       },
-      "numberOfRuns": 3
+      "numberOfRuns": 5
     },
     "assert": {
       "assertions": {
