@@ -1,0 +1,49 @@
+import { expect, test } from "@playwright/test";
+
+test.describe("add flow", () => {
+  test("a signed-out visitor is asked to log in first", async ({ page }) => {
+    await page.goto("/add");
+    await expect(page.getByRole("heading", { name: "লগইন করুন" })).toBeVisible();
+  });
+
+  test("adds a new food at a new place in three steps and opens the new page", async ({ page }) => {
+    await page.goto("/auth/sign-in?next=/add");
+    await expect(page.getByRole("heading", { name: "যোগ করুন" })).toBeVisible();
+
+    // 1 — food
+    await page.getByRole("textbox", { name: "কী খাবার?" }).fill("মহাস্থান কটকটি");
+    await page.getByRole("button", { name: /নতুন খাবার হিসেবে যোগ করুন/ }).click();
+    await page.getByRole("button", { name: "পরের ধাপ" }).first().click();
+
+    // 2 — place
+    await page.getByLabel("জেলা").selectOption({ label: "বগুড়া" });
+    await page.getByLabel("দোকান বা জায়গার নাম").fill("মহাস্থানগড়ের কটকটি ঘর");
+    await page.getByLabel("এলাকা").fill("মহাস্থানগড়");
+    await page.getByRole("button", { name: "পরের ধাপ" }).last().click();
+
+    // 3 — how was it
+    await page.getByRole("button", { name: "দারুণ" }).click();
+    await page.getByLabel("কত দিয়ে কিনলেন?").fill("80");
+    await page.getByRole("button", { name: "জমা দিন" }).click();
+
+    await expect(page.getByRole("heading", { name: "যোগ হয়েছে!" })).toBeVisible();
+    await page.getByRole("link", { name: "জায়গাটা দেখুন" }).click();
+    await expect(
+      page.getByRole("heading", { level: 1, name: "মহাস্থানগড়ের কটকটি ঘর" }),
+    ).toBeVisible();
+    await expect(page.getByText("মহাস্থান কটকটি").first()).toBeVisible();
+  });
+
+  test("a place with a similar name is confirmed before a duplicate is made", async ({ page }) => {
+    await page.goto("/auth/sign-in?next=/add");
+    await page.getByRole("textbox", { name: "কী খাবার?" }).fill("দই");
+    await page.getByRole("button", { name: "দই", exact: true }).first().click();
+    await page.getByRole("button", { name: "পরের ধাপ" }).first().click();
+    await page.getByLabel("জেলা").selectOption({ label: "বগুড়া" });
+    await page.getByLabel("দোকান বা জায়গার নাম").fill("নমুনা দই ঘর");
+    await page.getByRole("button", { name: "পরের ধাপ" }).last().click();
+    await expect(page.getByText("এগুলোর কোনোটা কি?")).toBeVisible();
+    await page.getByRole("button", { name: "এটাই" }).first().click();
+    await expect(page.getByRole("heading", { name: "কেমন লাগল?" })).toBeVisible();
+  });
+});

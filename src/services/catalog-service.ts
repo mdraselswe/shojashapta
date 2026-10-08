@@ -268,6 +268,12 @@ export function createCatalogService({ repos }: Deps) {
       }));
     },
 
+    /** Every district, for pickers (id + name). */
+    async districtOptions(): Promise<{ id: number; nameBn: string }[]> {
+      const districts = await repos.districts.list();
+      return districts.map((district) => ({ id: district.id, nameBn: district.nameBn }));
+    },
+
     async districtHeader(slug: string): Promise<DistrictHeader | null> {
       const district = await repos.districts.bySlug(slug);
       if (!district) return null;

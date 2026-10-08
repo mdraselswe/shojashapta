@@ -3,6 +3,8 @@ import "server-only";
 import { appConfig } from "@/config/app.config";
 import type { District, Food, Page, PageOpts, Place } from "@/core/domain";
 import type { Repositories, SearchHit } from "@/core/ports";
+import { buildSearchFields } from "@/lib/text/normalize";
+import { slugify } from "@/lib/text/slug";
 
 import type { Db, SupabaseClients } from "./client.server";
 import {
@@ -42,6 +44,16 @@ function notYet(method: string, phase: string): never {
 function check<T>(result: { data: T | null; error: { message: string } | null }, what: string): T {
   if (result.error) throw new Error(`Supabase ${what}: ${result.error.message}`);
   return result.data as T;
+}
+
+/** Like `check`, for queries that must return exactly one row. */
+function checkOne<T>(
+  result: { data: T | null; error: { message: string } | null },
+  what: string,
+): NonNullable<T> {
+  const data = check(result, what);
+  if (data === null || data === undefined) throw new Error(`Supabase ${what}: no row returned`);
+  return data as NonNullable<T>;
 }
 
 function pageWindow(opts: PageOpts = {}) {
@@ -166,7 +178,25 @@ export function createSupabaseRepositoriesFrom(clients: SupabaseClients): Reposi
         );
         return toPage((rows as unknown as DishWithPlaceRow[]).map(toDishWithPlace), window);
       },
-      create: () => notYet("foods.create", "3.3"),
+      async create(input, createdBy) {
+        const search = buildSearchFields(input.nameBn, input.nameEn, input.slug);
+        const row = checkOne(
+          await writer(clients)
+            .from("foods")
+            .insert({
+              slug: input.slug,
+              name_bn: input.nameBn,
+              name_en: input.nameEn ?? null,
+              search_text: search.searchText,
+              search_key: search.searchKey,
+              created_by: createdBy,
+            })
+            .select("*")
+            .single(),
+          "create food",
+        );
+        return toFood(row);
+      },
     },
 
     places: {
@@ -220,7 +250,61 @@ export function createSupabaseRepositoriesFrom(clients: SupabaseClients): Reposi
         );
         return (rows as unknown as PlaceRow[]).map(toPlace);
       },
-      create: () => notYet("places.create", "3.3"),
+      async create(input, createdBy) {
+        const service = writer(clients);
+        let areaId: number | null = input.areaId ?? null;
+        if (areaId === null && input.areaName) {
+          const areaSlug = slugify(input.areaName) || "area";
+          const found = checkOne<{ id: number } | null>(
+            await service
+              .from("areas")
+              .select("id")
+              .eq("district_id", input.districtId)
+              .eq("slug", areaSlug)
+              .maybeSingle(),
+            "area",
+          );
+          if (found) areaId = found.id;
+          else {
+            const created = checkOne<{ id: number }>(
+              await service
+                .from("areas")
+                .insert({ district_id: input.districtId, slug: areaSlug, name_bn: input.areaName })
+                .select("id")
+                .single(),
+              "create area",
+            );
+            areaId = created.id;
+          }
+        }
+        const search = buildSearchFields(input.nameBn, input.nameEn, input.slug);
+        const row = checkOne(
+          await service
+            .from("places")
+            .insert({
+              slug: input.slug,
+              name_bn: input.nameBn,
+              name_en: input.nameEn ?? null,
+              type: input.type,
+              district_id: input.districtId,
+              area_id: areaId,
+              address: input.address ?? null,
+              ...(input.location
+                ? {
+                    location:
+                      `SRID=4326;POINT(${input.location.lng} ${input.location.lat})` as never,
+                  }
+                : {}),
+              search_text: search.searchText,
+              search_key: search.searchKey,
+              created_by: createdBy,
+            })
+            .select(PLACE_SELECT)
+            .single(),
+          "create place",
+        );
+        return toPlace(row as unknown as PlaceRow);
+      },
     },
 
     dishes: {
