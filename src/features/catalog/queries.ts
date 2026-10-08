@@ -17,3 +17,11 @@ export async function getDistrictOptions() {
   cacheLife("hours");
   return getServices().catalog.districtOptions();
 }
+
+/** Everything the sitemap lists; refreshed hourly and whenever district or search data changes. */
+export async function getSitemapEntries() {
+  "use cache";
+  cacheTag("districts", "search");
+  cacheLife("hours");
+  return getServices().catalog.sitemapEntries();
+}

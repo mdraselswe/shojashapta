@@ -9,6 +9,8 @@ export const siteConfig = {
   /** Canonical origin without a trailing slash. */
   url: clientEnv.NEXT_PUBLIC_SITE_URL.replace(/\/+$/, ""),
   locale: "bn_BD",
+  /** Contact address for privacy requests; empty until the owner sets NEXT_PUBLIC_CONTACT_EMAIL. */
+  contactEmail: clientEnv.NEXT_PUBLIC_CONTACT_EMAIL ?? null,
   /** Public social profiles; empty until they exist. */
   social: {} as Partial<Record<"facebook" | "instagram", string>>,
 } as const;

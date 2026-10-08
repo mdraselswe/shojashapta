@@ -23,6 +23,8 @@ const clientSchema = z.object({
   NEXT_PUBLIC_SUPABASE_URL: z.url().optional(),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: optionalString,
   NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: optionalString,
+  /** Shown on the privacy page as the place to ask for data removal. */
+  NEXT_PUBLIC_CONTACT_EMAIL: z.email().optional(),
 });
 
 const serverSchema = z.object({
@@ -154,6 +156,7 @@ export const clientEnv: ClientEnv = parseClientEnv({
   NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
   NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+  NEXT_PUBLIC_CONTACT_EMAIL: process.env.NEXT_PUBLIC_CONTACT_EMAIL || undefined,
 });
 
 let cachedServerEnv: ServerEnv | undefined;
