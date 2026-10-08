@@ -1,13 +1,12 @@
 "use client";
 
 import { ThemeScript } from "@/components/theme/theme-script";
-import { createT } from "@/i18n/t";
+import { useT } from "@/i18n/client";
 import "@/styles/globals.css";
-
-const t = createT("bn");
 
 /** Last resort: the root layout itself failed, so this renders its own <html>. A full reload home, since the router may be what failed. */
 export default function GlobalError({ retry }: { retry: () => void }) {
+  const t = useT();
   return (
     <html lang="bn" suppressHydrationWarning>
       <head>
