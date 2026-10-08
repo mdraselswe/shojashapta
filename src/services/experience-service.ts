@@ -4,11 +4,14 @@ import type { CacheInvalidator, Repositories } from "@/core/ports";
 import { fail, ok, type Result } from "@/lib/result";
 import { containsProfanity } from "@/lib/text/profanity";
 
+import type { Reward, RewardService } from "./reward-service";
+
 // "আমি খেয়েছি": one experience per user per dish (decision P6). Pure: ports only.
 
 type Deps = {
   repos: Pick<Repositories, "dishes" | "experiences" | "foods" | "places">;
   cache: CacheInvalidator;
+  rewards: RewardService;
 };
 
 /** Which dish: an existing one, or a (place, food) pair whose dish is created on first use. */
@@ -32,9 +35,10 @@ export type AddedExperience = {
   dish: DishWithPlace;
   /** True when this user had no experience of the dish before (adds, not edits). */
   isNew: boolean;
+  reward: Reward;
 };
 
-export function createExperienceService({ repos, cache }: Deps) {
+export function createExperienceService({ repos, cache, rewards }: Deps) {
   return {
     async add(user: AppUser, input: AddExperienceInput): Promise<Result<AddedExperience>> {
       const comment = cleanComment(input.comment);
@@ -66,7 +70,12 @@ export function createExperienceService({ repos, cache }: Deps) {
       });
 
       await cache.invalidate([`food:${dish.foodId}`, `place:${dish.placeId}`, `dish:${dish.id}`]);
-      return ok({ experience, dish, isNew });
+      const reward = await rewards.forExperience(user, {
+        experienceId: experience.id,
+        isNew,
+        district: { id: dish.place.district.id, nameBn: dish.place.district.nameBn },
+      });
+      return ok({ experience, dish, isNew, reward });
     },
   };
 }

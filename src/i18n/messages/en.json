@@ -165,6 +165,26 @@
     "label": "Share",
     "copied": "Link copied."
   },
+  "reward": {
+    "stampUnlocked": "{district} unlocked",
+    "discoverer": "You discovered {district}!",
+    "points": "points",
+    "stampsTitle": "Stamps",
+    "passportTitle": "Food passport",
+    "ofDistricts": "of {count} districts",
+    "passportHint": "You have tried food from {count} districts.",
+    "next": "Next stamp",
+    "nextCta": "Try {food} to unlock",
+    "where": "Where to find it",
+    "byDivision": "By division",
+    "locked": "Locked",
+    "allStamps": "All {total}",
+    "stampOf": "{district} district stamp",
+    "discovererStamp": "Discoverer",
+    "pointsLabel": "Points",
+    "ate": "Foods tried",
+    "nothingYet": "No stamps yet. Share your first experience."
+  },
   "comingSoon": {
     "title": "Coming soon",
     "body": "Where to eat what in Bangladesh, told by real community experience. Coming soon."

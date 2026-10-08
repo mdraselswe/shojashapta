@@ -15,6 +15,10 @@ import type {
   PlaceType,
   Reaction,
   RegionalFame,
+  PointKind,
+  RewardEntity,
+  Stamp,
+  StampKind,
   Report,
   SavedItem,
 } from "@/core/domain";
@@ -158,6 +162,28 @@ export interface RateLimitRepository {
   record(userId: string, action: string): Promise<void>;
 }
 
+export interface RewardRepository {
+  /** Awards points once per (person, kind, entity id); returns the points actually added (0 for a repeat). */
+  award(input: {
+    userId: string;
+    kind: PointKind;
+    entity: RewardEntity;
+    entityId: string;
+    points: number;
+  }): Promise<number>;
+  /** Takes back everything awarded for this entity (hidden or removed content); returns the points removed. */
+  revoke(entity: RewardEntity, entityId: string): Promise<number>;
+  /** True when this person did not have the stamp yet. */
+  unlockStamp(input: {
+    userId: string;
+    districtId: number;
+    kind: StampKind;
+    foodId?: string | null;
+  }): Promise<boolean>;
+  stamps(userId: string): Promise<Stamp[]>;
+  total(userId: string): Promise<number>;
+}
+
 export interface AdminRepository {
   /** Hides content (status `hidden`) until an admin restores or removes it. */
   hide(entity: Report["entity"], entityId: string): Promise<void>;
@@ -178,5 +204,6 @@ export type Repositories = {
   media: MediaRepository;
   search: SearchRepository;
   rateLimits: RateLimitRepository;
+  rewards: RewardRepository;
   admin: AdminRepository;
 };

@@ -50,7 +50,7 @@ function toAppUser(profile: ProfileRow): AppUser {
     role: profile.role,
     homeDistrictId: profile.home_district_id,
     isBanned: profile.is_banned,
-    pointsTotal: 0, // Phase 6b.1 adds profiles.points_total
+    pointsTotal: profile.points_total,
   };
 }
 

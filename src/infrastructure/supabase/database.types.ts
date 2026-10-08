@@ -255,6 +255,59 @@ export type Database = {
           },
         ];
       };
+      district_stamps: {
+        Row: {
+          created_at: string;
+          district_id: number;
+          food_id: string | null;
+          kind: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          district_id: number;
+          food_id?: string | null;
+          kind?: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          district_id?: number;
+          food_id?: string | null;
+          kind?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "district_stamps_district_id_fkey";
+            columns: ["district_id"];
+            isOneToOne: false;
+            referencedRelation: "districts";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "district_stamps_food_id_fkey";
+            columns: ["food_id"];
+            isOneToOne: false;
+            referencedRelation: "foods";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "district_stamps_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "district_stamps_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "public_profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       districts: {
         Row: {
           center: unknown;
@@ -657,6 +710,54 @@ export type Database = {
           },
         ];
       };
+      point_events: {
+        Row: {
+          created_at: string;
+          entity: string;
+          entity_id: string;
+          id: number;
+          kind: string;
+          points: number;
+          revoked_at: string | null;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          entity: string;
+          entity_id: string;
+          id?: number;
+          kind: string;
+          points: number;
+          revoked_at?: string | null;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          entity?: string;
+          entity_id?: string;
+          id?: number;
+          kind?: string;
+          points?: number;
+          revoked_at?: string | null;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "point_events_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "point_events_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "public_profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       profiles: {
         Row: {
           avatar_url: string | null;
@@ -665,6 +766,7 @@ export type Database = {
           home_district_id: number | null;
           id: string;
           is_banned: boolean;
+          points_total: number;
           role: Database["public"]["Enums"]["user_role"];
         };
         Insert: {
@@ -674,6 +776,7 @@ export type Database = {
           home_district_id?: number | null;
           id: string;
           is_banned?: boolean;
+          points_total?: number;
           role?: Database["public"]["Enums"]["user_role"];
         };
         Update: {
@@ -683,6 +786,7 @@ export type Database = {
           home_district_id?: number | null;
           id?: string;
           is_banned?: boolean;
+          points_total?: number;
           role?: Database["public"]["Enums"]["user_role"];
         };
         Relationships: [
@@ -901,6 +1005,16 @@ export type Database = {
       };
     };
     Functions: {
+      award_points: {
+        Args: {
+          p_entity: string;
+          p_entity_id: string;
+          p_kind: string;
+          p_points: number;
+          p_user: string;
+        };
+        Returns: number;
+      };
       check_rate_limit: {
         Args: { p_action: string; p_max: number; p_user: string; p_window: string };
         Returns: boolean;
@@ -910,6 +1024,7 @@ export type Database = {
       purge_seed_data: { Args: { p_keep_used?: boolean }; Returns: Json };
       record_search_miss: { Args: { p_key: string; p_text: string }; Returns: undefined };
       refresh_dish_stats: { Args: { p_dish: string }; Returns: undefined };
+      revoke_points: { Args: { p_entity: string; p_entity_id: string }; Returns: number };
       search_all: {
         Args: { lim?: number; q_key: string; q_text: string };
         Returns: {
@@ -920,6 +1035,10 @@ export type Database = {
           subtitle: string;
           title: string;
         }[];
+      };
+      unlock_stamp: {
+        Args: { p_district: number; p_food: string; p_kind: string; p_user: string };
+        Returns: boolean;
       };
       wilson_lower_bound: { Args: { n: number; pos: number; z?: number }; Returns: number };
     };

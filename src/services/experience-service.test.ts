@@ -4,11 +4,17 @@ import { demoUser, fixtureIds } from "@/infrastructure/mock/fixtures";
 import { createMockRepositories } from "@/infrastructure/mock/repositories";
 
 import { cleanComment, createExperienceService } from "./experience-service";
+import { createRewardService } from "./reward-service";
 
 function setup() {
   const repos = createMockRepositories();
   const invalidate = vi.fn(async () => {});
-  return { repos, invalidate, service: createExperienceService({ repos, cache: { invalidate } }) };
+  const rewards = createRewardService({ repos });
+  return {
+    repos,
+    invalidate,
+    service: createExperienceService({ repos, cache: { invalidate }, rewards }),
+  };
 }
 
 const user = { ...demoUser, id: fixtureIds.users.contract };

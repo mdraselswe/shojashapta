@@ -7,6 +7,7 @@ import { toSearchKey, toSearchQuery } from "@/lib/text/normalize";
 
 import type { ClaimService } from "./claim-service";
 import type { ExperienceService } from "./experience-service";
+import { mergeRewards, NO_REWARD, type Reward, type RewardService } from "./reward-service";
 
 // The add flow (docs/01-product-spec.md §3.7): "what did you eat, where, how was it" in one
 // submission, creating the food and/or place when they are new. Pure: ports only.
@@ -15,6 +16,7 @@ type Deps = {
   repos: Pick<Repositories, "foods" | "places" | "search">;
   experience: ExperienceService;
   claims: ClaimService;
+  rewards: RewardService;
   rateLimiter: RateLimiter;
   cache: CacheInvalidator;
 };
@@ -39,6 +41,7 @@ export type AddInput = {
 
 export type AddResult = {
   experienceId: string;
+  reward: Reward;
   foodSlug: string;
   placeSlug: string;
   createdFood: boolean;
@@ -58,7 +61,7 @@ async function freeSlug(base: string, exists: (slug: string) => Promise<boolean>
   return `${root}-${Date.now().toString(36)}`;
 }
 
-export function createAddService({ repos, experience, claims, rateLimiter, cache }: Deps) {
+export function createAddService({ repos, experience, claims, rewards, rateLimiter, cache }: Deps) {
   return {
     /** Foods or places matching what the person is typing, with ids for the form. */
     async suggest(input: {
@@ -134,6 +137,8 @@ export function createAddService({ repos, experience, claims, rateLimiter, cache
       // Place: an existing one, or a new one after the duplicate check.
       let place: Pick<Place, "id" | "slug" | "district">;
       let createdPlace = false;
+      // Checked before the place exists: is this the first place in the district to serve the food?
+      let firstForFood = false;
       if ("id" in input.place) {
         const existing = await repos.places.byId(input.place.id);
         if (!existing) return fail("not_found");
@@ -146,6 +151,9 @@ export function createAddService({ repos, experience, claims, rateLimiter, cache
           const similar = await repos.places.similar(nameBn, draft.districtId);
           if (similar.length > 0) return fail("conflict");
         }
+        firstForFood =
+          (await repos.foods.topDishes(foodId, { districtId: draft.districtId, limit: 1 })).items
+            .length === 0;
         const limit = await rateLimiter.consume(user.id, "place_create");
         if (!limit.allowed) return fail("rate_limited", { retryAfter: limit.retryAfter });
         const slug = await freeSlug(
@@ -198,7 +206,16 @@ export function createAddService({ repos, experience, claims, rateLimiter, cache
         `food:${foodId}`,
         `place:${place.id}`,
       ]);
+      const placeReward: Reward = createdPlace
+        ? await rewards.forNewPlace(user, {
+            placeId: place.id,
+            foodId,
+            district: { id: place.district.id, nameBn: place.district.nameBn },
+            firstForFood,
+          })
+        : NO_REWARD;
       return ok({
+        reward: mergeRewards(saved.data.reward, placeReward),
         experienceId: saved.data.experience.id,
         foodSlug,
         placeSlug: place.slug,

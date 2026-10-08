@@ -4,6 +4,7 @@ import { demoUser, fixtureIds } from "@/infrastructure/mock/fixtures";
 import { createMockRepositories } from "@/infrastructure/mock/repositories";
 
 import { cleanEvidenceUrl, createClaimService } from "./claim-service";
+import { createRewardService } from "./reward-service";
 
 const voter = (n: number) => ({ ...demoUser, id: `voter-${n}` });
 
@@ -11,7 +12,8 @@ async function setup() {
   const repos = createMockRepositories();
   const cache = { invalidate: vi.fn(async () => {}) };
   let clock = new Date("2026-10-08T00:00:00Z");
-  const service = createClaimService({ repos, cache, now: () => clock });
+  const rewards = createRewardService({ repos });
+  const service = createClaimService({ repos, cache, rewards, now: () => clock });
   const claim = await repos.claims.ensure({
     entity: "place",
     entityId: fixtureIds.places.second,
@@ -27,7 +29,10 @@ describe("claimService.vote", () => {
     const { service, claim } = await setup();
     for (const n of [1, 2]) {
       const result = await service.vote(voter(n), { claimId: claim.id, verdict: "correct" });
-      expect(result).toEqual({ ok: true, data: { status: "unverified", confirmedNow: false } });
+      expect(result).toMatchObject({
+        ok: true,
+        data: { status: "unverified", confirmedNow: false },
+      });
     }
   });
 
@@ -37,7 +42,10 @@ describe("claimService.vote", () => {
     for (const n of [1, 2, 3]) {
       last = await service.vote(voter(n), { claimId: claim.id, verdict: "correct" });
     }
-    expect(last).toEqual({ ok: true, data: { status: "confirmed", confirmedNow: true } });
+    expect(last).toMatchObject({
+      ok: true,
+      data: { status: "confirmed", confirmedNow: true },
+    });
     const saved = await repos.claims.byId(claim.id);
     expect(saved?.status).toBe("confirmed");
     expect(saved?.lastConfirmedAt).toEqual(new Date("2026-10-08T00:00:00Z"));
@@ -54,7 +62,10 @@ describe("claimService.vote", () => {
         reason: "wrong_price",
       });
     }
-    expect(last).toEqual({ ok: true, data: { status: "disputed", confirmedNow: false } });
+    expect(last).toMatchObject({
+      ok: true,
+      data: { status: "disputed", confirmedNow: false },
+    });
   });
 
   it("lets someone change their vote without counting twice", async () => {

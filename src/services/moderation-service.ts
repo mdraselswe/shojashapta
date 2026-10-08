@@ -4,12 +4,15 @@ import type { CacheInvalidator, Repositories } from "@/core/ports";
 import { fail, ok, type Result } from "@/lib/result";
 import { containsProfanity } from "@/lib/text/profanity";
 
+import type { RewardService } from "./reward-service";
+
 // Edit suggestions (✏️ সংশোধন) and reports (ভুল তথ্য, আপত্তিকর…): everything lands in the admin
 // queue; enough independent reports hide the content until an admin looks (docs/09 §2). Pure: ports only.
 
 type Deps = {
   repos: Pick<Repositories, "editSuggestions" | "reports" | "admin" | "places" | "foods">;
   cache: CacheInvalidator;
+  rewards: RewardService;
 };
 
 export type EditTarget = Extract<EntityType, "place" | "food">;
@@ -38,7 +41,7 @@ const clean = (value: string | null | undefined, max: number) => {
   return [...text].slice(0, max).join("");
 };
 
-export function createModerationService({ repos, cache }: Deps) {
+export function createModerationService({ repos, cache, rewards }: Deps) {
   async function currentValue(entity: EditTarget, entityId: string, field: string) {
     if (entity === "place") {
       const place = await repos.places.byId(entityId);
@@ -120,6 +123,9 @@ export function createModerationService({ repos, cache }: Deps) {
       const hidden = distinct.size >= appConfig.moderation.autoHideReports;
       if (hidden) {
         await repos.admin.hide(input.entity, input.entityId);
+        if (input.entity === "place" || input.entity === "experience") {
+          await rewards.revokeFor(input.entity, input.entityId);
+        }
         const tag =
           input.entity === "place" || input.entity === "food"
             ? `${input.entity}:${input.entityId}`

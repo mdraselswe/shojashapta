@@ -13,7 +13,10 @@ import { cn } from "@/lib/cn";
 
 import { appConfig } from "@/config/app.config";
 import { attachPhotos } from "@/features/media/actions";
+import { showReward, stampText } from "@/features/reward/show-reward";
+import type { Reward } from "@/services/reward-service";
 import { uploadPhotos } from "@/features/media/upload";
+import { formatNumber } from "@/lib/format/number";
 import { checkPickedFile } from "@/lib/image/compress";
 
 import { findSimilarPlaces, submitAdd, suggestForAdd } from "../actions";
@@ -96,7 +99,7 @@ export function AddFlow({ districts }: { districts: DistrictOption[] }) {
   const [reaction, setReaction] = useState<Reaction | null>(null);
   const [price, setPrice] = useState("");
   const [comment, setComment] = useState("");
-  const [done, setDone] = useState<{ placeSlug: string } | null>(null);
+  const [done, setDone] = useState<{ placeSlug: string; reward: Reward } | null>(null);
   const [photos, setPhotos] = useState<{ file: File; preview: string }[]>([]);
 
   const foodSuggestions = useSuggestions("food", foodQuery, null, food === null);
@@ -198,7 +201,8 @@ export function AddFlow({ districts }: { districts: DistrictOption[] }) {
               : null;
           if (uploaded.failed > 0 || (attached && !attached.ok)) toast.error(t("photos.failed"));
         }
-        setDone({ placeSlug: result.data.placeSlug });
+        setDone({ placeSlug: result.data.placeSlug, reward: result.data.reward });
+        showReward(t, result.data.reward, t("add.doneTitle"));
         router.refresh();
         return;
       }
@@ -220,6 +224,16 @@ export function AddFlow({ districts }: { districts: DistrictOption[] }) {
       <div role="status" className={cn(CARD, "text-center lg:mx-auto lg:max-w-xl")}>
         <h2 className="text-title-1">{t("add.doneTitle")}</h2>
         <p className="mt-2 text-body text-muted-foreground">{t("add.doneBody")}</p>
+        {done.reward.points > 0 && (
+          <p className="mt-3 flex items-center justify-center gap-2">
+            <span className="rounded-full bg-reward px-3 py-1 font-display text-lg font-bold text-reward-foreground">
+              +{formatNumber(done.reward.points)}
+            </span>
+            <span className="text-card-title">
+              {stampText(t, done.reward) ?? t("reward.points")}
+            </span>
+          </p>
+        )}
         <Link
           href={routes.place(done.placeSlug)}
           className="mt-5 flex h-14 press items-center justify-center rounded-button bg-primary text-[17px] font-semibold text-primary-foreground"

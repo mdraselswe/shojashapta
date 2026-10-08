@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { PageShell } from "@/components/layout/page-shell";
 import { LoadingRegion } from "@/components/ui/skeleton";
 import { getT } from "@/i18n/server";
+import { HomePassport } from "@/features/passport/components/passport-section";
 import { SearchEntry } from "@/features/search/components/search-entry";
 
 import { AllDistrictsSection, AllDistrictsSectionSkeleton } from "./all-districts-section";
@@ -33,6 +34,9 @@ export function HomePage() {
       </Suspense>
       <Suspense fallback={<AllDistrictsSectionSkeleton />}>
         <AllDistrictsSection />
+      </Suspense>
+      <Suspense fallback={null}>
+        <HomePassport />
       </Suspense>
     </PageShell>
   );
