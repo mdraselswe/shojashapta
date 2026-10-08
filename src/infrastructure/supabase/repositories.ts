@@ -271,6 +271,20 @@ export function createSupabaseRepositoriesFrom(clients: SupabaseClients): Reposi
         );
         return (rows as unknown as PlaceRow[]).map(toPlace);
       },
+      async byCreator(userId, opts) {
+        const window = pageWindow(opts);
+        const rows = check(
+          await db
+            .from("places")
+            .select(PLACE_SELECT)
+            .eq("created_by", userId)
+            .eq("status", "active")
+            .order("created_at", { ascending: false })
+            .range(window.from, window.to),
+          "places by creator",
+        );
+        return toPage((rows as unknown as PlaceRow[]).map(toPlace), window);
+      },
       async create(input, createdBy) {
         const service = writer(clients);
         let areaId: number | null = input.areaId ?? null;

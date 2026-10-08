@@ -8,6 +8,13 @@ serverEnv();
 const nextConfig: NextConfig = {
   // 'use cache' + cacheTag/cacheLife for catalog reads (docs/03-architecture.md §8).
   cacheComponents: true,
+  // HarfBuzz (WASM) loads its own binary from node_modules; bundling it breaks that lookup.
+  serverExternalPackages: ["harfbuzzjs"],
+  // Share cards read their Bangla fonts from disk (Satori cannot use WOFF2); make sure the files
+  // are part of the deployed functions.
+  outputFileTracingIncludes: {
+    "/**/opengraph-image*": ["./src/features/share/fonts/**"],
+  },
   async headers() {
     // Font files never change in place (rename on update), so browsers may cache them for a year.
     return [

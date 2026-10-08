@@ -142,6 +142,29 @@
     "failed": "Some photos did not upload, try again later.",
     "section": "Photos"
   },
+  "me": {
+    "tabs": {
+      "label": "My page",
+      "contrib": "My contributions",
+      "ate": "I ate",
+      "saved": "Want to try"
+    },
+    "settings": "Settings",
+    "theme": "Theme",
+    "stats": {
+      "experiences": "Experiences",
+      "places": "Places added"
+    },
+    "emptyContrib": "You have not added a place yet.",
+    "emptyAte": "Nothing yet. Tell us how it was after you eat.",
+    "emptySaved": "Nothing saved yet.",
+    "addPlace": "Add a place",
+    "placesAdded": "Places you added"
+  },
+  "share": {
+    "label": "Share",
+    "copied": "Link copied."
+  },
   "comingSoon": {
     "title": "Coming soon",
     "body": "Where to eat what in Bangladesh, told by real community experience. Coming soon."

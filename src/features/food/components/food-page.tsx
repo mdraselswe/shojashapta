@@ -11,6 +11,7 @@ import {
   FoodReactionCard,
   ReactionCardSkeleton,
 } from "@/features/experience/components/reaction-card";
+import { ShareButton } from "@/features/share/components/share-button";
 import { SaveButtonSkeleton } from "@/features/saved/components/save-button";
 import { SaveControl } from "@/features/saved/components/save-control";
 import { Section } from "@/components/layout/section";
@@ -33,9 +34,12 @@ export function FoodPage({ food }: { food: FoodHeader }) {
           backHref={routes.home()}
           crumbs={[{ label: t("breadcrumb.foods") }, { label: food.nameBn }]}
           actions={
-            <Suspense fallback={<SaveButtonSkeleton />}>
-              <SaveControl entity="food" entityId={food.id} />
-            </Suspense>
+            <>
+              <Suspense fallback={<SaveButtonSkeleton />}>
+                <SaveControl entity="food" entityId={food.id} />
+              </Suspense>
+              <ShareButton title={food.nameBn} path={routes.food(food.slug)} />
+            </>
           }
         />
       }

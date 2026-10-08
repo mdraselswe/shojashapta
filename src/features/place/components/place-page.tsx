@@ -11,6 +11,7 @@ import {
   PlaceReactionCard,
   ReactionCardSkeleton,
 } from "@/features/experience/components/reaction-card";
+import { ShareButton } from "@/features/share/components/share-button";
 import { SaveButtonSkeleton } from "@/features/saved/components/save-button";
 import { SaveControl } from "@/features/saved/components/save-control";
 import { Section } from "@/components/layout/section";
@@ -30,9 +31,12 @@ export function PlacePage({ place }: { place: PlaceHeader }) {
         <SubPageBar
           backHref={routes.district(place.district.slug)}
           actions={
-            <Suspense fallback={<SaveButtonSkeleton />}>
-              <SaveControl entity="place" entityId={place.id} />
-            </Suspense>
+            <>
+              <Suspense fallback={<SaveButtonSkeleton />}>
+                <SaveControl entity="place" entityId={place.id} />
+              </Suspense>
+              <ShareButton title={place.nameBn} path={routes.place(place.slug)} />
+            </>
           }
           crumbs={[
             { label: place.district.nameBn, href: routes.district(place.district.slug) },

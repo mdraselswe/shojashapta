@@ -8,6 +8,7 @@ import {
   DishGroups,
   FoodDishesSectionSkeleton,
 } from "@/features/food/components/food-dishes-section";
+import { ShareButton } from "@/features/share/components/share-button";
 import { getT } from "@/i18n/server";
 import type { DistrictFoodPage as DistrictFoodData } from "@/services/catalog-service";
 
@@ -25,6 +26,12 @@ export function DistrictFoodPage({ data }: { data: DistrictFoodData }) {
             { label: district.nameBn, href: routes.district(district.slug) },
             { label: food.nameBn },
           ]}
+          actions={
+            <ShareButton
+              title={t("district.titleFood", { district: district.nameBn, food: food.nameBn })}
+              path={routes.districtFood(district.slug, food.slug)}
+            />
+          }
         />
       }
     >

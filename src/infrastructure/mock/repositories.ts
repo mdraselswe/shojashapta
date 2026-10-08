@@ -51,6 +51,7 @@ export function createMockRepositories(): Repositories {
     edits: [] as EditSuggestion[],
     reports: [] as Report[],
     saved: [] as (SavedItem & { userId: string })[],
+    placeCreators: new Map<string, string>(),
     media: [] as (MediaRef & { entity: string; entityId: string })[],
     rateEvents: [] as { userId: string; action: string; at: Date }[],
   };
@@ -195,8 +196,16 @@ export function createMockRepositories(): Repositories {
           ),
         );
       },
+      byCreator: async (userId, opts) =>
+        paginate(
+          clone(
+            active(db.places)
+              .filter((place) => db.placeCreators.get(place.id) === userId)
+              .reverse(),
+          ),
+          opts,
+        ),
       create: async (input, createdBy) => {
-        void createdBy;
         const home = district(input.districtId);
         if (!home) throw new Error(`mock: unknown district ${input.districtId}`);
         const place: Place = {
@@ -217,6 +226,7 @@ export function createMockRepositories(): Repositories {
           mergedIntoId: null,
         };
         db.places.push(place);
+        db.placeCreators.set(place.id, createdBy);
         return clone(place);
       },
     },
