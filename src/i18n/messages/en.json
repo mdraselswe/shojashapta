@@ -318,5 +318,59 @@
     "lovedShort": "Loved it",
     "okayShort": "It was okay",
     "dislikedShort": "Not good"
+  },
+  "admin": {
+    "title": "Admin",
+    "sections": {
+      "reports": "Reports",
+      "edits": "Edit suggestions",
+      "places": "New places",
+      "claims": "Disputed facts",
+      "fame": "Famous for",
+      "maintenance": "Maintenance"
+    },
+    "totals": {
+      "users": "People",
+      "places": "Places",
+      "foods": "Foods",
+      "dishes": "Dishes",
+      "experiences": "Experiences",
+      "media": "Photos"
+    },
+    "usage": "What the app holds",
+    "empty": "Nothing waiting.",
+    "done": "Done.",
+    "hide": "Hide",
+    "dismiss": "Dismiss",
+    "approve": "Approve",
+    "reject": "Reject",
+    "remove": "Remove",
+    "save": "Save",
+    "run": "Run",
+    "merge": "Merge",
+    "mergeInto": "Merge into (place slug)",
+    "mergeConfirm": "Merge this place into the other one? Its dishes and photos move over and the old link redirects.",
+    "hideConfirm": "Hide this place?",
+    "banConfirm": "Ban this person? They can no longer add or change anything.",
+    "banReporter": "Ban reporter",
+    "removeConfirm": "Remove this entry from the famous-for list?",
+    "placesHint": "Places added in the last 7 days. Hide spam, or merge a duplicate into the right place.",
+    "claimStatus": {
+      "mixed": "split",
+      "disputed": "wrong",
+      "confirmed": "confirmed",
+      "unverified": "unverified"
+    },
+    "claimVotes": "Correct {correct}, partly {partial}, wrong {wrong}",
+    "fameHint": "The editors' list shown as Famous for. Type the food's slug (the last part of its address).",
+    "fameDistrict": "District",
+    "fameFood": "Food slug, e.g. doi",
+    "fameNote": "Short note (optional)",
+    "fameCurrent": "Current list",
+    "purgeTitle": "Clear old rate-limit counters",
+    "purgeHint": "Removes counters older than 7 days. Safe to run any time.",
+    "orphanTitle": "Photos with no live experience: {count}",
+    "orphanHint": "Photos whose experience was removed or hidden. Running this deletes them from storage.",
+    "orphanConfirm": "Delete these photos for good?"
   }
 }

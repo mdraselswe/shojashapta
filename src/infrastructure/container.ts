@@ -16,6 +16,7 @@ import { createClaimService, type ClaimService } from "@/services/claim-service"
 import { createExperienceService, type ExperienceService } from "@/services/experience-service";
 import { createMeService, type MeService } from "@/services/me-service";
 import { createMediaService, type MediaService } from "@/services/media-service";
+import { createAdminService, type AdminService } from "@/services/admin-service";
 import { createModerationService, type ModerationService } from "@/services/moderation-service";
 import { createRewardService, type RewardService } from "@/services/reward-service";
 import { createSavedService, type SavedService } from "@/services/saved-service";
@@ -51,6 +52,7 @@ export type Services = {
   saved: SavedService;
   claims: ClaimService;
   moderation: ModerationService;
+  admin: AdminService;
   media: MediaService;
   me: MeService;
   rewards: RewardService;
@@ -119,6 +121,7 @@ export function getServices(): Services {
     }),
     rewards,
     moderation: createModerationService({ repos, cache: nextCacheInvalidator, rewards }),
+    admin: createAdminService({ repos, cache: nextCacheInvalidator, rewards, storage }),
     add: createAddService({
       repos,
       experience,

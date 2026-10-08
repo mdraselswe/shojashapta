@@ -119,6 +119,17 @@ export function createRewardService({ repos }: Deps) {
       return { points, newStamps: [] };
     },
 
+    /** +15 to the person whose suggested edit an admin accepted. */
+    async forAcceptedEdit(userId: string, editId: string): Promise<number> {
+      return repos.rewards.award({
+        userId,
+        kind: "edit_accepted",
+        entity: "edit_suggestion",
+        entityId: editId,
+        points: appConfig.points.edit_accepted,
+      });
+    },
+
     /** Content that was hidden or removed no longer counts. */
     revokeFor(entity: "experience" | "place" | "claim" | "edit_suggestion", id: string) {
       return repos.rewards.revoke(entity, id);

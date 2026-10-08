@@ -15,6 +15,7 @@ import type {
   PlaceType,
   Reaction,
   RegionalFame,
+  ReviewStatus,
   PointKind,
   RewardEntity,
   Stamp,
@@ -48,6 +49,8 @@ export interface FoodRepository {
     opts?: PageOpts & { districtId?: number },
   ): Promise<Page<DishWithPlace>>;
   create(input: NewFood & { slug: string }, createdBy: string): Promise<Food>;
+  /** Admin-approved changes to a food's own fields. */
+  update(id: string, patch: { nameBn?: string; aboutBn?: string | null }): Promise<void>;
 }
 
 export type NewPlace = {
@@ -70,6 +73,13 @@ export interface PlaceRepository {
   inDistrict(districtId: number, opts?: PageOpts): Promise<Page<Place>>;
   /** All dishes of a place, best first ("প্রথমবার? এগুলো অর্ডার করুন"). */
   dishes(placeId: string): Promise<DishWithFood[]>;
+  /** The slug of the place this one was merged into, for redirecting old links; null if none. */
+  redirectFor(slug: string): Promise<string | null>;
+  /** Admin-approved changes to a place's own fields. */
+  update(
+    id: string,
+    patch: { nameBn?: string; address?: string | null; type?: PlaceType },
+  ): Promise<void>;
   /** Active places this person added, newest first (profile: আমার অবদান). */
   byCreator(userId: string, opts?: PageOpts): Promise<Page<Place>>;
   /** Possible duplicates before adding a place (same district, similar name). */
@@ -184,7 +194,45 @@ export interface RewardRepository {
   total(userId: string): Promise<number>;
 }
 
+export type AdminCounts = {
+  users: number;
+  places: number;
+  foods: number;
+  dishes: number;
+  experiences: number;
+  media: number;
+  openReports: number;
+  openEdits: number;
+  disputedClaims: number;
+};
+
+export type OrphanMedia = { id: string; key: string };
+
 export interface AdminRepository {
+  counts(): Promise<AdminCounts>;
+  /** Active places added in the last `sinceDays` days, newest first. */
+  recentPlaces(sinceDays: number, limit: number): Promise<Place[]>;
+  /** Claims the community marked wrong or is split on ("disputed" or "mixed"). */
+  disputedClaims(limit: number): Promise<Claim[]>;
+  /** Moves everything from the duplicate into the survivor; returns how many dishes were handled. */
+  mergePlaces(fromId: string, intoId: string): Promise<number>;
+  restore(entity: Report["entity"], entityId: string): Promise<void>;
+  setBanned(userId: string, banned: boolean): Promise<void>;
+  setReportStatus(id: string, status: Exclude<ReviewStatus, "open">): Promise<void>;
+  editSuggestion(id: string): Promise<EditSuggestion | null>;
+  setEditStatus(
+    id: string,
+    status: Exclude<ReviewStatus, "open">,
+    reviewerId: string,
+  ): Promise<void>;
+  /** Adds or changes a district's "famous for" entry (editor order is kept for existing ones). */
+  setFame(input: { districtId: number; foodId: string; noteBn: string | null }): Promise<void>;
+  removeFame(districtId: number, foodId: string): Promise<void>;
+  /** Deletes rate-limit counters older than this many days; returns how many. */
+  purgeRateEvents(olderThanDays: number): Promise<number>;
+  /** Uploaded photos whose experience no longer exists or is hidden. */
+  orphanMedia(limit: number): Promise<OrphanMedia[]>;
+  deleteMedia(id: string): Promise<void>;
   /** Hides content (status `hidden`) until an admin restores or removes it. */
   hide(entity: Report["entity"], entityId: string): Promise<void>;
   openReports(opts?: PageOpts): Promise<Page<Report>>;

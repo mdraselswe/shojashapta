@@ -1,7 +1,16 @@
 import "server-only";
 
 import { appConfig } from "@/config/app.config";
-import type { District, Food, Page, PageOpts, Place, StampKind } from "@/core/domain";
+import type {
+  District,
+  EditSuggestion,
+  Food,
+  Page,
+  PageOpts,
+  Place,
+  Report,
+  StampKind,
+} from "@/core/domain";
 import type { Repositories, SearchHit } from "@/core/ports";
 import { buildSearchFields } from "@/lib/text/normalize";
 import { slugify } from "@/lib/text/slug";
@@ -37,10 +46,6 @@ function writer(clients: SupabaseClients): Db {
   return clients.service;
 }
 
-function notYet(method: string, phase: string): never {
-  throw new Error(`Supabase ${method} arrives in Phase ${phase}`);
-}
-
 /** Throws on a query error; `data` is then non-null for list queries. */
 function check<T>(result: { data: T | null; error: { message: string } | null }, what: string): T {
   if (result.error) throw new Error(`Supabase ${what}: ${result.error.message}`);
@@ -62,6 +67,37 @@ function pageWindow(opts: PageOpts = {}) {
   const offset = Number(opts.cursor ?? 0) || 0;
   // Ask for one extra row to know whether a next page exists.
   return { limit, offset, from: offset, to: offset + limit };
+}
+
+type ReportRow = Database["public"]["Tables"]["reports"]["Row"];
+type EditRow = Database["public"]["Tables"]["edit_suggestions"]["Row"];
+
+function toReport(row: ReportRow): Report {
+  return {
+    id: row.id,
+    entity: row.entity,
+    entityId: row.entity_id,
+    reason: row.reason,
+    note: row.note,
+    userId: row.user_id,
+    status: row.status,
+    createdAt: new Date(row.created_at),
+  };
+}
+
+function toEditSuggestion(row: EditRow): EditSuggestion {
+  return {
+    id: row.id,
+    entity: row.entity,
+    entityId: row.entity_id,
+    field: row.field,
+    currentValue: row.current_value,
+    proposedValue: row.proposed_value,
+    note: row.note,
+    userId: row.user_id,
+    status: row.status,
+    createdAt: new Date(row.created_at),
+  };
 }
 
 function toPage<T>(rows: T[], window: ReturnType<typeof pageWindow>): Page<T> {
@@ -199,6 +235,18 @@ export function createSupabaseRepositoriesFrom(clients: SupabaseClients): Reposi
         );
         return toPage((rows as unknown as DishWithPlaceRow[]).map(toDishWithPlace), window);
       },
+      async update(id, patch) {
+        const search = patch.nameBn ? buildSearchFields(patch.nameBn) : null;
+        const { error } = await writer(clients)
+          .from("foods")
+          .update({
+            ...(patch.nameBn !== undefined ? { name_bn: patch.nameBn } : {}),
+            ...(patch.aboutBn !== undefined ? { about_bn: patch.aboutBn } : {}),
+            ...(search ? { search_text: search.searchText, search_key: search.searchKey } : {}),
+          })
+          .eq("id", id);
+        if (error) throw new Error(`Supabase update food: ${error.message}`);
+      },
       async create(input, createdBy) {
         const search = buildSearchFields(input.nameBn, input.nameEn, input.slug);
         const row = checkOne(
@@ -270,6 +318,34 @@ export function createSupabaseRepositoriesFrom(clients: SupabaseClients): Reposi
           "similar places",
         );
         return (rows as unknown as PlaceRow[]).map(toPlace);
+      },
+      async redirectFor(slug) {
+        const merged = check<{ merged_into: string | null } | null>(
+          await db
+            .from("places")
+            .select("merged_into")
+            .eq("slug", slug)
+            .eq("status", "merged")
+            .maybeSingle(),
+          "merged place",
+        );
+        if (!merged?.merged_into) return null;
+        const target = check<{ slug: string } | null>(
+          await db.from("places").select("slug").eq("id", merged.merged_into).maybeSingle(),
+          "merge target",
+        );
+        return target?.slug ?? null;
+      },
+      async update(id, patch) {
+        const { error } = await writer(clients)
+          .from("places")
+          .update({
+            ...(patch.nameBn !== undefined ? { name_bn: patch.nameBn } : {}),
+            ...(patch.address !== undefined ? { address: patch.address } : {}),
+            ...(patch.type !== undefined ? { type: patch.type } : {}),
+          })
+          .eq("id", id);
+        if (error) throw new Error(`Supabase update place: ${error.message}`);
       },
       async byCreator(userId, opts) {
         const window = pageWindow(opts);
@@ -852,8 +928,207 @@ export function createSupabaseRepositoriesFrom(clients: SupabaseClients): Reposi
           .eq("id", entityId);
         if (error) throw new Error(`Supabase hide ${entity}: ${error.message}`);
       },
-      openReports: () => notYet("admin.openReports", "7.2"),
-      openEditSuggestions: () => notYet("admin.openEditSuggestions", "7.2"),
+      async openReports(opts?: PageOpts) {
+        const window = pageWindow(opts);
+        const rows = check(
+          await writer(clients)
+            .from("reports")
+            .select("*")
+            .eq("status", "open")
+            .order("created_at", { ascending: false })
+            .range(window.from, window.to),
+          "open reports",
+        );
+        return toPage(rows.map(toReport), window);
+      },
+      async openEditSuggestions(opts?: PageOpts) {
+        const window = pageWindow(opts);
+        const rows = check(
+          await writer(clients)
+            .from("edit_suggestions")
+            .select("*")
+            .eq("status", "open")
+            .order("created_at", { ascending: false })
+            .range(window.from, window.to),
+          "open edit suggestions",
+        );
+        return toPage(rows.map(toEditSuggestion), window);
+      },
+      async counts() {
+        const service = writer(clients);
+        const count = async (table: string, filter?: (q: never) => never) => {
+          void filter;
+          const result = await service
+            .from(table as "places")
+            .select("*", { count: "exact", head: true });
+          if (result.error) throw new Error(`Supabase count ${table}: ${result.error.message}`);
+          return result.count ?? 0;
+        };
+        const countWhere = async (
+          table: "reports" | "edit_suggestions" | "claims",
+          column: string,
+          values: string[],
+        ) => {
+          const result = await service
+            .from(table)
+            .select("*", { count: "exact", head: true })
+            .in(column as "status", values as never);
+          if (result.error) throw new Error(`Supabase count ${table}: ${result.error.message}`);
+          return result.count ?? 0;
+        };
+        const [users, places, foods, dishes, experiences, media, openReports, openEdits, disputed] =
+          await Promise.all([
+            count("profiles"),
+            count("places"),
+            count("foods"),
+            count("dishes"),
+            count("experiences"),
+            count("media"),
+            countWhere("reports", "status", ["open"]),
+            countWhere("edit_suggestions", "status", ["open"]),
+            countWhere("claims", "status", ["disputed", "mixed"]),
+          ]);
+        return {
+          users,
+          places,
+          foods,
+          dishes,
+          experiences,
+          media,
+          openReports,
+          openEdits,
+          disputedClaims: disputed,
+        };
+      },
+      async recentPlaces(sinceDays, limit) {
+        const since = new Date(Date.now() - sinceDays * 24 * 60 * 60 * 1000).toISOString();
+        const rows = check(
+          await writer(clients)
+            .from("places")
+            .select(PLACE_SELECT)
+            .eq("status", "active")
+            .gte("created_at", since)
+            .order("created_at", { ascending: false })
+            .limit(limit),
+          "recent places",
+        );
+        return (rows as unknown as PlaceRow[]).map(toPlace);
+      },
+      async disputedClaims(limit) {
+        const rows = check(
+          await writer(clients)
+            .from("claims")
+            .select("*")
+            .in("status", ["disputed", "mixed"])
+            .order("created_at", { ascending: false })
+            .limit(limit),
+          "disputed claims",
+        );
+        return rows.map(toClaim);
+      },
+      async mergePlaces(fromId, intoId) {
+        const { data, error } = await writer(clients).rpc("merge_places", {
+          p_from: fromId,
+          p_into: intoId,
+        });
+        if (error) throw new Error(`Supabase merge_places: ${error.message}`);
+        return Number(data ?? 0);
+      },
+      async restore(entity, entityId) {
+        const table = (
+          { place: "places", food: "foods", dish: "dishes", experience: "experiences" } as const
+        )[entity as "place" | "food" | "dish" | "experience"];
+        if (!table) throw new Error(`Supabase restore: cannot restore a ${entity}`);
+        const { error } = await writer(clients)
+          .from(table)
+          .update({ status: "active" })
+          .eq("id", entityId);
+        if (error) throw new Error(`Supabase restore ${entity}: ${error.message}`);
+      },
+      async setBanned(userId, banned) {
+        const { error } = await writer(clients)
+          .from("profiles")
+          .update({ is_banned: banned })
+          .eq("id", userId);
+        if (error) throw new Error(`Supabase ban: ${error.message}`);
+      },
+      async setReportStatus(id, status) {
+        const { error } = await writer(clients).from("reports").update({ status }).eq("id", id);
+        if (error) throw new Error(`Supabase report status: ${error.message}`);
+      },
+      async editSuggestion(id) {
+        const row = check(
+          await writer(clients).from("edit_suggestions").select("*").eq("id", id).maybeSingle(),
+          "edit suggestion",
+        );
+        return row ? toEditSuggestion(row) : null;
+      },
+      async setEditStatus(id, status, reviewerId) {
+        const { error } = await writer(clients)
+          .from("edit_suggestions")
+          .update({ status, reviewed_by: reviewerId, reviewed_at: new Date().toISOString() })
+          .eq("id", id);
+        if (error) throw new Error(`Supabase edit status: ${error.message}`);
+      },
+      async setFame({ districtId, foodId, noteBn }) {
+        const { error } = await writer(clients)
+          .from("regional_fame")
+          .upsert(
+            { district_id: districtId, food_id: foodId, note_bn: noteBn },
+            { onConflict: "district_id,food_id" },
+          );
+        if (error) throw new Error(`Supabase set fame: ${error.message}`);
+      },
+      async removeFame(districtId, foodId) {
+        const { error } = await writer(clients)
+          .from("regional_fame")
+          .delete()
+          .eq("district_id", districtId)
+          .eq("food_id", foodId);
+        if (error) throw new Error(`Supabase remove fame: ${error.message}`);
+      },
+      async purgeRateEvents(olderThanDays) {
+        const cutoff = new Date(Date.now() - olderThanDays * 24 * 60 * 60 * 1000).toISOString();
+        const { data, error } = await writer(clients)
+          .from("rate_limit_events")
+          .delete()
+          .lt("created_at", cutoff)
+          .select("id");
+        if (error) throw new Error(`Supabase purge rate events: ${error.message}`);
+        return data?.length ?? 0;
+      },
+      async orphanMedia(limit) {
+        const service = writer(clients);
+        const media = check(
+          await service
+            .from("media")
+            .select("id, provider_key, entity_id")
+            .eq("entity", "experience")
+            .limit(500),
+          "media",
+        );
+        if (media.length === 0) return [];
+        const alive = check(
+          await service
+            .from("experiences")
+            .select("id")
+            .in(
+              "id",
+              media.map((row) => row.entity_id),
+            )
+            .eq("status", "active"),
+          "experiences of media",
+        );
+        const living = new Set(alive.map((row) => row.id));
+        return media
+          .filter((row) => !living.has(row.entity_id))
+          .slice(0, limit)
+          .map((row) => ({ id: row.id, key: row.provider_key }));
+      },
+      async deleteMedia(id) {
+        const { error } = await writer(clients).from("media").delete().eq("id", id);
+        if (error) throw new Error(`Supabase delete media: ${error.message}`);
+      },
     },
   };
 }
