@@ -15,7 +15,7 @@ export type ContractIds = {
   users: { contract: string };
 };
 
-export type WriteArea = "experiences" | "claims" | "saved";
+export type WriteArea = "experiences" | "claims" | "saved" | "places";
 
 export function repositoryContract(
   adapter: string,
@@ -165,6 +165,30 @@ export function repositoryContract(
       await repos.saved.remove(ids.users.contract, "food", ids.foods.doi);
       expect(await repos.saved.isSaved(ids.users.contract, "food", ids.foods.doi)).toBe(false);
     });
+
+    writeIt("places")(
+      "creates a place in a new area and reuses that area for the next one",
+      async () => {
+        const repos = await make();
+        const stamp = Date.now().toString(36);
+        const base = {
+          type: "restaurant" as const,
+          districtId: 2,
+          areaName: `নতুন এলাকা ${stamp}`,
+          location: { lat: 24.85, lng: 89.37 },
+        };
+        const first = await repos.places.create(
+          { ...base, nameBn: "প্রথম দোকান", slug: `contract-a-${stamp}` },
+          ids.users.contract,
+        );
+        const second = await repos.places.create(
+          { ...base, nameBn: "দ্বিতীয় দোকান", slug: `contract-b-${stamp}` },
+          ids.users.contract,
+        );
+        expect(first.area?.nameBn).toBe(base.areaName);
+        expect(second.area?.id).toBe(first.area?.id);
+      },
+    );
 
     it("finds foods by Bangla and Banglish spellings", async () => {
       const repos = await make();

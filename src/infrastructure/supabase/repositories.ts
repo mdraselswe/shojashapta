@@ -366,7 +366,7 @@ export function createSupabaseRepositoriesFrom(clients: SupabaseClients): Reposi
         let areaId: number | null = input.areaId ?? null;
         if (areaId === null && input.areaName) {
           const areaSlug = slugify(input.areaName) || "area";
-          const found = checkOne<{ id: number } | null>(
+          const found = check<{ id: number } | null>(
             await service
               .from("areas")
               .select("id")
