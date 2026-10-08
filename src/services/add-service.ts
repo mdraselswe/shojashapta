@@ -38,6 +38,7 @@ export type AddInput = {
 };
 
 export type AddResult = {
+  experienceId: string;
   foodSlug: string;
   placeSlug: string;
   createdFood: boolean;
@@ -197,7 +198,13 @@ export function createAddService({ repos, experience, claims, rateLimiter, cache
         `food:${foodId}`,
         `place:${place.id}`,
       ]);
-      return ok({ foodSlug, placeSlug: place.slug, createdFood, createdPlace });
+      return ok({
+        experienceId: saved.data.experience.id,
+        foodSlug,
+        placeSlug: place.slug,
+        createdFood,
+        createdPlace,
+      });
     },
   };
 }

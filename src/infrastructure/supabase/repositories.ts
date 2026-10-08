@@ -128,7 +128,27 @@ export function createSupabaseRepositoriesFrom(clients: SupabaseClients): Reposi
         .range(window.from, window.to),
       "experiences",
     );
-    return toPage((rows as unknown as ExperienceRow[]).map(toExperience), window);
+    const experiences = (rows as unknown as ExperienceRow[]).map(toExperience);
+    // Photos live in the generic media table (no foreign key to embed), so they are loaded together.
+    if (experiences.length > 0) {
+      const media = check(
+        await db
+          .from("media")
+          .select("*")
+          .eq("entity", "experience")
+          .in(
+            "entity_id",
+            experiences.map((experience) => experience.id),
+          )
+          .eq("status", "active")
+          .order("created_at"),
+        "experience photos",
+      );
+      for (const experience of experiences) {
+        experience.photos = media.filter((row) => row.entity_id === experience.id).map(toMediaRef);
+      }
+    }
+    return toPage(experiences, window);
   };
 
   return {
@@ -349,6 +369,18 @@ export function createSupabaseRepositoriesFrom(clients: SupabaseClients): Reposi
     },
 
     experiences: {
+      async byId(id) {
+        const row = check(
+          await db
+            .from("experiences")
+            .select(EXPERIENCE_SELECT)
+            .eq("id", id)
+            .eq("status", "active")
+            .maybeSingle(),
+          "experience",
+        );
+        return row ? toExperience(row as unknown as ExperienceRow) : null;
+      },
       forDish: (dishId, opts) => experiencesWhere({ column: "dish_id", values: [dishId] }, opts),
       async forFood(foodId, opts) {
         const dishes = check(
@@ -616,7 +648,26 @@ export function createSupabaseRepositoriesFrom(clients: SupabaseClients): Reposi
     },
 
     media: {
-      create: () => notYet("media.create", "5.3"),
+      async create(input) {
+        const row = checkOne(
+          await writer(clients)
+            .from("media")
+            .insert({
+              owner_id: input.ownerId,
+              entity: input.entity,
+              entity_id: input.entityId,
+              provider: input.provider,
+              provider_key: input.key,
+              width: input.width,
+              height: input.height,
+              dominant_color: input.dominantColor,
+            })
+            .select("*")
+            .single(),
+          "create media",
+        );
+        return toMediaRef(row);
+      },
       async forEntity(entity, entityId) {
         const rows = check(
           await db

@@ -2,6 +2,7 @@ import { publicEnv } from "@/config/public-env";
 import type { AnalyticsProvider, StorageProvider } from "@/core/ports";
 
 import { noopAnalytics } from "./analytics/noop";
+import { cloudinaryUrl } from "./cloudinary/url";
 import { createMockStorage } from "./mock/storage";
 
 // Browser-safe infrastructure (docs/03-architecture.md §5): secret-free helpers chosen by
@@ -11,8 +12,10 @@ function browserStorage(): Pick<StorageProvider, "url"> {
   switch (publicEnv.storageProvider) {
     case "mock":
       return createMockStorage();
+    case "cloudinary":
+      return { url: (key, variant) => cloudinaryUrl(publicEnv.cloudinaryCloudName, key, variant) };
     default:
-      // Real providers' URL builders arrive with their adapters (Cloudinary: Phase 5.2).
+      // Other providers' URL builders arrive with their adapters.
       return {
         url: () => {
           throw new Error(`No browser URL builder for ${publicEnv.storageProvider} yet`);

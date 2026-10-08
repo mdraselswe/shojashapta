@@ -1,5 +1,13 @@
 import { appConfig } from "@/config/app.config";
-import type { ClaimStatus, ClaimType, Dish, PlaceType, PriceRange, Reaction } from "@/core/domain";
+import type {
+  ClaimStatus,
+  ClaimType,
+  Dish,
+  MediaRef,
+  PlaceType,
+  PriceRange,
+  Reaction,
+} from "@/core/domain";
 import type { Repositories } from "@/core/ports";
 import { dishDisplay, type DishDisplay } from "@/lib/ranking/display";
 import { formatPriceRange } from "@/lib/format/number";
@@ -64,6 +72,7 @@ export type ExperienceRow = {
   reaction: Reaction;
   comment: string | null;
   pricePaid: number | null;
+  photos: MediaRef[];
   createdAt: Date;
 };
 
@@ -230,13 +239,14 @@ export function createCatalogService({ repos }: Deps) {
     async foodExperiences(foodId: string): Promise<ExperienceRow[]> {
       const page = await repos.experiences.forFood(foodId, { limit: 5 });
       return page.items
-        .filter((experience) => experience.comment)
+        .filter((experience) => experience.comment || experience.photos.length > 0)
         .map((experience) => ({
           id: experience.id,
           userName: experience.user.displayName,
           reaction: experience.reaction,
           comment: experience.comment,
           pricePaid: experience.pricePaid,
+          photos: experience.photos,
           createdAt: experience.createdAt,
         }));
     },
@@ -270,6 +280,19 @@ export function createCatalogService({ repos }: Deps) {
         experienceCount: dish.experienceCount,
         display: dishDisplay(dish),
       }));
+    },
+
+    /** Photos people attached to experiences of this place, newest first. */
+    async placePhotos(placeId: string, limit = 8): Promise<MediaRef[]> {
+      const dishes = await repos.places.dishes(placeId);
+      const pages = await Promise.all(
+        dishes.map((dish) => repos.experiences.forDish(dish.id, { limit: 10 })),
+      );
+      return pages
+        .flatMap((page) => page.items)
+        .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+        .flatMap((experience) => experience.photos)
+        .slice(0, limit);
     },
 
     async placeClaims(placeId: string): Promise<PlaceClaimRow[]> {

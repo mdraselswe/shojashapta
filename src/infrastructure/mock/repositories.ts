@@ -252,6 +252,7 @@ export function createMockRepositories(): Repositories {
     },
 
     experiences: {
+      byId: async (id) => clone(db.experiences.find((e) => e.id === id) ?? null),
       forDish: async (dishId, opts) =>
         paginate(clone(active(db.experiences).filter((e) => e.dishId === dishId)), opts),
       forFood: async (foodId, opts) => {
@@ -395,7 +396,11 @@ export function createMockRepositories(): Repositories {
       create: async ({ entity, entityId, id, key, width, height, dominantColor }) => {
         const media = { id, key, width, height, dominantColor, entity, entityId };
         db.media.push(media);
-        return { id, key, width, height, dominantColor };
+        const ref = { id, key, width, height, dominantColor };
+        if (entity === "experience") {
+          db.experiences.find((e) => e.id === entityId)?.photos.push(ref);
+        }
+        return ref;
       },
       forEntity: async (entity, entityId) =>
         db.media

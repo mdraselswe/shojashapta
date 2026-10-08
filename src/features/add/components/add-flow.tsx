@@ -11,6 +11,11 @@ import { useT } from "@/i18n/client";
 import type { MessageKey } from "@/i18n/t";
 import { cn } from "@/lib/cn";
 
+import { appConfig } from "@/config/app.config";
+import { attachPhotos } from "@/features/media/actions";
+import { uploadPhotos } from "@/features/media/upload";
+import { checkPickedFile } from "@/lib/image/compress";
+
 import { findSimilarPlaces, submitAdd, suggestForAdd } from "../actions";
 
 type Suggestion = { id: string; nameBn: string; meta: string | null };
@@ -92,6 +97,7 @@ export function AddFlow({ districts }: { districts: DistrictOption[] }) {
   const [price, setPrice] = useState("");
   const [comment, setComment] = useState("");
   const [done, setDone] = useState<{ placeSlug: string } | null>(null);
+  const [photos, setPhotos] = useState<{ file: File; preview: string }[]>([]);
 
   const foodSuggestions = useSuggestions("food", foodQuery, null, food === null);
   const placeSuggestions = useSuggestions(
@@ -107,6 +113,26 @@ export function AddFlow({ districts }: { districts: DistrictOption[] }) {
   function chooseFood(next: FoodChoice) {
     setFood(next);
     setFoodQuery(next.nameBn);
+  }
+
+  function pickPhotos(files: FileList | null) {
+    if (!files) return;
+    const room = appConfig.media.maxPhotosPerExperience - photos.length;
+    const next: { file: File; preview: string }[] = [];
+    for (const file of Array.from(files).slice(0, Math.max(room, 0))) {
+      const problem = checkPickedFile(file);
+      if (problem) toast.error(t(problem === "too_big" ? "photos.tooBig" : "photos.notImage"));
+      else next.push({ file, preview: URL.createObjectURL(file) });
+    }
+    setPhotos((current) => [...current, ...next]);
+  }
+
+  function removePhoto(index: number) {
+    setPhotos((current) => {
+      const removed = current[index];
+      if (removed) URL.revokeObjectURL(removed.preview);
+      return current.filter((_, position) => position !== index);
+    });
   }
 
   function goTo(next: number) {
@@ -163,6 +189,15 @@ export function AddFlow({ districts }: { districts: DistrictOption[] }) {
         confirmNewPlace: confirmNew,
       });
       if (result.ok) {
+        // The experience is saved; photos are best-effort so a slow upload never loses the entry.
+        if (photos.length > 0) {
+          const uploaded = await uploadPhotos(photos.map((photo) => photo.file));
+          const attached =
+            uploaded.keys.length > 0
+              ? await attachPhotos({ experienceId: result.data.experienceId, keys: uploaded.keys })
+              : null;
+          if (uploaded.failed > 0 || (attached && !attached.ok)) toast.error(t("photos.failed"));
+        }
         setDone({ placeSlug: result.data.placeSlug });
         router.refresh();
         return;
@@ -474,6 +509,40 @@ export function AddFlow({ districts }: { districts: DistrictOption[] }) {
           value={comment}
           onChange={(event) => setComment(event.target.value)}
         />
+        <div className="mt-4">
+          <p className={LABEL}>{t("photos.addOptional")}</p>
+          <div className="flex flex-wrap gap-2">
+            {photos.map((photo, index) => (
+              <div key={photo.preview} className="relative size-20 overflow-hidden rounded-thumb">
+                {/* eslint-disable-next-line @next/next/no-img-element -- local preview of a picked file */}
+                <img src={photo.preview} alt="" className="size-full object-cover" />
+                <button
+                  type="button"
+                  aria-label={t("photos.remove")}
+                  onClick={() => removePhoto(index)}
+                  className="text-toast-foreground absolute top-0.5 right-0.5 flex size-7 items-center justify-center rounded-full bg-toast"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+            {photos.length < appConfig.media.maxPhotosPerExperience && (
+              <label className="flex size-20 cursor-pointer items-center justify-center rounded-thumb border-2 border-dashed border-border text-sm font-semibold text-muted-foreground">
+                {t("photos.add")}
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="sr-only"
+                  onChange={(event) => {
+                    pickPhotos(event.target.files);
+                    event.target.value = "";
+                  }}
+                />
+              </label>
+            )}
+          </div>
+        </div>
         <div className="mt-5 flex gap-2">
           <button
             type="button"
