@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 
-import { PageShell } from "@/components/layout/page-shell";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/config/routes";
 import { useT } from "@/i18n/client";
@@ -17,7 +16,9 @@ export default function SiteError({
 }) {
   const t = useT();
   return (
-    <PageShell>
+    // Not PageShell: that is a server component and would drag the server i18n and zod (config/env)
+    // into the client bundle of every page that sits under this error boundary.
+    <main id="main" className="mx-auto w-full max-w-lg flex-1 md:max-w-none lg:max-w-[1200px]">
       <section className="page-x pt-10" role="alert">
         <h1 className="text-title-1">{t("errorPage.title")}</h1>
         <p className="mt-2 text-body text-muted-foreground">{t("errorPage.body")}</p>
@@ -33,6 +34,6 @@ export default function SiteError({
           </Button>
         </div>
       </section>
-    </PageShell>
+    </main>
   );
 }
