@@ -19,6 +19,7 @@ import { PlaceClaimsSection, PlaceClaimsSectionSkeleton } from "./place-claims-s
 import { PlaceDishesSection, PlaceDishesSectionSkeleton } from "./place-dishes-section";
 import { PlaceHero, PlaceHeroSkeleton } from "./place-hero";
 import { PlaceInfoSection } from "./place-info-section";
+import { PlacePhotosSection } from "./place-photos-section";
 
 /** Place page: hero and info are ready with the header; claims and dishes stream in. */
 export function PlacePage({ place }: { place: PlaceHeader }) {
@@ -69,6 +70,9 @@ export function PlacePage({ place }: { place: PlaceHeader }) {
           </Section>
         </div>
       </div>
+      <Suspense fallback={null}>
+        <PlacePhotosSection placeId={place.id} />
+      </Suspense>
     </PageShell>
   );
 }

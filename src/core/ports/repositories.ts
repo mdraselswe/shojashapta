@@ -87,6 +87,7 @@ export type ExperienceInput = {
 };
 
 export interface ExperienceRepository {
+  byId(id: string): Promise<Experience | null>;
   forDish(dishId: string, opts?: PageOpts): Promise<Page<Experience>>;
   forFood(foodId: string, opts?: PageOpts): Promise<Page<Experience>>;
   byUser(userId: string, opts?: PageOpts): Promise<Page<Experience>>;

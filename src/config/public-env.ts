@@ -14,6 +14,7 @@ export const publicEnv = {
     STORAGE_PROVIDERS,
     "mock",
   ),
+  cloudinaryCloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ?? "",
   launched: process.env.NEXT_PUBLIC_LAUNCHED === "true",
   defaultLocale: oneOf<"bn" | "en">(process.env.NEXT_PUBLIC_DEFAULT_LOCALE, ["bn", "en"], "bn"),
 } as const;

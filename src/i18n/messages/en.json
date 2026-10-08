@@ -128,6 +128,20 @@
     "alreadyReported": "You already reported this.",
     "profanity": "Please remove the offensive words."
   },
+  "photos": {
+    "open": "Open photo {n}",
+    "title": "Photo",
+    "position": "{n} / {total}",
+    "previous": "Previous photo",
+    "next": "Next photo",
+    "add": "Add photo",
+    "addOptional": "Add photos (optional, up to 2)",
+    "remove": "Remove photo",
+    "notImage": "Please pick a picture.",
+    "tooBig": "That photo is too big, pick one under 8 MB.",
+    "failed": "Some photos did not upload, try again later.",
+    "section": "Photos"
+  },
   "comingSoon": {
     "title": "Coming soon",
     "body": "Where to eat what in Bangladesh, told by real community experience. Coming soon."

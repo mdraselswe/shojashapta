@@ -6,6 +6,8 @@ import { getT } from "@/i18n/server";
 import { timeAgo } from "@/lib/format/date";
 import { formatTaka } from "@/lib/format/number";
 
+import { PhotoStrip } from "@/features/media/components/photo-strip";
+
 import { getFoodExperiences } from "../queries";
 
 const REACTION_EMOJI: Record<Reaction, string> = { loved: "😍", okay: "🙂", disliked: "😕" };
@@ -30,6 +32,11 @@ export async function FoodVoicesSection({ foodId }: { foodId: string }) {
                 <span className="sr-only">{t(`reaction.${experience.reaction}`)}: </span>
                 {experience.comment}
               </p>
+              {experience.photos.length > 0 && (
+                <div className="mt-2">
+                  <PhotoStrip photos={experience.photos} label={t("photos.section")} size={72} />
+                </div>
+              )}
               <p className="mt-1 text-caption text-muted-foreground">
                 {[
                   experience.userName,
