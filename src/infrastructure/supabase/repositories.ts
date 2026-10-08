@@ -400,8 +400,84 @@ export function createSupabaseRepositoriesFrom(clients: SupabaseClients): Reposi
         const row = check(await db.from("claims").select("*").eq("id", id).maybeSingle(), "claim");
         return row ? toClaim(row) : null;
       },
-      vote: () => notYet("claims.vote", "4.2"),
-      saveStatus: () => notYet("claims.saveStatus", "4.2"),
+      async ensure(input) {
+        const service = writer(clients);
+        const find = async () =>
+          check(
+            await service
+              .from("claims")
+              .select("*")
+              .eq("entity", input.entity)
+              .eq("entity_id", input.entityId)
+              .eq("type", input.type)
+              .maybeSingle(),
+            "claim",
+          );
+        let row = await find();
+        if (!row) {
+          const { error } = await service.from("claims").insert({
+            entity: input.entity,
+            entity_id: input.entityId,
+            type: input.type,
+            value: input.value as never,
+            created_by: input.createdBy,
+          });
+          // unique (entity, entity_id, type): a racing request created it first
+          if (error && error.code !== "23505")
+            throw new Error(`Supabase create claim: ${error.message}`);
+          row = await find();
+        }
+        if (!row) throw new Error("Supabase claim missing after create");
+        return toClaim(row);
+      },
+      async vote(vote) {
+        const service = writer(clients);
+        const { error } = await service.from("claim_votes").upsert(
+          {
+            claim_id: vote.claimId,
+            user_id: vote.userId,
+            verdict: vote.verdict,
+            reason: vote.reason,
+            note: vote.note,
+            evidence_type: vote.evidence?.type ?? null,
+            evidence_url: vote.evidence?.type === "link" ? vote.evidence.url : null,
+            evidence_media_id: vote.evidence?.type === "photo" ? vote.evidence.mediaId : null,
+          },
+          { onConflict: "claim_id,user_id" },
+        );
+        if (error) throw new Error(`Supabase claim vote: ${error.message}`);
+        // Counts are always recomputed from the votes, so a changed vote never double-counts.
+        const votes = check(
+          await service.from("claim_votes").select("verdict").eq("claim_id", vote.claimId),
+          "claim votes",
+        );
+        const count = (verdict: string) => votes.filter((row) => row.verdict === verdict).length;
+        const row = checkOne(
+          await service
+            .from("claims")
+            .update({
+              correct_count: count("correct"),
+              partial_count: count("partial"),
+              wrong_count: count("wrong"),
+            })
+            .eq("id", vote.claimId)
+            .select("*")
+            .single(),
+          "claim counts",
+        );
+        return toClaim(row);
+      },
+      async saveStatus(claimId, update) {
+        const { error } = await writer(clients)
+          .from("claims")
+          .update({
+            status: update.status,
+            last_confirmed_at: update.lastConfirmedAt?.toISOString() ?? null,
+            expires_at: update.expiresAt?.toISOString() ?? null,
+          })
+          .eq("id", claimId);
+        if (error) throw new Error(`Supabase claim status: ${error.message}`);
+      },
     },
 
     editSuggestions: { create: () => notYet("editSuggestions.create", "4.4") },

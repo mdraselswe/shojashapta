@@ -5,6 +5,7 @@ import { fail, ok, type Result } from "@/lib/result";
 import { slugify } from "@/lib/text/slug";
 import { toSearchKey, toSearchQuery } from "@/lib/text/normalize";
 
+import type { ClaimService } from "./claim-service";
 import type { ExperienceService } from "./experience-service";
 
 // The add flow (docs/01-product-spec.md §3.7): "what did you eat, where, how was it" in one
@@ -13,6 +14,7 @@ import type { ExperienceService } from "./experience-service";
 type Deps = {
   repos: Pick<Repositories, "foods" | "places" | "search">;
   experience: ExperienceService;
+  claims: ClaimService;
   rateLimiter: RateLimiter;
   cache: CacheInvalidator;
 };
@@ -55,7 +57,7 @@ async function freeSlug(base: string, exists: (slug: string) => Promise<boolean>
   return `${root}-${Date.now().toString(36)}`;
 }
 
-export function createAddService({ repos, experience, rateLimiter, cache }: Deps) {
+export function createAddService({ repos, experience, claims, rateLimiter, cache }: Deps) {
   return {
     /** Foods or places matching what the person is typing, with ids for the form. */
     async suggest(input: {
@@ -173,6 +175,21 @@ export function createAddService({ repos, experience, rateLimiter, cache }: Deps
         pricePaid: input.pricePaid,
       });
       if (!saved.ok) return saved;
+
+      // Claims the community can now confirm or dispute (decision P7): created empty, never
+      // pre-confirmed. The price claim starts from what this person paid.
+      if (createdPlace) {
+        await claims.seed(user.id, { entity: "place", entityId: place.id }, [
+          { type: "place_status", value: { open: true } },
+          { type: "location", value: { districtId: place.district.id } },
+        ]);
+      }
+      await claims.seed(user.id, { entity: "dish", entityId: saved.data.dish.id }, [
+        { type: "availability", value: { available: true } },
+        ...(input.pricePaid
+          ? [{ type: "price" as const, value: { min: input.pricePaid, max: input.pricePaid } }]
+          : []),
+      ]);
 
       await cache.invalidate([
         "search",

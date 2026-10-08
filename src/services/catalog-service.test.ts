@@ -117,9 +117,14 @@ describe("catalogService place page", () => {
   it("returns the place's claims for the status badges", async () => {
     const svc = service();
     const header = await svc.placeHeader("sample-place");
-    expect(await svc.placeClaims(header?.id ?? "")).toEqual([
-      { type: "availability", status: "unverified", lastConfirmedAt: null, expiresAt: null },
+    const claims = await svc.placeClaims(header?.id ?? "");
+    // the place's own claim, then the claims of its dishes (with the dish named and the value shown)
+    expect(claims.map((claim) => [claim.type, claim.status, claim.subject])).toEqual([
+      ["availability", "unverified", null],
+      ["price", "confirmed", "দই"],
     ]);
+    expect(claims[1]?.valueText).toBe("৳১২০–৳১৮০");
+    expect(claims.every((claim) => claim.id.length > 0)).toBe(true);
   });
 });
 

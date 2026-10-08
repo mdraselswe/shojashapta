@@ -20,7 +20,8 @@ import type { PlaceClaimRow } from "@/services/catalog-service";
 export function ClaimStatusBadge({ claim, now }: { claim: PlaceClaimRow; now?: Date }) {
   const t = getT();
   const badge = claimBadge(claim, now);
-  const type = t(`claim.types.${claim.type satisfies ClaimType}`);
+  const typeLabel = t(`claim.types.${claim.type satisfies ClaimType}`);
+  const type = [claim.subject, typeLabel, claim.valueText].filter(Boolean).join(" · ");
 
   switch (badge.kind) {
     case "confirmed":

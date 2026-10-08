@@ -5,6 +5,7 @@ import { createMockRepositories } from "@/infrastructure/mock/repositories";
 import { createRateLimiter } from "@/infrastructure/shared/rate-limiter";
 
 import { createAddService } from "./add-service";
+import { createClaimService } from "./claim-service";
 import { createExperienceService } from "./experience-service";
 
 const user = { ...demoUser, id: fixtureIds.users.contract };
@@ -14,7 +15,12 @@ function setup(limits: Record<string, number> = { food_create: 10, place_create:
   const cache = { invalidate: vi.fn(async () => {}) };
   const experience = createExperienceService({ repos, cache });
   const rateLimiter = createRateLimiter(repos.rateLimits, limits);
-  return { repos, cache, service: createAddService({ repos, experience, rateLimiter, cache }) };
+  const claims = createClaimService({ repos, cache });
+  return {
+    repos,
+    cache,
+    service: createAddService({ repos, experience, claims, rateLimiter, cache }),
+  };
 }
 
 const bogura = 2;
@@ -116,5 +122,32 @@ describe("addService.suggest", () => {
     expect(places.length).toBeGreaterThan(0);
     expect(await service.suggest({ kind: "place", q: "দই", districtId: 1 })).toEqual([]);
     expect(await service.suggest({ kind: "food", q: " " })).toEqual([]);
+  });
+});
+
+describe("addService claims", () => {
+  it("starts empty claims for a new place and its dish, priced from what was paid", async () => {
+    const { repos, service } = setup();
+    const result = await service.submit(user, {
+      food: { id: fixtureIds.foods.doi },
+      place: { nameBn: "একদম নতুন দোকান", districtId: bogura, type: "shop" },
+      reaction: "loved",
+      pricePaid: 120,
+    });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    const place = await repos.places.bySlug(result.data.placeSlug);
+    const placeClaims = await repos.claims.forEntity("place", place?.id ?? "");
+    expect(placeClaims.map((claim) => claim.type).sort()).toEqual(["location", "place_status"]);
+    const [dish] = await repos.places.dishes(place?.id ?? "");
+    const dishClaims = await repos.claims.forEntity("dish", dish?.id ?? "");
+    expect(dishClaims.map((claim) => claim.type).sort()).toEqual(["availability", "price"]);
+    expect([...placeClaims, ...dishClaims].every((claim) => claim.status === "unverified")).toBe(
+      true,
+    );
+    expect(dishClaims.find((claim) => claim.type === "price")?.value).toEqual({
+      min: 120,
+      max: 120,
+    });
   });
 });

@@ -2,6 +2,7 @@ import { appConfig } from "@/config/app.config";
 import type { ClaimStatus, ClaimType, Dish, PlaceType, PriceRange, Reaction } from "@/core/domain";
 import type { Repositories } from "@/core/ports";
 import { dishDisplay, type DishDisplay } from "@/lib/ranking/display";
+import { formatPriceRange } from "@/lib/format/number";
 import { lovedPercent } from "@/lib/ranking/percent";
 
 // Read-side business logic for the catalog pages (docs/03-architecture.md §2). Pure: depends on
@@ -90,6 +91,11 @@ export type PlaceDishRow = {
 };
 
 export type PlaceClaimRow = {
+  id: string;
+  /** The dish a dish-level claim is about ("সরার দই"); null for the place itself. */
+  subject: string | null;
+  /** What the claim says, when it has something to show ("৳১৮০–৳২৫০"). */
+  valueText: string | null;
   type: ClaimType;
   status: ClaimStatus;
   lastConfirmedAt: Date | null;
@@ -120,6 +126,14 @@ export type DistrictFoodPage = {
   noteBn: string | null;
   dishes: FoodDishes;
 };
+
+/** The part of a claim worth showing next to its label; only prices carry one today. */
+export function claimValueText(type: ClaimType, value: Record<string, unknown>): string | null {
+  if (type !== "price") return null;
+  const min = typeof value.min === "number" ? value.min : null;
+  const max = typeof value.max === "number" ? value.max : null;
+  return formatPriceRange(min, max);
+}
 
 function priceRangeOf(dishes: Pick<Dish, "price">[]): PriceRange {
   const lows = dishes.flatMap((dish) => (dish.price.min === null ? [] : [dish.price.min]));
@@ -259,8 +273,24 @@ export function createCatalogService({ repos }: Deps) {
     },
 
     async placeClaims(placeId: string): Promise<PlaceClaimRow[]> {
-      const claims = await repos.claims.forEntity("place", placeId);
-      return claims.map((claim) => ({
+      const [placeClaims, dishes] = await Promise.all([
+        repos.claims.forEntity("place", placeId),
+        repos.places.dishes(placeId),
+      ]);
+      const dishClaims = await Promise.all(
+        dishes.map(async (dish) => ({
+          subject: dish.displayName ?? dish.food.nameBn,
+          claims: await repos.claims.forEntity("dish", dish.id),
+        })),
+      );
+      const all = [
+        ...placeClaims.map((claim) => ({ claim, subject: null as string | null })),
+        ...dishClaims.flatMap(({ subject, claims }) => claims.map((claim) => ({ claim, subject }))),
+      ];
+      return all.map(({ claim, subject }) => ({
+        id: claim.id,
+        subject,
+        valueText: claimValueText(claim.type, claim.value),
         type: claim.type,
         status: claim.status,
         lastConfirmedAt: claim.lastConfirmedAt,
