@@ -93,20 +93,24 @@ export function repositoryContract(
         const repos = await make();
         const dish = (await repos.places.dishes(ids.places.second))[0];
         if (!dish) throw new Error("fixture dish missing");
-        const before = dish.experienceCount;
+        // Real databases recompute a dish's counts from its experience rows, mock fixtures carry
+        // counts without rows; so compare the second write with the first, not with the fixture.
         await repos.experiences.upsert({
           dishId: dish.id,
           userId: ids.users.contract,
           reaction: "loved",
         });
+        const afterFirst = await repos.dishes.byId(dish.id);
         await repos.experiences.upsert({
           dishId: dish.id,
           userId: ids.users.contract,
           reaction: "okay",
         });
         const after = await repos.dishes.byId(dish.id);
-        expect(after?.experienceCount).toBe(before + 1);
-        expect(after?.okayCount).toBe(dish.okayCount + 1);
+        expect(afterFirst?.experienceCount).toBeGreaterThanOrEqual(1);
+        expect(after?.experienceCount).toBe(afterFirst?.experienceCount); // an edit, not a second vote
+        expect(after?.okayCount).toBe((afterFirst?.okayCount ?? 0) + 1);
+        expect(after?.lovedCount).toBe((afterFirst?.lovedCount ?? 0) - 1);
         const mine = await repos.experiences.byUser(ids.users.contract);
         expect(mine.items).toHaveLength(1);
         expect(mine.items[0]?.reaction).toBe("okay");
