@@ -7,6 +7,7 @@ import { routes } from "@/config/routes";
 import { getT } from "@/i18n/server";
 import type { DistrictHeader } from "@/services/catalog-service";
 
+import { ShareButton } from "@/features/share/components/share-button";
 import { DistrictFamousSection } from "./district-famous-section";
 import { DistrictHero, DistrictHeroSkeleton } from "./district-hero";
 import { DistrictPlacesSection, DistrictPlacesSectionSkeleton } from "./district-places-section";
@@ -14,7 +15,13 @@ import { DistrictPlacesSection, DistrictPlacesSectionSkeleton } from "./district
 export function DistrictPage({ district }: { district: DistrictHeader }) {
   return (
     <PageShell
-      header={<SubPageBar backHref={routes.home()} crumbs={[{ label: district.nameBn }]} />}
+      header={
+        <SubPageBar
+          backHref={routes.home()}
+          crumbs={[{ label: district.nameBn }]}
+          actions={<ShareButton title={district.nameBn} path={routes.district(district.slug)} />}
+        />
+      }
     >
       <DistrictHero district={district} />
       <DistrictFamousSection district={district} />

@@ -66,6 +66,8 @@ export interface PlaceRepository {
   inDistrict(districtId: number, opts?: PageOpts): Promise<Page<Place>>;
   /** All dishes of a place, best first ("প্রথমবার? এগুলো অর্ডার করুন"). */
   dishes(placeId: string): Promise<DishWithFood[]>;
+  /** Active places this person added, newest first (profile: আমার অবদান). */
+  byCreator(userId: string, opts?: PageOpts): Promise<Page<Place>>;
   /** Possible duplicates before adding a place (same district, similar name). */
   similar(nameBn: string, districtId: number): Promise<Place[]>;
   create(input: NewPlace & { slug: string }, createdBy: string): Promise<Place>;

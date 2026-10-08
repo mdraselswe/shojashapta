@@ -1,6 +1,7 @@
 allowBuilds:
   esbuild: true
   sharp: false
+  skia-canvas: set this to true or false
   supabase: true
   unrs-resolver: false
 

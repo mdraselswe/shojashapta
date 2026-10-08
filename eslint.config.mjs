@@ -67,6 +67,12 @@ const eslintConfig = defineConfig([
     },
   },
   {
+    // Share cards are drawn by Satori, which has no CSS variables: their colours are fixed, like the
+    // PWA icons (docs/06-design-system.md §2).
+    files: ["src/features/share/og-card.tsx"],
+    rules: { "no-restricted-syntax": "off" },
+  },
+  {
     // Repeats the patterns above: a later block replaces the whole rule for matching files.
     files: ["src/services/**", "src/core/**", "src/lib/**"],
     rules: {
