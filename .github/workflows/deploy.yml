@@ -34,6 +34,16 @@ jobs:
         env: { SUPABASE_ACCESS_TOKEN: "${{ secrets.SUPABASE_ACCESS_TOKEN }}" }
       - run: npm install --global vercel@latest
       - run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Check pulled environment (shapes only, no secrets)
+        run: |
+          f=.vercel/.env.production.local
+          for k in AUTH_PROVIDER DB_PROVIDER NEXT_PUBLIC_STORAGE_PROVIDER; do
+            echo "$k=$(grep "^$k=" $f | cut -d= -f2-)"
+          done
+          for k in ADMIN_EMAILS SUPABASE_SERVICE_ROLE_KEY CLOUDINARY_API_SECRET NEXT_PUBLIC_SUPABASE_URL; do
+            v=$(grep "^$k=" $f | cut -d= -f2-)
+            echo "$k: length=${#v} startsWithQuote=$([ "${v:0:1}" = '"' ] && echo yes || echo no) hasAt=$(echo "$v" | grep -c @)"
+          done
       - run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
       - run: vercel deploy --prebuilt --archive=tgz --prod --token=${{ secrets.VERCEL_TOKEN }}
       - name: Smoke test
