@@ -22,6 +22,12 @@ every place is flagged `is_seed` and the app's verify flow is how real people co
 | Kasturi (Dhanmondi), Chittagong Bull (Gulshan) | [The Daily Star, Bengali cuisine in Dhaka](https://www.thedailystar.net/life-living/food-recipes/news/top-7-places-try-bengali-cuisine-dhaka-3113316), [Financial Express](https://thefinancialexpress.com.bd/lifestyle/food/craving-indian-food-in-dhaka-give-these-restaurants-a-try) |
 | Star Kabab (Dhanmondi) | [Lonely Planet](https://www.lonelyplanet.com/bangladesh/restaurants?page=1) |
 | Kacchi Wala (Uttara) | [The Daily Star](https://www.thedailystar.net/lifestyle/news/kacchi-wala-2072745) |
+| Tehari Ghar (Dhanmondi), Moti Biryani House (Nazira Bazar), Shad Tehari Ghar (Lalmatia), Maruf Biryani House (Hazaribagh) | [The Business Standard, Dhaka's top 5 tehari places](https://www.tbsnews.net/node/366331) |
+| Farmgate pavement chitoi pitha with bhorta | [bdnews24 photo feature](https://bdnews24.com/media-en/hob5vtnb45) |
+| Bukhara, Lucknow (Banani) | [The Financial Express](https://thefinancialexpress.com.bd/food/craving-indian-food-in-dhaka-give-these-restaurants-a-try) |
+| Madhur Canteen (Shahbagh, Dhaka University) | [Wikipedia](https://en.wikipedia.org/wiki/Madhur_Canteen), [The Daily Star](https://www.thedailystar.net/node/1153813) |
+| Iskaton Garden Road kabab vans (near Shahbagh) | [Prothom Alo, street food spots](https://www.prothomalo.com/lifestyle/spaqn1qg00) |
+| Metro Kitchens (Bashundhara R/A, fish BBQ) | [The Daily Star, Five popular hangout zones](https://www.thedailystar.net/star-youth/five-popular-hangout-zones-1456795) |
 
 ## Customer reviews
 

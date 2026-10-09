@@ -1,0 +1,132 @@
+/**
+ * Dhaka content, part 2 (migration 0014): Farmgate, Banani, Shahbagh, Bashundhara and more tehari.
+ * Same rules as dhaka-data.ts: only what published articles say; sources in docs/content-sources.md.
+ * Farmgate and Shahbagh have little that articles name, so only that is listed; the rest is for
+ * contributors to add.
+ */
+import type { DhakaSet } from "./dhaka-data";
+
+export const DHAKA_SET_2: DhakaSet = {
+  migration: "0014_seed_dhaka_2.sql",
+  number: "0014",
+  areas: [
+    { slug: "farmgate", nameBn: "ফার্মগেট", nameEn: "Farmgate" },
+    { slug: "banani", nameBn: "বনানী", nameEn: "Banani" },
+    { slug: "shahbagh", nameBn: "শাহবাগ", nameEn: "Shahbagh" },
+    { slug: "iskaton", nameBn: "ইস্কাটন", nameEn: "Iskaton" },
+    { slug: "bashundhara", nameBn: "বসুন্ধরা", nameEn: "Bashundhara" },
+    { slug: "hazaribagh", nameBn: "হাজারীবাগ", nameEn: "Hazaribagh" },
+  ],
+  foods: [
+    {
+      slug: "chitoi-pitha",
+      nameBn: "চিতই পিঠা",
+      nameEn: "Chitoi Pitha",
+      aboutBn: "চালের গুঁড়োর ছোট পিঠা। শীতে নানা রকম ভর্তার সঙ্গে খাওয়া হয়।",
+      aliases: ["chitoi", "chita pitha", "chhita pitha", "চিতই"],
+    },
+    {
+      slug: "fish-bbq",
+      nameBn: "ফিশ বারবিকিউ",
+      nameEn: "Fish BBQ",
+      aboutBn: "মসলা মাখিয়ে আগুনে সেঁকা মাছ।",
+      aliases: ["fish barbecue", "fish bbq", "মাছ বারবিকিউ"],
+    },
+  ],
+  places: [
+    {
+      slug: "farmgate-chitoi-pitha-dhaka",
+      nameBn: "ফার্মগেটের ফুটপাতের চিতই পিঠা",
+      nameEn: "Farmgate pavement chitoi pitha",
+      district: "dhaka",
+      type: "street_food",
+      area: "farmgate",
+      famousFor: ["chitoi-pitha", "bhorta"],
+    },
+    {
+      slug: "bukhara-banani-dhaka",
+      nameBn: "বুখারা",
+      nameEn: "Bukhara",
+      district: "dhaka",
+      type: "restaurant",
+      area: "banani",
+      famousFor: ["kabab"],
+    },
+    {
+      slug: "lucknow-banani-dhaka",
+      nameBn: "লখনউ",
+      nameEn: "Lucknow",
+      district: "dhaka",
+      type: "restaurant",
+      area: "banani",
+      famousFor: ["kabab"],
+    },
+    {
+      slug: "madhur-canteen-dhaka",
+      nameBn: "মধুর ক্যান্টিন",
+      nameEn: "Madhur Canteen",
+      district: "dhaka",
+      type: "restaurant",
+      area: "shahbagh",
+      famousFor: ["cha"],
+    },
+    {
+      slug: "iskaton-garden-road-kabab-van-dhaka",
+      nameBn: "ইস্কাটন গার্ডেন রোডের কাবাব ভ্যান",
+      nameEn: "Iskaton Garden Road kabab vans",
+      district: "dhaka",
+      type: "street_food",
+      area: "iskaton",
+      famousFor: ["kabab"],
+    },
+    {
+      slug: "metro-kitchens-dhaka",
+      nameBn: "মেট্রো কিচেনস",
+      nameEn: "Metro Kitchens",
+      district: "dhaka",
+      type: "other",
+      area: "bashundhara",
+      famousFor: ["fish-bbq"],
+    },
+    {
+      slug: "tehari-ghar-dhanmondi-dhaka",
+      nameBn: "তেহারি ঘর",
+      nameEn: "Tehari Ghar",
+      district: "dhaka",
+      type: "restaurant",
+      area: "dhanmondi",
+      famousFor: ["tehari"],
+    },
+    {
+      slug: "moti-biryani-house-dhaka",
+      nameBn: "মতি বিরিয়ানি হাউস",
+      nameEn: "Moti Biryani House",
+      district: "dhaka",
+      type: "restaurant",
+      area: "nazira-bazar",
+      famousFor: ["tehari"],
+    },
+    {
+      slug: "shad-tehari-ghar-dhaka",
+      nameBn: "শাদ তেহারি ঘর",
+      nameEn: "Shad Tehari Ghar",
+      district: "dhaka",
+      type: "restaurant",
+      area: "lalmatia",
+      famousFor: ["tehari"],
+    },
+    {
+      slug: "maruf-biryani-house-dhaka",
+      nameBn: "মারুফ বিরিয়ানি হাউস",
+      nameEn: "Maruf Biryani House",
+      district: "dhaka",
+      type: "restaurant",
+      area: "hazaribagh",
+      famousFor: ["tehari"],
+    },
+  ],
+  existingAreas: [],
+  existingDishes: [],
+  fame: [],
+  fameSources: [],
+};
