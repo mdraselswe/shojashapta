@@ -6,6 +6,7 @@ import { DHAKA_SET_2 } from "./dhaka-data-2";
 // normalization writes the search fields, and every insert is idempotent.
 
 const q = (value: string) => `'${value.replace(/'/g, "''")}'`;
+const when = (list: string[], sql: string) => (list.length > 0 ? sql.trimEnd() : "");
 const rows = (lines: string[]) => lines.map((line) => `  ${line}`).join(",\n");
 
 export const DHAKA_SETS: DhakaSet[] = [DHAKA_SET_1, DHAKA_SET_2];
@@ -82,13 +83,17 @@ join districts d on d.slug = 'dhaka'
 join areas a on a.district_id = d.id and a.slug = v.area_slug
 on conflict (slug) do nothing;
 
-update places p
+${when(
+  existingAreaRows,
+  `update places p
 set area_id = a.id
 from (values
 ${rows(existingAreaRows)}
 ) as v(place_slug, area_slug), areas a
 where p.slug = v.place_slug and a.district_id = p.district_id and a.slug = v.area_slug
   and p.area_id is null;
+`,
+)}
 
 insert into dishes (place_id, food_id, is_seed)
 select p.id, f.id, true
@@ -99,7 +104,9 @@ join places p on p.slug = v.place_slug
 join foods f on f.slug = v.food_slug
 on conflict (place_id, food_id) do nothing;
 
-insert into regional_fame (district_id, food_id, note_bn, source_url, sort_order, is_seed)
+${when(
+  fameRows,
+  `insert into regional_fame (district_id, food_id, note_bn, source_url, sort_order, is_seed)
 select d.id, f.id, v.note_bn, v.source_url, v.sort_order, true
 from (values
 ${rows(fameRows)}
@@ -107,14 +114,20 @@ ${rows(fameRows)}
 join districts d on d.slug = v.district_slug
 join foods f on f.slug = v.food_slug
 on conflict (district_id, food_id) do nothing;
+`,
+)}
 
-update regional_fame rf
+${when(
+  fameSourceRows,
+  `update regional_fame rf
 set source_url = v.source_url
 from (values
 ${rows(fameSourceRows)}
 ) as v(district_slug, food_slug, source_url), districts d, foods f
 where d.slug = v.district_slug and f.slug = v.food_slug
   and rf.district_id = d.id and rf.food_id = f.id and rf.source_url is null;
+`,
+)}
 
 update districts d
 set place_count = (select count(*) from places p where p.district_id = d.id and p.status = 'active');
