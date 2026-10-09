@@ -1,59 +1,52 @@
 import { buildSearchFields, toSearchKey } from "../../src/lib/text/normalize";
-import {
-  DHAKA_AREAS,
-  DHAKA_FAME,
-  DHAKA_FOODS,
-  DHAKA_PLACES,
-  EXISTING_FAME_SOURCES,
-  EXISTING_PLACE_AREAS,
-  EXISTING_PLACE_DISHES,
-} from "./dhaka-data";
+import { DHAKA_SET_1, type DhakaSet } from "./dhaka-data";
+import { DHAKA_SET_2 } from "./dhaka-data-2";
 
-// Turns scripts/seed/dhaka-data.ts into migration 0013. Same rules as build-sql.ts: the app's own
+// Turns scripts/seed/dhaka-data*.ts into migrations 0013 and 0014. Same rules as build-sql.ts: the app's own
 // normalization writes the search fields, and every insert is idempotent.
 
 const q = (value: string) => `'${value.replace(/'/g, "''")}'`;
 const rows = (lines: string[]) => lines.map((line) => `  ${line}`).join(",\n");
 
-export const DHAKA_MIGRATION_PATH = "supabase/migrations/0013_seed_dhaka.sql";
+export const DHAKA_SETS: DhakaSet[] = [DHAKA_SET_1, DHAKA_SET_2];
 
-export function buildDhakaSql(): string {
-  const areaRows = DHAKA_AREAS.map(
+export const migrationPath = (set: DhakaSet) => `supabase/migrations/${set.migration}`;
+
+export function buildDhakaSql(set: DhakaSet): string {
+  const areaRows = set.areas.map(
     (area) => `(${q(area.slug)}, ${q(area.nameBn)}, ${q(area.nameEn)})`,
   );
 
-  const foodRows = DHAKA_FOODS.map((food) => {
+  const foodRows = set.foods.map((food) => {
     const search = buildSearchFields(food.nameBn, food.nameEn);
     return `(${q(food.slug)}, ${q(food.nameBn)}, ${q(food.nameEn)}, ${q(food.aboutBn)}, ${q(search.searchText)}, ${q(search.searchKey)}, true)`;
   });
-  const foodAliasRows = DHAKA_FOODS.flatMap((food) =>
+  const foodAliasRows = set.foods.flatMap((food) =>
     food.aliases.map((alias) => `(${q(food.slug)}, ${q(alias)}, ${q(toSearchKey(alias))})`),
   );
 
-  const placeRows = DHAKA_PLACES.map((place) => {
+  const placeRows = set.places.map((place) => {
     const search = buildSearchFields(place.nameBn, place.nameEn);
     return `(${q(place.slug)}, ${q(place.nameBn)}, ${q(place.nameEn)}, ${q(place.type)}, ${q(place.area)}, ${q(search.searchText)}, ${q(search.searchKey)})`;
   });
 
   const dishRows = [
-    ...DHAKA_PLACES.flatMap((place) =>
+    ...set.places.flatMap((place) =>
       place.famousFor.map((food) => `(${q(place.slug)}, ${q(food)})`),
     ),
-    ...EXISTING_PLACE_DISHES.map((dish) => `(${q(dish.slug)}, ${q(dish.food)})`),
+    ...set.existingDishes.map((dish) => `(${q(dish.slug)}, ${q(dish.food)})`),
   ];
 
-  const fameRows = DHAKA_FAME.map(
+  const fameRows = set.fame.map(
     (fame, index) =>
       `(${q(fame.district)}, ${q(fame.food)}, ${q(fame.noteBn ?? "")}, ${q(fame.sourceUrl)}, ${10 + index})`,
   );
-  const fameSourceRows = EXISTING_FAME_SOURCES.map(
+  const fameSourceRows = set.fameSources.map(
     (fame) => `(${q(fame.district)}, ${q(fame.food)}, ${q(fame.sourceUrl)})`,
   );
-  const existingAreaRows = EXISTING_PLACE_AREAS.map(
-    (place) => `(${q(place.slug)}, ${q(place.area)})`,
-  );
+  const existingAreaRows = set.existingAreas.map((place) => `(${q(place.slug)}, ${q(place.area)})`);
 
-  return `-- 0013: Dhaka content, by area (generated — do not edit by hand).
+  return `-- ${set.number}: Dhaka content, by area (generated — do not edit by hand).
 -- Source: scripts/seed/dhaka-data.ts · regenerate: pnpm db:seed · sources: docs/content-sources.md
 --
 -- Same rules as 0007: flagged is_seed (select purge_seed_data(); removes it), and no ratings,

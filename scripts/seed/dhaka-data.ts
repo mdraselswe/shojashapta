@@ -90,7 +90,7 @@ export const DHAKA_FOODS: FoodSeed[] = [
   },
 ];
 
-type DhakaPlace = PlaceSeed & { area: string };
+export type DhakaPlace = PlaceSeed & { area: string };
 
 const place = (
   slug: string,
@@ -315,3 +315,28 @@ export const EXISTING_FAME_SOURCES: { district: string; food: string; sourceUrl:
     sourceUrl: "https://www.tbsnews.net/feature/food/still-love-bakarkhani",
   },
 ];
+
+/** One migration's worth of Dhaka content. */
+export type DhakaSet = {
+  migration: string;
+  number: string;
+  areas: AreaSeed[];
+  foods: FoodSeed[];
+  places: DhakaPlace[];
+  existingAreas: { slug: string; area: string }[];
+  existingDishes: { slug: string; food: string }[];
+  fame: DhakaFame[];
+  fameSources: { district: string; food: string; sourceUrl: string }[];
+};
+
+export const DHAKA_SET_1: DhakaSet = {
+  migration: "0013_seed_dhaka.sql",
+  number: "0013",
+  areas: DHAKA_AREAS,
+  foods: DHAKA_FOODS,
+  places: DHAKA_PLACES,
+  existingAreas: EXISTING_PLACE_AREAS,
+  existingDishes: EXISTING_PLACE_DISHES,
+  fame: DHAKA_FAME,
+  fameSources: EXISTING_FAME_SOURCES,
+};
