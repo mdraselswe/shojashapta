@@ -30,6 +30,11 @@ every place is flagged `is_seed` and the app's verify flow is how real people co
 | Metro Kitchens (Bashundhara R/A, fish BBQ) | [The Daily Star, Five popular hangout zones](https://www.thedailystar.net/star-youth/five-popular-hangout-zones-1456795) |
 | Star Hotel (started at Thatari Bazar, branch at Karwan Bazar), Rabbani Hotel (Mirpur 11), Hotel Jannat (Mohammadpur) | [The Business Standard Bangla, five old food hotels of Dhaka](https://www.tbsnews.net/bangla/feature/news-details-366616) |
 | Mamun Biryani House (Nazirabazar) | [Prothom Alo, restaurants open nearly 24 hours](https://www.prothomalo.com/lifestyle/%E0%A6%A2%E0%A6%BE%E0%A6%95%E0%A6%BE%E0%A7%9F-%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%BE%E0%A7%9F-%E0%A7%A8%E0%A7%AA-%E0%A6%98%E0%A6%A3%E0%A7%8D%E0%A6%9F%E0%A6%BE%E0%A6%87-%E0%A6%96%E0%A7%8B%E0%A6%B2%E0%A6%BE-%E0%A6%A5%E0%A6%BE%E0%A6%95%E0%A7%87-%E0%A6%AF%E0%A7%87%E0%A6%B8%E0%A6%AC-%E0%A6%B0%E0%A7%87%E0%A6%B8%E0%A7%8D%E0%A6%A4%E0%A7%8B%E0%A6%B0%E0%A6%BE%E0%A6%81) |
+| Chawkbazar iftar market (boro baper polay khay, jilapi, haleem, borhani) | [Wikipedia](https://en.wikipedia.org/wiki/Chawkbazar_Iftar_Market), [The Business Standard](https://www.tbsnews.net/features/food/famous-iftar-lane-chawkbazar-running-more-legacy-taste-818521), [The Daily Star](https://www.thedailystar.net/culture/news/chawkbazar-comes-alive-iftar-delicacies-3837901) |
+| Shahi jilapi (Chawkbazar) | [Wikipedia](https://en.wikipedia.org/wiki/Shahi_jilapi) |
+| Sweet shops: Madina (Lalbagh), Omullo (Shakharibazar), Green Sweet Meat (Thatari Bazar), Shonamia (Gandaria), Moron Chand and Grandsons (Nawabpur) | [The Financial Express, Top sweets shops in Dhaka](https://thefinancialexpress.com.bd/lifestyle/food/top-sweets-shops-in-dhaka-where-you-can-find-varieties-of-sweets) |
+
+Prices in the iftar articles change every year, so none are stored.
 
 Badda and Jatrabari: no article found that names a shop there, so none is listed. Contributors add them in the app.
 

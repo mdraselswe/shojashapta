@@ -320,6 +320,8 @@ export const EXISTING_FAME_SOURCES: { district: string; food: string; sourceUrl:
 export type DhakaSet = {
   migration: string;
   number: string;
+  /** Display order of this part's famous-for entries starts here (default 10). */
+  fameSortStart?: number;
   areas: AreaSeed[];
   foods: FoodSeed[];
   places: DhakaPlace[];
