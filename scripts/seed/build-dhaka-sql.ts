@@ -1,0 +1,129 @@
+import { buildSearchFields, toSearchKey } from "../../src/lib/text/normalize";
+import {
+  DHAKA_AREAS,
+  DHAKA_FAME,
+  DHAKA_FOODS,
+  DHAKA_PLACES,
+  EXISTING_FAME_SOURCES,
+  EXISTING_PLACE_AREAS,
+  EXISTING_PLACE_DISHES,
+} from "./dhaka-data";
+
+// Turns scripts/seed/dhaka-data.ts into migration 0013. Same rules as build-sql.ts: the app's own
+// normalization writes the search fields, and every insert is idempotent.
+
+const q = (value: string) => `'${value.replace(/'/g, "''")}'`;
+const rows = (lines: string[]) => lines.map((line) => `  ${line}`).join(",\n");
+
+export const DHAKA_MIGRATION_PATH = "supabase/migrations/0013_seed_dhaka.sql";
+
+export function buildDhakaSql(): string {
+  const areaRows = DHAKA_AREAS.map(
+    (area) => `(${q(area.slug)}, ${q(area.nameBn)}, ${q(area.nameEn)})`,
+  );
+
+  const foodRows = DHAKA_FOODS.map((food) => {
+    const search = buildSearchFields(food.nameBn, food.nameEn);
+    return `(${q(food.slug)}, ${q(food.nameBn)}, ${q(food.nameEn)}, ${q(food.aboutBn)}, ${q(search.searchText)}, ${q(search.searchKey)}, true)`;
+  });
+  const foodAliasRows = DHAKA_FOODS.flatMap((food) =>
+    food.aliases.map((alias) => `(${q(food.slug)}, ${q(alias)}, ${q(toSearchKey(alias))})`),
+  );
+
+  const placeRows = DHAKA_PLACES.map((place) => {
+    const search = buildSearchFields(place.nameBn, place.nameEn);
+    return `(${q(place.slug)}, ${q(place.nameBn)}, ${q(place.nameEn)}, ${q(place.type)}, ${q(place.area)}, ${q(search.searchText)}, ${q(search.searchKey)})`;
+  });
+
+  const dishRows = [
+    ...DHAKA_PLACES.flatMap((place) =>
+      place.famousFor.map((food) => `(${q(place.slug)}, ${q(food)})`),
+    ),
+    ...EXISTING_PLACE_DISHES.map((dish) => `(${q(dish.slug)}, ${q(dish.food)})`),
+  ];
+
+  const fameRows = DHAKA_FAME.map(
+    (fame, index) =>
+      `(${q(fame.district)}, ${q(fame.food)}, ${q(fame.noteBn ?? "")}, ${q(fame.sourceUrl)}, ${10 + index})`,
+  );
+  const fameSourceRows = EXISTING_FAME_SOURCES.map(
+    (fame) => `(${q(fame.district)}, ${q(fame.food)}, ${q(fame.sourceUrl)})`,
+  );
+  const existingAreaRows = EXISTING_PLACE_AREAS.map(
+    (place) => `(${q(place.slug)}, ${q(place.area)})`,
+  );
+
+  return `-- 0013: Dhaka content, by area (generated — do not edit by hand).
+-- Source: scripts/seed/dhaka-data.ts · regenerate: pnpm db:seed · sources: docs/content-sources.md
+--
+-- Same rules as 0007: flagged is_seed (select purge_seed_data(); removes it), and no ratings,
+-- reviews, prices, hours, addresses or claims are written here. A place is a name, an area and what
+-- it is known for; real people add and verify the rest.
+
+insert into areas (district_id, slug, name_bn, name_en)
+select d.id, v.slug, v.name_bn, v.name_en
+from (values
+${rows(areaRows)}
+) as v(slug, name_bn, name_en)
+join districts d on d.slug = 'dhaka'
+on conflict (district_id, slug) do nothing;
+
+insert into foods (slug, name_bn, name_en, about_bn, search_text, search_key, is_seed) values
+${rows(foodRows)}
+on conflict (slug) do nothing;
+
+insert into aliases (entity, entity_id, alias, search_key)
+select 'food', f.id::text, v.alias, v.search_key
+from (values
+${rows(foodAliasRows)}
+) as v(food_slug, alias, search_key)
+join foods f on f.slug = v.food_slug
+on conflict do nothing;
+
+insert into places (slug, name_bn, name_en, type, district_id, area_id, search_text, search_key, is_seed)
+select v.slug, v.name_bn, v.name_en, v.type::place_type, d.id, a.id, v.search_text, v.search_key, true
+from (values
+${rows(placeRows)}
+) as v(slug, name_bn, name_en, type, area_slug, search_text, search_key)
+join districts d on d.slug = 'dhaka'
+join areas a on a.district_id = d.id and a.slug = v.area_slug
+on conflict (slug) do nothing;
+
+update places p
+set area_id = a.id
+from (values
+${rows(existingAreaRows)}
+) as v(place_slug, area_slug), areas a
+where p.slug = v.place_slug and a.district_id = p.district_id and a.slug = v.area_slug
+  and p.area_id is null;
+
+insert into dishes (place_id, food_id, is_seed)
+select p.id, f.id, true
+from (values
+${rows(dishRows)}
+) as v(place_slug, food_slug)
+join places p on p.slug = v.place_slug
+join foods f on f.slug = v.food_slug
+on conflict (place_id, food_id) do nothing;
+
+insert into regional_fame (district_id, food_id, note_bn, source_url, sort_order, is_seed)
+select d.id, f.id, v.note_bn, v.source_url, v.sort_order, true
+from (values
+${rows(fameRows)}
+) as v(district_slug, food_slug, note_bn, source_url, sort_order)
+join districts d on d.slug = v.district_slug
+join foods f on f.slug = v.food_slug
+on conflict (district_id, food_id) do nothing;
+
+update regional_fame rf
+set source_url = v.source_url
+from (values
+${rows(fameSourceRows)}
+) as v(district_slug, food_slug, source_url), districts d, foods f
+where d.slug = v.district_slug and f.slug = v.food_slug
+  and rf.district_id = d.id and rf.food_id = f.id and rf.source_url is null;
+
+update districts d
+set place_count = (select count(*) from places p where p.district_id = d.id and p.status = 'active');
+`;
+}
