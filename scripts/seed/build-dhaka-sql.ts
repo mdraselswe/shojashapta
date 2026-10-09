@@ -1,6 +1,7 @@
 import { buildSearchFields, toSearchKey } from "../../src/lib/text/normalize";
 import { DHAKA_SET_1, type DhakaSet } from "./dhaka-data";
 import { DHAKA_SET_2 } from "./dhaka-data-2";
+import { DHAKA_SET_3 } from "./dhaka-data-3";
 
 // Turns scripts/seed/dhaka-data*.ts into migrations 0013 and 0014. Same rules as build-sql.ts: the app's own
 // normalization writes the search fields, and every insert is idempotent.
@@ -9,7 +10,7 @@ const q = (value: string) => `'${value.replace(/'/g, "''")}'`;
 const when = (list: string[], sql: string) => (list.length > 0 ? sql.trimEnd() : "");
 const rows = (lines: string[]) => lines.map((line) => `  ${line}`).join(",\n");
 
-export const DHAKA_SETS: DhakaSet[] = [DHAKA_SET_1, DHAKA_SET_2];
+export const DHAKA_SETS: DhakaSet[] = [DHAKA_SET_1, DHAKA_SET_2, DHAKA_SET_3];
 
 export const migrationPath = (set: DhakaSet) => `supabase/migrations/${set.migration}`;
 
@@ -62,17 +63,23 @@ ${rows(areaRows)}
 join districts d on d.slug = 'dhaka'
 on conflict (district_id, slug) do nothing;
 
-insert into foods (slug, name_bn, name_en, about_bn, search_text, search_key, is_seed) values
+${when(
+  foodRows,
+  `insert into foods (slug, name_bn, name_en, about_bn, search_text, search_key, is_seed) values
 ${rows(foodRows)}
-on conflict (slug) do nothing;
+on conflict (slug) do nothing;`,
+)}
 
-insert into aliases (entity, entity_id, alias, search_key)
+${when(
+  foodAliasRows,
+  `insert into aliases (entity, entity_id, alias, search_key)
 select 'food', f.id::text, v.alias, v.search_key
 from (values
 ${rows(foodAliasRows)}
 ) as v(food_slug, alias, search_key)
 join foods f on f.slug = v.food_slug
-on conflict do nothing;
+on conflict do nothing;`,
+)}
 
 insert into places (slug, name_bn, name_en, type, district_id, area_id, search_text, search_key, is_seed)
 select v.slug, v.name_bn, v.name_en, v.type::place_type, d.id, a.id, v.search_text, v.search_key, true
