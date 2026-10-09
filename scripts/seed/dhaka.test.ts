@@ -60,6 +60,11 @@ describe.each(DHAKA_SETS.map((set) => [set.migration, set] as const))("migration
     expect(sql).not.toMatch(/insert into experiences|insert into claims/i);
   });
 
+  it("has no empty value lists (they are invalid SQL)", () => {
+    // "values" followed by a blank line means a list with no rows
+    expect(buildDhakaSql(set)).not.toMatch(/values\n\n/);
+  });
+
   it("matches the committed file (run pnpm db:seed after changing the data)", () => {
     expect(readFileSync(migrationPath(set), "utf8")).toBe(buildDhakaSql(set));
   });
