@@ -1,5 +1,7 @@
-import bn from "./messages/bn.json";
-import en from "./messages/en.json";
+import bnClient from "./messages/bn.json";
+import bnServer from "./messages/bn.server.json";
+import enClient from "./messages/en.json";
+import enServer from "./messages/en.server.json";
 import { createTranslator, type Messages } from "./translator";
 
 export { createTranslator, type Messages, type MessageKey, type Params } from "./translator";
@@ -8,6 +10,11 @@ export { createTranslator, type Messages, type MessageKey, type Params } from ".
 // keys (checked by t.test.ts). Keys are type-checked: t("nav.home").
 
 export type Locale = "bn" | "en";
+
+// admin and legal texts live in *.server.json: pages render them on the server, so they never
+// reach a visitor's browser (src/i18n/client.ts imports only bn.json).
+const bn: Messages = { ...bnClient, ...bnServer };
+const en: Messages = { ...enClient, ...enServer };
 
 export const messages: Record<Locale, Messages> = { bn, en };
 

@@ -5,7 +5,7 @@ import { useTransition, type ComponentProps } from "react";
 import { toast } from "@/lib/toast";
 
 import { Button } from "@/components/ui/button";
-import { useT } from "@/i18n/client";
+import { useAdminT } from "@/i18n/admin-client";
 
 import { adminAct } from "../actions";
 
@@ -26,7 +26,7 @@ export function AdminButton({
   /** Ask first (merge, ban…). */
   confirm?: string;
 }) {
-  const t = useT();
+  const t = useAdminT();
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 

@@ -70,6 +70,15 @@ Mishti doi: no newspaper names a Dhaka shop for it, so none is listed.
 | Shatkora beef | [Wikipedia](https://en.wikipedia.org/wiki/Satkara_beef) |
 | Panshi and Pach Bhai (already seeded) linked to shatkora beef | Travel guides: [Hello Sylhet](https://hellosylhetcity.com/en/blog/a-taste-of-sylhet-must-try-sylheti-food-best-places), [Sylhet Tourist Guide](https://sylhettouristguide.com/restaurant/panshi). No newspaper names Sylhet shops, so no other Sylhet shop is listed. |
 
+## Khulna, Rajshahi, Bogura, Cumilla (migrations 0021 to 0024)
+
+| What | Source |
+|---|---|
+| Khulna: Abbas Hotel (chui jhal), Gesco Kabab, Indramohan Sweets, New Howrah Bakery, Rupsha Ghat snacks | [The Business Standard, An ode to Khulna](https://www.tbsnews.net/features/food/ode-khulna-love-food-1107281) |
+| Rajshahi: puri burger (New Market), Sadhur Mor seekh burger, Haji and Tripti (Laxmipur, kaliza singara), Jorakali (Malopara), Ranar's Sweet (Ranibazar), Noborup (Saheb Bazar), Batar Morer Jilapi | [The Business Standard, Rajshahi food you should never miss](https://www.tbsnews.net/feature/food/rajshahi-food-you-should-never-miss) |
+| Bogura doi: Shri Gour Gopal (Nawabbari Road), Ruchita, Sherpur Doi Ghar, Enam Doi Ghar (Jhautala), Asia Sweets, Akbaria, Chinipata, Shyamoli | [BSS, Bogura's yoghurt](https://www.bssnews.net/district/316161) |
+| Cumilla: Matri Bhandar (Manoharpur), Cumilla Mishti Bhandar, Bhagwati Peda Bhandar, Shital Bhandar | [BSS, Cumilla's rasmalai](https://www.bssnews.net/district/311066) |
+
 ## Customer reviews
 
 None are copied. Articles, Google Maps, Foodpanda and Facebook reviews belong to their authors and

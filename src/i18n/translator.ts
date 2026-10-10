@@ -1,9 +1,11 @@
 import type bn from "./messages/bn.json";
+import type bnServer from "./messages/bn.server.json";
 
 // The lookup itself, without importing any message file, so Client Components can bring just the
 // Bangla messages (en.json stays on the server). bn.json is the reference shape (AGENTS.md §5).
 
-export type Messages = typeof bn;
+/** Every message: the ones browsers need (bn.json) and the server-only ones (bn.server.json). */
+export type Messages = typeof bn & typeof bnServer;
 
 type Leaves<T, Prefix extends string = ""> = {
   [K in keyof T & string]: T[K] extends string ? `${Prefix}${K}` : Leaves<T[K], `${Prefix}${K}.`>;

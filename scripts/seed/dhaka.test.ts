@@ -37,7 +37,7 @@ describe("Dhaka seed data (all parts)", () => {
     }
     for (const set of DHAKA_SETS) {
       for (const entry of set.existingAreas) {
-        expect(areaKeys.has(`dhaka/${entry.area}`)).toBe(true);
+        expect(areaKeys.has(`${set.districtSlug ?? "dhaka"}/${entry.area}`)).toBe(true);
         expect(PLACES.some((place) => place.slug === entry.slug)).toBe(true);
       }
     }
