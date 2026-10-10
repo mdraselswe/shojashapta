@@ -3,6 +3,7 @@ import { DHAKA_SET_1, type DhakaSet } from "./dhaka-data";
 import { DHAKA_SET_2 } from "./dhaka-data-2";
 import { DHAKA_SET_3 } from "./dhaka-data-3";
 import { DHAKA_SET_4 } from "./dhaka-data-4";
+import { DHAKA_SET_5 } from "./dhaka-data-5";
 
 // Turns scripts/seed/dhaka-data*.ts into migrations 0013 and 0014. Same rules as build-sql.ts: the app's own
 // normalization writes the search fields, and every insert is idempotent.
@@ -11,7 +12,13 @@ const q = (value: string) => `'${value.replace(/'/g, "''")}'`;
 const when = (list: string[], sql: string) => (list.length > 0 ? sql.trimEnd() : "");
 const rows = (lines: string[]) => lines.map((line) => `  ${line}`).join(",\n");
 
-export const DHAKA_SETS: DhakaSet[] = [DHAKA_SET_1, DHAKA_SET_2, DHAKA_SET_3, DHAKA_SET_4];
+export const DHAKA_SETS: DhakaSet[] = [
+  DHAKA_SET_1,
+  DHAKA_SET_2,
+  DHAKA_SET_3,
+  DHAKA_SET_4,
+  DHAKA_SET_5,
+];
 
 export const migrationPath = (set: DhakaSet) => `supabase/migrations/${set.migration}`;
 
