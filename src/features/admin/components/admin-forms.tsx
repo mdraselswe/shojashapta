@@ -6,13 +6,13 @@ import { toast } from "@/lib/toast";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useT } from "@/i18n/client";
+import { useAdminT } from "@/i18n/admin-client";
 
 import { adminAct } from "../actions";
 
 /** Merge this (duplicate) place into the place with the typed slug. */
 export function MergeForm({ fromId }: { fromId: string }) {
-  const t = useT();
+  const t = useAdminT();
   const router = useRouter();
   const [slug, setSlug] = useState("");
   const [pending, startTransition] = useTransition();
@@ -48,7 +48,7 @@ export function MergeForm({ fromId }: { fromId: string }) {
 
 /** Add or change a "famous for" entry: pick the district, type the food slug and a short note. */
 export function FameForm({ districts }: { districts: { id: number; nameBn: string }[] }) {
-  const t = useT();
+  const t = useAdminT();
   const router = useRouter();
   const [districtId, setDistrictId] = useState(districts[0]?.id ?? 1);
   const [foodSlug, setFoodSlug] = useState("");
