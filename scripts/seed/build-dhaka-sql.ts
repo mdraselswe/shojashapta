@@ -7,6 +7,7 @@ import { DHAKA_SET_5 } from "./dhaka-data-5";
 import { DHAKA_SET_6 } from "./dhaka-data-6";
 import { CHATTOGRAM_SET, SYLHET_SET } from "./districts-data";
 import { BOGURA_SET, CUMILLA_SET, KHULNA_SET, RAJSHAHI_SET } from "./districts-data-2";
+import { DISTRICT_SETS_4 } from "./districts-data-4";
 import { BARISHAL_SET, COXS_BAZAR_SET, MYMENSINGH_SET, RANGPUR_SET } from "./districts-data-3";
 
 // Turns scripts/seed/dhaka-data*.ts into migrations 0013 and 0014. Same rules as build-sql.ts: the app's own
@@ -33,6 +34,7 @@ export const DHAKA_SETS: DhakaSet[] = [
   MYMENSINGH_SET,
   RANGPUR_SET,
   COXS_BAZAR_SET,
+  ...DISTRICT_SETS_4,
 ];
 
 export const migrationPath = (set: DhakaSet) => `supabase/migrations/${set.migration}`;

@@ -94,6 +94,45 @@ appear on Tripadvisor, Foodpanda or blogs (for example Mouban and Kacchi Dine in
 | Cox's Bazar: Poushi (loitta fry), Jhaubon (rupchanda fry) | [The Daily Star (Bangla), Bhromone bhojon](https://bangla.thedailystar.net/%E0%A6%86%E0%A6%A8%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A6%A7%E0%A6%BE%E0%A6%B0%E0%A6%BE/%E0%A6%AD%E0%A7%8D%E0%A6%B0%E0%A6%AE%E0%A6%A3/%E0%A6%AD%E0%A7%8D%E0%A6%B0%E0%A6%AE%E0%A6%A3%E0%A7%87-%E0%A6%AD%E0%A7%8B%E0%A6%9C%E0%A6%A8-76527), [UNB, must-try food in Cox's Bazar](https://unb.com.bd/category/lifestyle/must-try-food-items-in-coxs-bazar/84946) |
 | Cox's Bazar: Salt Bistro and Cafe (spicy crab); dry fish | [UNB](https://unb.com.bd/category/lifestyle/must-try-food-items-in-coxs-bazar/84946), [The Daily Star, Cox's Bazar to-do list](https://www.thedailystar.net/coxs-bazar-to-do-list-48534) |
 
+## Remaining districts (migrations 0029 to 0059)
+
+Only shops and restaurants that a newspaper names are added. Districts without such an article
+(for example Narayanganj, Gazipur, Chandpur, Noakhali, Dinajpur, Thakurgaon) have no places yet.
+
+| District | What | Source |
+|---|---|---|
+| Jamalpur | Burima Mistanna Bhandar (Amlapara) | [The Daily Star (Bangla)](https://bangla.thedailystar.net/life-living/food-recipe/news-565046) |
+| Tangail | Kalidas Mistanna Bhandar (Jamurki, Mirzapur) | [The Daily Star (Bangla)](https://bangla.thedailystar.net/life-living/food-recipe/news-569376) |
+| Kurigram | Jhantu Mishtanno Bhandar (Kalibari, since 1939) | [Prothom Alo](https://www.prothomalo.com/bangladesh/district/y2rqugo3s4) |
+| Jashore | Jolojog (Chowrasta, since 1893) | [Prothom Alo](https://www.prothomalo.com/bangladesh/district/3hv0p2e13h) |
+| Pabna | Kori Pal's sweet shop (Ashmobaria Bazar, Ishwardi) | [Prothom Alo](https://www.prothomalo.com/bangladesh/district/d00en4tiu0) |
+| Gopalganj | Dutta Mistanna Bhandar (DC Market, since 1938) | [Prothom Alo](https://www.prothomalo.com/bangladesh/district/jj6fjs9ind) |
+| Habiganj | Adi Gopal Mistanna Bhandar | [Prothom Alo](https://www.prothomalo.com/bangladesh/district/3dlh7p9fbi) |
+| Satkhira | Jayhun Dairy Shop (Laboni Mor), Atar Ali's doi (Boro Bazar), Sushil Moyra | [Prothom Alo](https://www.prothomalo.com/bangladesh/p050vp928j) |
+| Shariatpur | Haru Ghosh Mishtanno Bhandar (Palong Bazar) | [Prothom Alo (English)](https://en.prothomalo.com/bangladesh/local-news/giqxr3h9aw) |
+| Sirajganj | Bholanath and Rani Mistanna Bhandar (Enayetpur, Chauhali) | [Prothom Alo](https://www.prothomalo.com/bangladesh/district/l45uvwbeqp) |
+| Naogaon | Sabbir Hotel and Restaurant (Atapatti, Dharmatala Road) | [The Daily Star (Bangla)](https://bangla.thedailystar.net/life-living/news-547576) |
+| Feni | Khondoler Patwary Misti Mela (Parshuram), khondol sweet | [The Financial Express](https://thefinancialexpress.com.bd/views/fenis-khondol-sweet-a-taste-of-tradition-1627031408) |
+| Madaripur | Jibon Misthanna Bhandar (khirpuri, since 1930) | [The Daily Star (Bangla)](https://bangla.thedailystar.net/life-living/food-recipe/news-668541) |
+| Manikganj | Nizamer Mishti (Terashri Bazar, Ghior) | [Prothom Alo](https://www.prothomalo.com/bangladesh/district/biyjxc7tkb) |
+| Faridpur | Surjomukhi (Boalmari, para shondesh) | [Prothom Alo](https://www.prothomalo.com/bangladesh/district/j5c2o96evk) |
+| Munshiganj | Shree Durga Mistanna Bhandar (Haldia Bazar, Louhajong) | [The Daily Star (Bangla)](https://bangla.thedailystar.net/news/bangladesh/news-3952376) |
+| Brahmanbaria | Mahadev Mistanna Bhandar (chhanamukhi), Chunilal's Roshogolla (Sarail) | [The Daily Star (Bangla)](https://bangla.thedailystar.net/life-living/food-recipe/news-673826), [The Daily Star (Bangla)](https://bangla.thedailystar.net/news/bangladesh/news-699001) |
+| Jhalokati | Debnath, Nagen Ghosh, Gopal Ghosh, Naren Kuri, Muslim Mistanna Bhandar | [Prothom Alo](https://www.prothomalo.com/bangladesh/district/v6bazog45s) |
+| Gaibandha | Ramesh Sweets (Circular Road, since 1948), rasmanjuri | [The Daily Star (Bangla)](https://bangla.thedailystar.net/life-living/food-recipe/news-630421) |
+| Pirojpur | Hotel Sotota (Press Club Road) | [The Daily Star (Bangla)](https://bangla.thedailystar.net/news/bangladesh/news-472666) |
+| Jhenaidah | Molla Hotel (Hamdaha bus stand, since 1968) | [The Daily Star (Bangla)](https://bangla.thedailystar.net/life-living/travel/news-708296) |
+| Khagrachhari | System Restaurant, Bamboo Shoot, Heritage Dine, Kalyani Restaurant | [Prothom Alo](https://www.prothomalo.com/bangladesh/district/d8nmswa444) |
+| Rangamati | Sunzuk Hotel and Restaurant (bamboo shoot dishes) | [The Daily Star (Bangla)](https://bangla.thedailystar.net/life-living/food-recipe/news-681331) |
+| Moulvibazar | Kutumbari Restaurant (Sreemangal) | [The Daily Star (Bangla)](https://bangla.thedailystar.net/%E0%A6%86%E0%A6%A8%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A6%A7%E0%A6%BE%E0%A6%B0%E0%A6%BE/%E0%A6%AD%E0%A7%8D%E0%A6%B0%E0%A6%AE%E0%A6%A3/%E0%A6%AD%E0%A7%8D%E0%A6%B0%E0%A6%AE%E0%A6%A3%E0%A7%87-%E0%A6%AD%E0%A7%8B%E0%A6%9C%E0%A6%A8-76527) |
+| Patuakhali | Lebur Char (Kuakata, crab bhuna) | same Daily Star article as Moulvibazar |
+| Natore | Joy Kali Mistanna Bhandar (Lalbazar); kacha golla source | [Prothom Alo](https://www.prothomalo.com/bangladesh/cwz6zjpax6) |
+| Netrokona | Gayanath Mistanna Bhandar (Barhatta Road, balish mishti) | [Prothom Alo](https://www.prothomalo.com/lifestyle/recipe/%E0%A6%AC%E0%A6%BE%E0%A6%B2%E0%A6%BF%E0%A6%B6-%E0%A6%AE%E0%A6%BF%E0%A6%B7%E0%A7%8D%E0%A6%9F%E0%A6%BF%E0%A6%B0-%E0%A6%87%E0%A6%A4%E0%A6%BF%E0%A6%95%E0%A6%A5%E0%A6%BE) |
+| Kushtia | New Special Bhai Bhai Tiler Khaja (Joynabad) | [The Daily Star (Bangla)](https://bangla.thedailystar.net/news/bangladesh/news-415586) |
+| Chattogram | Bose Brothers (Nandan Kanan Mor) | [The Daily Star (Bangla)](https://bangla.thedailystar.net/news/bangladesh/news-423231) |
+| Rajshahi | Hoba Ghosh's Roshogolla (court area, since about 1937) | [Prothom Alo](https://www.prothomalo.com/bangladesh/district/elnwbpz0eg) |
+| Cox's Bazar | Pal Misti Bhandar (Harbang Bazar, Chakaria) | [Prothom Alo](https://www.prothomalo.com/bangladesh/district/2nd2vm1v8y) |
+
 ## Customer reviews
 
 None are copied. Articles, Google Maps, Foodpanda and Facebook reviews belong to their authors and
