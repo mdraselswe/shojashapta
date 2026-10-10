@@ -42,6 +42,15 @@ every place is flagged `is_seed` and the app's verify flow is how real people co
 Prices in the iftar articles change every year, so none are stored.
 
 Badda and Jatrabari: no article found that names a shop there, so none is listed. Contributors add them in the app.
+| Kacchi: Kolkata Kachchi (Satrowza), Grand Nawab (Old Dhaka), Kachchi Bhai, Bashmoti Kachchi (Jigatola) | [The Business Standard, Best 5 Dhakai kacchi](https://www.tbsnews.net/feature/food/best-5-dhakai-kacchi-town-137398) |
+| Morog polao: Jhunu Polao Ghor (Narinda) | [The Business Standard](https://www.tbsnews.net/feature/food/jhunu-polao-ghor-serving-aromatic-morog-polao-51-years-229126) |
+| Nihari: Nihariwala (Banani), Mia Bhai (Banasree), Peshwarain (Wari), Grand Chandu Shahi Nihari, Maa Shahi Haleem and Nihari (Lalbagh) | [The Business Standard, Best nihari in Dhaka](https://www.tbsnews.net/features/food/5-restaurants-around-dhaka-satisfy-your-nihari-cravings-525830) |
+| Maa Shahi Halim, Siddiqui Bhai (Subal Das Lane, Lalbagh) | [The Daily Star](https://www.thedailystar.net/my-dhaka/news/why-old-dhakas-siddiqui-bhai-nihari-must-try-3972511) |
+| Lahori Nihari Dhaka (West Dhanmondi) | [Dhaka Tribune](https://www.dhakatribune.com/business/329877/lahori-nihari-dhaka-a-hidden-gem-in-dhanmondi) |
+| Shawarma House, Arabian Fast Food (older article, Dhanmondi area) | [The Daily Star, For the love of shawarma](https://www.thedailystar.net/news/for-the-love-of-shawarma) |
+| Tea: Pannu's Tea (Nazira Bazar), Cha Chai (Gulshan Avenue), Star Hotel Thatari Bazar | [The Daily Star, The best tea spots you can find](https://www.thedailystar.net/life-living/food-recipes/news/the-best-tea-spots-you-can-find-3161996) |
+
+Mishti doi: no newspaper names a Dhaka shop for it, so none is listed.
 
 ## Chattogram (migration 0018)
 

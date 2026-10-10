@@ -4,6 +4,7 @@ import { DHAKA_SET_2 } from "./dhaka-data-2";
 import { DHAKA_SET_3 } from "./dhaka-data-3";
 import { DHAKA_SET_4 } from "./dhaka-data-4";
 import { DHAKA_SET_5 } from "./dhaka-data-5";
+import { DHAKA_SET_6 } from "./dhaka-data-6";
 import { CHATTOGRAM_SET, SYLHET_SET } from "./districts-data";
 
 // Turns scripts/seed/dhaka-data*.ts into migrations 0013 and 0014. Same rules as build-sql.ts: the app's own
@@ -19,6 +20,7 @@ export const DHAKA_SETS: DhakaSet[] = [
   DHAKA_SET_3,
   DHAKA_SET_4,
   DHAKA_SET_5,
+  DHAKA_SET_6,
   CHATTOGRAM_SET,
   SYLHET_SET,
 ];
