@@ -1,7 +1,7 @@
 "use client";
 
 import { ShareIcon } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 import { useShare } from "@/hooks/use-share";
 import { useT } from "@/i18n/client";
