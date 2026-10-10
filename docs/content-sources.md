@@ -33,6 +33,11 @@ every place is flagged `is_seed` and the app's verify flow is how real people co
 | Chawkbazar iftar market (boro baper polay khay, jilapi, haleem, borhani) | [Wikipedia](https://en.wikipedia.org/wiki/Chawkbazar_Iftar_Market), [The Business Standard](https://www.tbsnews.net/features/food/famous-iftar-lane-chawkbazar-running-more-legacy-taste-818521), [The Daily Star](https://www.thedailystar.net/culture/news/chawkbazar-comes-alive-iftar-delicacies-3837901) |
 | Shahi jilapi (Chawkbazar) | [Wikipedia](https://en.wikipedia.org/wiki/Shahi_jilapi) |
 | Sweet shops: Madina (Lalbagh), Omullo (Shakharibazar), Green Sweet Meat (Thatari Bazar), Shonamia (Gandaria), Moron Chand and Grandsons (Nawabpur) | [The Financial Express, Top sweets shops in Dhaka](https://thefinancialexpress.com.bd/lifestyle/food/top-sweets-shops-in-dhaka-where-you-can-find-varieties-of-sweets) |
+| Haleem: Mona Bhai (Mohammadpur), Khaza (Gopibag), Mama (Kalabagan) | [The Business Standard, 5 hearty haleems in Dhaka](https://www.tbsnews.net/features/food/5-hearty-haleems-dhaka-city-407646) |
+| Decent Bakery (Dhanmondi, haleem) | [The Daily Star, Best haleem and jilapi of Dhaka recognised](https://www.thedailystar.net/city/news/best-haleem-and-jilapi-dhaka-recognised-1748149) |
+| Breakfast: Nirob Hotel (Chankharpul), Chowrangi Restaurant (Banglabazar), Hirajheel Hotel (Motijheel), Deshbondhu Sweetmeat (Hathkhola), Green Sweetmeat (Thatari Bazar) | [The Business Standard, 5 classic breakfast places in Dhaka](https://www.tbsnews.net/feature/food/5-classic-breakfast-places-dhaka-163855) |
+| Pitha: Adda Prabartana, Mirpur Pitha Ghar, Bailey Pitha Ghor, Shantinagar Pitha Ghar | [The Business Standard, Best places to get pitha this winter](https://www.tbsnews.net/feature/food/best-places-get-pitha-winter-186202) |
+| Uttara Pitha Ghar | [The Daily Star, Pithas](https://www.thedailystar.net/lifestyle/check-it-out/pithas-1339204) |
 
 Prices in the iftar articles change every year, so none are stored.
 
