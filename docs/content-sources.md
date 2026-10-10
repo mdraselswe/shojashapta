@@ -79,6 +79,21 @@ Mishti doi: no newspaper names a Dhaka shop for it, so none is listed.
 | Bogura doi: Shri Gour Gopal (Nawabbari Road), Ruchita, Sherpur Doi Ghar, Enam Doi Ghar (Jhautala), Asia Sweets, Akbaria, Chinipata, Shyamoli | [BSS, Bogura's yoghurt](https://www.bssnews.net/district/316161) |
 | Cumilla: Matri Bhandar (Manoharpur), Cumilla Mishti Bhandar, Bhagwati Peda Bhandar, Shital Bhandar | [BSS, Cumilla's rasmalai](https://www.bssnews.net/district/311066) |
 
+## Barishal, Mymensingh, Rangpur, Cox's Bazar (migrations 0025 to 0028)
+
+Few newspaper-named shops exist for these districts, so the lists are short. Restaurants that only
+appear on Tripadvisor, Foodpanda or blogs (for example Mouban and Kacchi Dine in Rangpur) are not added.
+
+| What | Source |
+|---|---|
+| Barishal: Gaur Nitai Mistanna Bhandar, Gournadi doi and rasmalai | [Bangladesh Post, Gournadi yogurt](https://bangladeshpost.net/posts/gournadi-yogurt-gains-popularity-64263) |
+| Mymensingh: Janaki Nag Sweets (Swadeshi Bazar), Krishna Cabin, malaikari | [Prothom Alo, Mymensingh malaikari](https://www.prothomalo.com/bangladesh/district/x2r6bnyevm) |
+| Mymensingh: Gopal Pal's Shingha Marka Monda, Muktagachha | [The Financial Express, history of monda](https://thefinancialexpress.com.bd/national/the-interesting-history-behind-sweetmeat-monda-1578594577) |
+| Mymensingh: Bikrampur Sweet Meat, Adarsha Mistanno Bhandar (Boro Kalibari, pera) | [The Daily Star, Mymensingh sweets for Durga Puja](https://www.thedailystar.net/culture/news/mymensinghs-sweet-offerings-durga-puja-3725996) |
+| Rangpur: Rangpur Shingara House (Haripatti Road, beside the Kalibari) | [The Financial Express, Rangpur Shingara House](https://thefinancialexpress.com.bd/lifestyle/food/rangpur-shingara-house-63-years-of-mesmerising-taste) |
+| Cox's Bazar: Poushi (loitta fry), Jhaubon (rupchanda fry) | [The Daily Star (Bangla), Bhromone bhojon](https://bangla.thedailystar.net/%E0%A6%86%E0%A6%A8%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A6%A7%E0%A6%BE%E0%A6%B0%E0%A6%BE/%E0%A6%AD%E0%A7%8D%E0%A6%B0%E0%A6%AE%E0%A6%A3/%E0%A6%AD%E0%A7%8D%E0%A6%B0%E0%A6%AE%E0%A6%A3%E0%A7%87-%E0%A6%AD%E0%A7%8B%E0%A6%9C%E0%A6%A8-76527), [UNB, must-try food in Cox's Bazar](https://unb.com.bd/category/lifestyle/must-try-food-items-in-coxs-bazar/84946) |
+| Cox's Bazar: Salt Bistro and Cafe (spicy crab); dry fish | [UNB](https://unb.com.bd/category/lifestyle/must-try-food-items-in-coxs-bazar/84946), [The Daily Star, Cox's Bazar to-do list](https://www.thedailystar.net/coxs-bazar-to-do-list-48534) |
+
 ## Customer reviews
 
 None are copied. Articles, Google Maps, Foodpanda and Facebook reviews belong to their authors and
