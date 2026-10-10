@@ -9,28 +9,35 @@ const unique = (values: string[]) => new Set(values).size === values.length;
 
 const allPlaces = DHAKA_SETS.flatMap((set) => set.places);
 const allFoods = [...FOODS, ...DHAKA_SETS.flatMap((set) => set.foods)];
-const allAreas = DHAKA_SETS.flatMap((set) => set.areas);
+const allAreas = DHAKA_SETS.flatMap((set) =>
+  set.areas.map((area) => ({ ...area, key: `${set.districtSlug ?? "dhaka"}/${area.slug}` })),
+);
 const foodSlugs = new Set(allFoods.map((food) => food.slug));
-const areaSlugs = new Set(allAreas.map((area) => area.slug));
+const areaKeys = new Set(allAreas.map((area) => area.key));
 
 describe("Dhaka seed data (all parts)", () => {
   it("has unique slugs, also against the first seed", () => {
     expect(unique(allPlaces.map((place) => place.slug))).toBe(true);
     expect(unique(allFoods.map((food) => food.slug))).toBe(true);
-    expect(unique(allAreas.map((area) => area.slug))).toBe(true);
+    expect(unique(allAreas.map((area) => area.key))).toBe(true);
     for (const place of allPlaces) expect(PLACES.map((p) => p.slug)).not.toContain(place.slug);
   });
 
   it("puts every place in a known area and ties every dish to a known food", () => {
+    for (const set of DHAKA_SETS) {
+      for (const place of set.places) {
+        expect(place.district, place.slug).toBe(set.districtSlug ?? "dhaka");
+        expect(areaKeys.has(`${place.district}/${place.area}`), place.slug).toBe(true);
+      }
+    }
     for (const place of allPlaces) {
-      expect(areaSlugs.has(place.area), place.slug).toBe(true);
       expect(place.famousFor.length, place.slug).toBeGreaterThan(0);
       for (const food of place.famousFor)
         expect(foodSlugs.has(food), `${place.slug}: ${food}`).toBe(true);
     }
     for (const set of DHAKA_SETS) {
       for (const entry of set.existingAreas) {
-        expect(areaSlugs.has(entry.area)).toBe(true);
+        expect(areaKeys.has(`dhaka/${entry.area}`)).toBe(true);
         expect(PLACES.some((place) => place.slug === entry.slug)).toBe(true);
       }
     }

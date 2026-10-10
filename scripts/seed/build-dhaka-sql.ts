@@ -4,6 +4,7 @@ import { DHAKA_SET_2 } from "./dhaka-data-2";
 import { DHAKA_SET_3 } from "./dhaka-data-3";
 import { DHAKA_SET_4 } from "./dhaka-data-4";
 import { DHAKA_SET_5 } from "./dhaka-data-5";
+import { CHATTOGRAM_SET, SYLHET_SET } from "./districts-data";
 
 // Turns scripts/seed/dhaka-data*.ts into migrations 0013 and 0014. Same rules as build-sql.ts: the app's own
 // normalization writes the search fields, and every insert is idempotent.
@@ -18,6 +19,8 @@ export const DHAKA_SETS: DhakaSet[] = [
   DHAKA_SET_3,
   DHAKA_SET_4,
   DHAKA_SET_5,
+  CHATTOGRAM_SET,
+  SYLHET_SET,
 ];
 
 export const migrationPath = (set: DhakaSet) => `supabase/migrations/${set.migration}`;
@@ -56,20 +59,23 @@ export function buildDhakaSql(set: DhakaSet): string {
   );
   const existingAreaRows = set.existingAreas.map((place) => `(${q(place.slug)}, ${q(place.area)})`);
 
-  return `-- ${set.number}: Dhaka content, by area (generated — do not edit by hand).
+  return `-- ${set.number}: ${set.districtSlug ? set.districtSlug[0]?.toUpperCase() + set.districtSlug.slice(1) : "Dhaka"} content, by area (generated — do not edit by hand).
 -- Source: scripts/seed/dhaka-data.ts · regenerate: pnpm db:seed · sources: docs/content-sources.md
 --
 -- Same rules as 0007: flagged is_seed (select purge_seed_data(); removes it), and no ratings,
 -- reviews, prices, hours, addresses or claims are written here. A place is a name, an area and what
 -- it is known for; real people add and verify the rest.
 
-insert into areas (district_id, slug, name_bn, name_en)
+${when(
+  areaRows,
+  `insert into areas (district_id, slug, name_bn, name_en)
 select d.id, v.slug, v.name_bn, v.name_en
 from (values
 ${rows(areaRows)}
 ) as v(slug, name_bn, name_en)
-join districts d on d.slug = 'dhaka'
-on conflict (district_id, slug) do nothing;
+join districts d on d.slug = '${set.districtSlug ?? "dhaka"}'
+on conflict (district_id, slug) do nothing;`,
+)}
 
 ${when(
   foodRows,
@@ -89,14 +95,17 @@ join foods f on f.slug = v.food_slug
 on conflict do nothing;`,
 )}
 
-insert into places (slug, name_bn, name_en, type, district_id, area_id, search_text, search_key, is_seed)
+${when(
+  placeRows,
+  `insert into places (slug, name_bn, name_en, type, district_id, area_id, search_text, search_key, is_seed)
 select v.slug, v.name_bn, v.name_en, v.type::place_type, d.id, a.id, v.search_text, v.search_key, true
 from (values
 ${rows(placeRows)}
 ) as v(slug, name_bn, name_en, type, area_slug, search_text, search_key)
-join districts d on d.slug = 'dhaka'
+join districts d on d.slug = '${set.districtSlug ?? "dhaka"}'
 join areas a on a.district_id = d.id and a.slug = v.area_slug
-on conflict (slug) do nothing;
+on conflict (slug) do nothing;`,
+)}
 
 ${when(
   existingAreaRows,
