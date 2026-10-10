@@ -14,7 +14,7 @@ function DistrictChipBody({ name, food }: { name: ReactNode; food: ReactNode }) 
   return (
     <>
       <div className="line-clamp-1 text-[15px] leading-snug font-semibold">{name}</div>
-      <div className="line-clamp-1 text-caption opacity-85">{food}</div>
+      <div className="line-clamp-1 text-caption">{food}</div>
     </>
   );
 }
