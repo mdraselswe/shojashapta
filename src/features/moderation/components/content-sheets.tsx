@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { routes } from "@/config/routes";

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useTransition, type ComponentProps } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 import { Button } from "@/components/ui/button";
 import { useT } from "@/i18n/client";

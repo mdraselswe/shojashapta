@@ -1,6 +1,6 @@
 "use client";
 
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 import { useT } from "@/i18n/client";
 import { formatNumber } from "@/lib/format/number";
