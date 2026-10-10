@@ -43,6 +43,24 @@ Prices in the iftar articles change every year, so none are stored.
 
 Badda and Jatrabari: no article found that names a shop there, so none is listed. Contributors add them in the app.
 
+## Chattogram (migration 0018)
+
+| What | Source |
+|---|---|
+| Mezzan Haile Aiyun (Shulakbahar, mezbani) | [Prothom Alo](https://www.prothomalo.com/lifestyle/recipe/legbd117mu), [The Business Standard, Mezban](https://www.tbsnews.net/features/food/mezban-cuisine-choice-feasts-310606) |
+| Kutumbari (AK Khan), Bir Chattala (SS Khaled Road), Member Hotel (Pahartali), Hotel Nizam (railway station area) | [The Business Standard, Where to find the best desi food in Chattogram](https://www.tbsnews.net/features/food/where-find-best-desi-food-chattogram-310618) |
+| Hamid Bhai er Malai Tea (beside MA Aziz Stadium) | [The Business Standard, Drinks and dessert in Chattogram](https://www.tbsnews.net/features/food/food-happiness-drinks-dessert-chattogram-310639) |
+| Goni Bakery (biscuits baked in wood-fired ovens) | [The Daily Star via Asia News Network](https://asianews.network/why-you-should-explore-bangladeshs-chattogram-the-city-of-stories-shores-and-surprises/) |
+| Jhautola street food (chaap, haleem) | [The Business Standard, The delicious street foods of Chattogram](https://www.tbsnews.net/features/food/delicious-street-foods-chattogram-363451) |
+
+## Sylhet (migration 0019)
+
+| What | Source |
+|---|---|
+| Akhni, the iftar dish of Sylhet | [The Daily Star, Akhni: a staple at Sylheti iftars](https://www.thedailystar.net/news/bangladesh/news/akhni-staple-sylheti-iftars-3583866) |
+| Shatkora beef | [Wikipedia](https://en.wikipedia.org/wiki/Satkara_beef) |
+| Panshi and Pach Bhai (already seeded) linked to shatkora beef | Travel guides: [Hello Sylhet](https://hellosylhetcity.com/en/blog/a-taste-of-sylhet-must-try-sylheti-food-best-places), [Sylhet Tourist Guide](https://sylhettouristguide.com/restaurant/panshi). No newspaper names Sylhet shops, so no other Sylhet shop is listed. |
+
 ## Customer reviews
 
 None are copied. Articles, Google Maps, Foodpanda and Facebook reviews belong to their authors and
